@@ -1,14 +1,14 @@
 package net.etfbl.indeks.repository;
 
 
-import net.etfbl.indeks.model.GRUPA;
+import net.etfbl.indeks.model.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface GrupaRepository extends JpaRepository<GRUPA, Long>
+public interface GroupRepository extends JpaRepository<Group, Long>
 {
-    Optional<GRUPA> findByName(String GroupName);
+    Optional<Group> findByGroupName(String GroupName);
 }
