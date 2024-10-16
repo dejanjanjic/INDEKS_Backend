@@ -8,7 +8,7 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "grupaID")
-    private Long Id;
+    private Long id;
 
 
     @Column(name = "nazivGrupe")
@@ -20,16 +20,16 @@ public class Group {
 
 
     public Group(Long grupaId, String groupName) {
-        this.Id = grupaId;
+        this.id = grupaId;
         this.groupName = groupName;
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public Group(String groupName) {
