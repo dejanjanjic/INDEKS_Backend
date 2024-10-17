@@ -44,12 +44,12 @@ public class ElementaryGroupChatController {
     }
 
     @DeleteMapping(path = "{groupId}")
-    public ResponseEntity<String> deleteGroup(@PathVariable("groupId") Long groupId) {
+    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId) {
         boolean isDeleted = elementaryGroupChatService.deleteGroup(groupId);
         if (isDeleted) {
-            return new ResponseEntity<>("Group deleted successfully", HttpStatus.OK);
+            return new ResponseEntity( HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Group not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity( HttpStatus.NOT_FOUND);
         }
     }
 
