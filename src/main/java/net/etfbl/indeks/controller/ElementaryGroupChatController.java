@@ -54,14 +54,14 @@ public class ElementaryGroupChatController {
     }
 
     @PutMapping(path = "{groupId}")
-    public ResponseEntity<String> updateGroup(
+    public ResponseEntity updateGroup(
             @PathVariable("groupId") Long groupId,
             @RequestParam(required = false) String groupName) {
         boolean isUpdated = elementaryGroupChatService.updateElementaryChatGroup(groupId, groupName);
         if (isUpdated) {
-            return new ResponseEntity<>("Group updated successfully", HttpStatus.OK);
+            return new ResponseEntity( HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>("Group not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity( HttpStatus.NOT_FOUND);
         }
     }
 }
