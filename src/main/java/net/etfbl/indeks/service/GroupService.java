@@ -38,7 +38,7 @@ public class GroupService
         groupRepository.deleteById(groupId);
     }
     @Transactional
-    public void updateStudent(Long groupId, String groupName) {
+    public void updateGroup(Long groupId, String groupName) {
         GroupChat group = groupRepository.findById(groupId).orElseThrow(() -> new IllegalStateException("group doesn't exist"));
         if(groupName!=null &&
                 groupName.length()>0 &&
