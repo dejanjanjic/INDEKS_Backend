@@ -1,6 +1,6 @@
 package net.etfbl.indeks.controller;
 
-import net.etfbl.indeks.model.Group;
+import net.etfbl.indeks.model.GroupChat;
 import net.etfbl.indeks.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +20,15 @@ public class GroupController {
 
 
     @GetMapping
-    public List<Group> getGroups() {
+    public List<GroupChat> getGroups() {
         return groupService.getGroups();
     }
     @GetMapping(path = "{groupId}")
-    public Optional<Group> getGroup(@PathVariable("groupId")Long groupId) {
+    public Optional<GroupChat> getGroup(@PathVariable("groupId")Long groupId) {
         return groupService.getGroup(groupId);
     }
     @PostMapping
-    public void registerNewGroup(@RequestBody Group group){
+    public void registerNewGroup(@RequestBody GroupChat group){
         groupService.addNewGrupa(group);
     }
 
