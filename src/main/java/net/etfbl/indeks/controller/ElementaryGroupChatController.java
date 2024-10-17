@@ -38,9 +38,9 @@ public class ElementaryGroupChatController {
     }
 
     @PostMapping
-    public ResponseEntity<String> registerNewElementaryGroupChat(@RequestBody ElementaryGroupChat group) {
+    public ResponseEntity<ElementaryGroupChat> registerNewElementaryGroupChat(@RequestBody ElementaryGroupChat group) {
         elementaryGroupChatService.addNewElementaryGroupChat(group);
-        return new ResponseEntity<>("New ElementaryGroupChat created successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>(group, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{groupId}")
