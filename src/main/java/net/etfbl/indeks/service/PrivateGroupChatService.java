@@ -37,23 +37,26 @@ public class PrivateGroupChatService {
         privateGroupChatRepository.save(group);
     }
 
-    public void deleteGroup(Long groupId) {
+    public boolean deleteGroup(Long groupId) {
         boolean exists = privateGroupChatRepository.existsById(groupId);
         if (!exists) {
-            throw new IllegalStateException("group doesn't exist");
+           return false;
         }
         privateGroupChatRepository.deleteById(groupId);
         groupRepository.deleteById(groupId);
+        return exists;
     }
 
     @Transactional
-    public void updatePrivateChatGroup(Long groupId, String groupName) {
+    public boolean updatePrivateChatGroup(Long groupId, String groupName) {
         GroupChat group = groupRepository.findById(groupId).orElseThrow(() -> new IllegalStateException("group doesn't exist"));
         if(groupName!=null &&
                 groupName.length()>0 &&
                 !Objects.equals(group.getName(), groupName)){
             group.setName(groupName);
+            return true;
         }
 
+        return false;
     }
 }

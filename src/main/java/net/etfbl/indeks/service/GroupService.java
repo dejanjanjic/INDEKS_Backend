@@ -33,7 +33,7 @@ public class GroupService
     public boolean deleteGroup(Long groupId) {
         boolean exists = groupRepository.existsById(groupId);
         if(!exists){
-            throw new IllegalStateException("group doesn't exist");
+            return false;
         }
         groupRepository.deleteById(groupId);
         return exists;

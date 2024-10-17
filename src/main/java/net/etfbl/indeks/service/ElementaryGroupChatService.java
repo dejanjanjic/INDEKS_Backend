@@ -42,7 +42,7 @@ public class ElementaryGroupChatService {
     public boolean deleteGroup(Long groupId) {
         boolean exists = elementaryGroupChatRepository.existsById(groupId);
         if (!exists) {
-            throw new IllegalStateException("group doesn't exist");
+            return false;
         }
         elementaryGroupChatRepository.deleteById(groupId);
         groupRepository.deleteById(groupId);
