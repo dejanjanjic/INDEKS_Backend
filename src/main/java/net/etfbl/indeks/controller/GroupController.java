@@ -1,8 +1,12 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.GroupChat;
 import net.etfbl.indeks.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,27 +24,46 @@ public class GroupController {
 
 
     @GetMapping
-    public List<GroupChat> getGroups() {
-        return groupService.getGroups();
+    public ResponseEntity<List<GroupChat>> getGroups() {
+        List<GroupChat> groups = groupService.getGroups();
+        return new ResponseEntity<>(groups, HttpStatus.OK);
     }
+
     @GetMapping(path = "{groupId}")
-    public Optional<GroupChat> getGroup(@PathVariable("groupId")Long groupId) {
-        return groupService.getGroup(groupId);
+    public ResponseEntity<Optional<GroupChat>> getGroup(@PathVariable("groupId")Long groupId) {
+        Optional<GroupChat> chat = groupService.getGroup(groupId);
+        if (chat.isPresent()) {
+            return new ResponseEntity<>(chat, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
     @PostMapping
-    public void registerNewGroup(@RequestBody GroupChat group){
+    public ResponseEntity<GroupChat> registerNewGroup(@RequestBody GroupChat group)
+    {
         groupService.addNewGrupa(group);
+        return new ResponseEntity<>(group, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{groupId}")
-    public void deleteGroup(@PathVariable("groupId")Long groupId){
-        groupService.deleteGroup(groupId);
+    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId) {
+        boolean isDeleted = groupService.deleteGroup(groupId);
+        if (isDeleted) {
+            return new ResponseEntity( HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity( HttpStatus.NOT_FOUND);
+        }
     }
-
-    @PutMapping(path="{groupId}")
-    public void updateGroup(
+    @PutMapping(path = "{groupId}")
+    public ResponseEntity updateGroup(
             @PathVariable("groupId") Long groupId,
-            @RequestParam(required = false) String groupName){
-        groupService.updateGroup(groupId, groupName);
+            @RequestParam(required = false) String groupName) {
+        boolean isUpdated = groupService.updateGroup(groupId, groupName);
+        if (isUpdated) {
+            return new ResponseEntity( HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity( HttpStatus.NOT_FOUND);
+        }
     }
 }
