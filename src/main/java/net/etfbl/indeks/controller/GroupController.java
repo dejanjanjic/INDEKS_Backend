@@ -41,6 +41,6 @@ public class GroupController {
     public void updateGroup(
             @PathVariable("groupId") Long groupId,
             @RequestParam(required = false) String groupName){
-        groupService.updateStudent(groupId, groupName);
+        groupService.updateGroup(groupId, groupName);
     }
 }
