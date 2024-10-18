@@ -7,6 +7,8 @@ import net.etfbl.indeks.model.Subject;
 import net.etfbl.indeks.service.AccountService;
 import net.etfbl.indeks.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,23 +31,38 @@ public class SubjectController
     }
 
     @GetMapping(path = "{id}")
-    public Optional<Subject> getSubject(@PathVariable("id")Long id) {
-        return subjectService.getSubject(id);
+    public ResponseEntity<Subject> getSubject(@PathVariable(name = "id")Long id){
+        Optional<Subject> subject = subjectService.getSubject(id);
+        return subject.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @PostMapping
-    public void registerNewSubject(@RequestBody Subject subject){
-        subjectService.addNewSubject(subject);
+    public ResponseEntity<Subject> registerNewSubject(@RequestBody Subject subject){
+        Subject temp = subjectService.addNewSubject(subject);
+        if(temp != null){
+            return ResponseEntity.ok(temp);
+        }else{
+            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
+        }
     }
 
-    @DeleteMapping(path = "{id}")
-    public void deleteSubject(@PathVariable("id")Long id){
-        subjectService.deleteSubject(id);
+    @DeleteMapping(path = "{accountId}")
+    public ResponseEntity<Void> deleteSubject(@PathVariable("accountId")Long id){
+        boolean deleted = subjectService.deleteSubject(id);
+        if(deleted){
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @PutMapping(path="{id}")
-    public void updateSubject(
-            @PathVariable("id") Long id,
-            @RequestParam(required = false) String name){
-        subjectService.updateSubject(id, name);
+    @PutMapping
+    public ResponseEntity<Void> updateSubject(@RequestBody Subject subject){
+        boolean updated = subjectService.updateSubject(subject);
+        if(updated){
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
 }
