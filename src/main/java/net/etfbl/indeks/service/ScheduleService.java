@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -23,27 +22,30 @@ public class ScheduleService {
         return scheduleRepository.findAll();
     }
 
-    public void addNewSchedule(Schedule schedule) {
-        scheduleRepository.save(schedule);
-    }
-
     public Optional<Schedule> getSchedule(Long id) {
         return scheduleRepository.findById(id);
     }
 
-    public void deleteSchedule(Long id) {
+    public void addNewSchedule(Schedule schedule) {
+        scheduleRepository.save(schedule);
+    }
+
+    public boolean deleteSchedule(Long id) {
         boolean exists = scheduleRepository.existsById(id);
         if (!exists) {
-            throw new IllegalStateException("schedule doesn't exist");
+            return false;
         }
         scheduleRepository.deleteById(id);
+        return true;
     }
 
     @Transactional
-    public void updateSchedule(Long scheduleId, String content) {
+    public boolean updateSchedule(Long scheduleId, String content) {
         Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
-        if (content != null && !Objects.equals(schedule.get().getContent(), content)) {
-            schedule.get().setContent(content);
+        if (schedule.isEmpty()) {
+            return false;
         }
+        schedule.get().setContent(content);
+        return true;
     }
 }
