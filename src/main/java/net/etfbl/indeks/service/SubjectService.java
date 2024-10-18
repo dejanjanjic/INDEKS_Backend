@@ -14,9 +14,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class SubjectService
-{
+public class SubjectService {
     private final SubjectRepository subjectRepository;
+
     @Autowired
     public SubjectService(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
@@ -25,28 +25,29 @@ public class SubjectService
     public List<Subject> getSubjects() {
         return subjectRepository.findAll();
     }
+
     public Optional<Subject> getSubject(Long id) {
         return subjectRepository.findById(id);
     }
+
     public void addNewSubject(Subject subject) {
         subjectRepository.save(subject);
     }
 
-    public void deleteSubject(Long id)
-    {
+    public void deleteSubject(Long id) {
         boolean exists = subjectRepository.existsById(id);
-        if(!exists){
+        if (!exists) {
             throw new IllegalStateException("subject doesn't exist");
         }
         subjectRepository.deleteById(id);
     }
+
     @Transactional
-    public void updateSubject(Long id, String name)
-    {
+    public void updateSubject(Long id, String name) {
         Subject subject = subjectRepository.findById(id).orElseThrow(() -> new IllegalStateException("subject doesn't exist"));
-        if(name!=null &&
-                name.length()>0 &&
-                !Objects.equals(subject.getName(), name)){
+        if (name != null &&
+                name.length() > 0 &&
+                !Objects.equals(subject.getName(), name)) {
             subject.setName(name);
         }
 

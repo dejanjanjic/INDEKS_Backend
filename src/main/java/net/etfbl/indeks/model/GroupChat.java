@@ -2,22 +2,22 @@ package net.etfbl.indeks.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table
 public class GroupChat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
     private String name;
-
 
     public GroupChat() {
     }
 
-
-    public GroupChat(Long grupaId, String groupName) {
-        this.id = grupaId;
+    public GroupChat(Long groupId, String groupName) {
+        this.id = groupId;
         this.name = groupName;
     }
 
