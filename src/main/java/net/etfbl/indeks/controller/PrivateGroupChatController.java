@@ -1,5 +1,8 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
+import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
+import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.PrivateGroupChat;
 import net.etfbl.indeks.service.PrivateGroupChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +41,11 @@ public class PrivateGroupChatController {
     }
 
     @PostMapping
-    public ResponseEntity<String> registerNewPrivateGroupChat(@RequestBody PrivateGroupChat group) {
-        privateGroupChatService.addNewPrvateGroupChat(group);
-        return new ResponseEntity<>("New PrivateGroupChat created successfully", HttpStatus.CREATED);
+    public ResponseEntity<PrivateGroupChat> registerNewPrivateGroupChat(@RequestBody AddPrivateGroupChatDTO group) {
+        PrivateGroupChat PrGroup =privateGroupChatService.addNewPrivateGroupChat(group);
+        return new ResponseEntity<>(PrGroup, HttpStatus.OK);
     }
+
 
     @DeleteMapping(path = "{groupId}")
     public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId) {

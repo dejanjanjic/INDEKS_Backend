@@ -1,5 +1,6 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.service.ElementaryGroupChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,9 @@ public class ElementaryGroupChatController {
     }
 
     @PostMapping
-    public ResponseEntity<ElementaryGroupChat> registerNewElementaryGroupChat(@RequestBody ElementaryGroupChat group) {
-        elementaryGroupChatService.addNewElementaryGroupChat(group);
-        return new ResponseEntity<>(group, HttpStatus.OK);
+    public ResponseEntity<ElementaryGroupChat> registerNewElementaryGroupChat(@RequestBody AddElementaryGroupChatDTO group) {
+        ElementaryGroupChat ElGroup = elementaryGroupChatService.addNewElementaryGroupChat(group);
+        return new ResponseEntity<>(ElGroup, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{groupId}")

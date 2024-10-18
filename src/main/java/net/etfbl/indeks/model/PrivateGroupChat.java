@@ -19,7 +19,7 @@ public class PrivateGroupChat {
 
     public PrivateGroupChat(GroupChat groupChat) {
         this.groupChat = groupChat;
-        this.id = groupChat.getId();
+
     }
 
     public GroupChat getGroupChat() {

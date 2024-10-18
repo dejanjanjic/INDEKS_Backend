@@ -1,6 +1,9 @@
 package net.etfbl.indeks.service;
 
 
+import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
+import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
+import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.GroupChat;
 import net.etfbl.indeks.model.PrivateGroupChat;
 import net.etfbl.indeks.repository.GroupRepository;
@@ -32,10 +35,11 @@ public class PrivateGroupChatService {
         return privateGroupChatRepository.findById(groupId);
     }
 
-    public void addNewPrvateGroupChat(PrivateGroupChat group) {
-        groupRepository.save(group.getGroupChat());
-        privateGroupChatRepository.save(group);
+    @Transactional
+    public PrivateGroupChat addNewPrivateGroupChat(AddPrivateGroupChatDTO group) {
+        return privateGroupChatRepository.save(new PrivateGroupChat(groupRepository.save(new GroupChat(group.getName()))));
     }
+
 
     public boolean deleteGroup(Long groupId) {
         boolean exists = privateGroupChatRepository.existsById(groupId);

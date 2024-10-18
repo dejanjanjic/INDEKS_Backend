@@ -20,7 +20,6 @@ public class ElementaryGroupChat {
 
     public ElementaryGroupChat(GroupChat groupChat) {
         this.groupChat = groupChat;
-        this.id = groupChat.getId();
     }
 
     public GroupChat getGroupChat() {

@@ -2,6 +2,7 @@ package net.etfbl.indeks.service;
 
 
 
+import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.GroupChat;
 
@@ -34,9 +35,9 @@ public class ElementaryGroupChatService {
         return elementaryGroupChatRepository.findById(groupId);
     }
 
-    public void addNewElementaryGroupChat(ElementaryGroupChat group) {
-        groupRepository.save(group.getGroupChat());
-        elementaryGroupChatRepository.save(group);
+    @Transactional
+    public ElementaryGroupChat addNewElementaryGroupChat(AddElementaryGroupChatDTO group) {
+        return elementaryGroupChatRepository.save(new ElementaryGroupChat(groupRepository.save(new GroupChat(group.getName()))));
     }
 
     public boolean deleteGroup(Long groupId) {
