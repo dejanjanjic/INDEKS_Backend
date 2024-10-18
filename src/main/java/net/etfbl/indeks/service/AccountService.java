@@ -49,8 +49,14 @@ public class AccountService {
         if(temp.isEmpty()){
             return false;
         }
-        temp.get().setEmail(account.getEmail());
-        temp.get().setPassword(account.getPassword());
+        Account updatedAccount = temp.get();
+        if(account.getEmail() != null){
+            updatedAccount.setEmail(account.getEmail());
+        }
+        if(account.getPassword() != null){
+            updatedAccount.setPassword(account.getPassword());
+        }
+        accountRepository.save(updatedAccount);
         return true;
     }
 }

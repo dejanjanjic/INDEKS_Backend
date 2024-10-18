@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -36,11 +37,42 @@ public class UserAccountService {
         Optional<Account> accountByEmail = accountRepository.findByEmail(addUserAccountDTO.getEmail());
         if(accountByEmail.isEmpty()){
             Account account = new Account(addUserAccountDTO.getEmail(), addUserAccountDTO.getPassword());
-            accountRepository.save(account);
-            UserAccount userAccount = new UserAccount(addUserAccountDTO.getFirstName(), addUserAccountDTO.getLastName(), true, false, account);
-            userAccountRepository.save(userAccount);
-            return userAccount;
+            Account savedAccount = accountRepository.save(account);
+            UserAccount userAccount = new UserAccount(addUserAccountDTO.getFirstName(), addUserAccountDTO.getLastName(), true, false, savedAccount);
+
+            return userAccountRepository.save(userAccount);
         }
         return null;
+    }
+
+    public boolean deleteUserAccount(Long id){
+        Optional<UserAccount> userAccount = userAccountRepository.findById(id);
+        if(userAccount.isEmpty()){
+            return false;
+        }
+        userAccountRepository.deleteById(id);
+        return true;
+    }
+
+    @Transactional
+    public boolean updateUserAccount(UserAccount userAccount) {
+        Optional<UserAccount> temp = userAccountRepository.findById(userAccount.getAccountId());
+        if(temp.isEmpty()){
+            return false;
+        }
+        UserAccount updatedUserAccount = temp.get();
+        if(userAccount.getFirstName() != null){
+            updatedUserAccount.setFirstName(userAccount.getFirstName());
+        }
+        if(userAccount.getLastName() != null){
+            updatedUserAccount.setLastName(userAccount.getLastName());
+        }if(userAccount.getActive() != null){
+            updatedUserAccount.setActive(userAccount.getActive());
+        }if(userAccount.getSuspended() != null){
+            updatedUserAccount.setSuspended(userAccount.getSuspended());
+        }
+
+        userAccountRepository.save(updatedUserAccount);
+        return true;
     }
 }

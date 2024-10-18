@@ -6,15 +6,16 @@ import jakarta.persistence.*;
 @Table
 public class UserAccount {
     @Id
-    private Long id;
+    private Long accountId;
 
     private String firstName;
     private String lastName;
     private Boolean active;
     private Boolean suspended;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "accountId",
+            referencedColumnName = "id")
     @MapsId
     private Account account;
 
@@ -29,7 +30,6 @@ public class UserAccount {
     }
 
     public UserAccount(String firstName, String lastName, Boolean active, Boolean suspended, Account account) {
-        this.id = account.getId();
         this.firstName = firstName;
         this.lastName = lastName;
         this.active = active;
@@ -37,12 +37,12 @@ public class UserAccount {
         this.account = account;
     }
 
-    public Long getId() {
-        return id;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAccountId(Long id) {
+        this.accountId = id;
     }
 
     public String getFirstName() {
@@ -88,7 +88,7 @@ public class UserAccount {
     @Override
     public String toString() {
         return "UserAccount{" +
-                "id=" + id +
+                "id=" + accountId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", active=" + active +
