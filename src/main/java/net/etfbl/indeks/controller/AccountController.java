@@ -3,6 +3,7 @@ package net.etfbl.indeks.controller;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,12 +41,12 @@ public class AccountController {
         if(temp != null){
             return ResponseEntity.ok(temp);
         }else{
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
         }
     }
 
     @DeleteMapping(path = "{accountId}")
-    public ResponseEntity deleteAccount(@PathVariable("accountId")Long accountId){
+    public ResponseEntity<Void> deleteAccount(@PathVariable("accountId")Long accountId){
         boolean deleted = accountService.deleteAccount(accountId);
         if(deleted){
             return ResponseEntity.noContent().build();
@@ -55,7 +56,7 @@ public class AccountController {
     }
 
     @PutMapping
-    public ResponseEntity updateAccount(@RequestBody Account account){
+    public ResponseEntity<Void> updateAccount(@RequestBody Account account){
         boolean updated = accountService.updateAccount(account);
         if(updated){
             return ResponseEntity.noContent().build();
