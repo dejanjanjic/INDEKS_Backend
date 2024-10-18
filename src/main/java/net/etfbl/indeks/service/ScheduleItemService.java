@@ -1,16 +1,23 @@
 package net.etfbl.indeks.service;
 
+import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.ScheduleItem;
 import net.etfbl.indeks.repository.ScheduleItemRepository;
+import net.etfbl.indeks.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ScheduleItemService {
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+    @Autowired
     public final ScheduleItemRepository scheduleItemRepository;
 
     @Autowired
@@ -26,28 +33,33 @@ public class ScheduleItemService {
         return scheduleItemRepository.findById(id);
     }
 
-    public void deleteScheduleItem(Long id) {
+    public boolean deleteScheduleItem(Long id) {
         boolean exists = scheduleItemRepository.existsById(id);
         if (!exists) {
-            throw new IllegalStateException("schedule item does not exist");
+            return false;
         }
         scheduleItemRepository.deleteById(id);
+        return true;
     }
 
     public void addNewScheduleItem(ScheduleItem scheduleItem) {
-        scheduleItemRepository.save(scheduleItem);
+        Optional<Schedule> schedule = scheduleRepository.findById(scheduleItem.getScheduleId());
+        if (schedule.isPresent()) {
+            scheduleItemRepository.save(scheduleItem);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Schedule with ID " + scheduleItem.getScheduleId() + " not found");
+        }
     }
 
     @Transactional
-    public void updateScheduleItemTime(Long scheduleItemId, String time) {
-        Optional<ScheduleItem> scheduleItem1 = scheduleItemRepository.findById(scheduleItemId);
-        scheduleItem1.ifPresent(scheduleItem -> scheduleItem.setTime(time));
-    }
-
-    @Transactional
-    public void updateScheduleItemDay(Long scheduleItemId, int day) {
-        Optional<ScheduleItem> scheduleItem1 = scheduleItemRepository.findById(scheduleItemId);
-        scheduleItem1.ifPresent(scheduleItem -> scheduleItem.setDay(day));
+    public boolean updateScheduleItem(Long scheduleItemId, int day, String time) {
+        Optional<ScheduleItem> scheduleItem = scheduleItemRepository.findById(scheduleItemId);
+        if (scheduleItem.isEmpty()) {
+            return false;
+        }
+        scheduleItem.get().setDay(day);
+        scheduleItem.get().setTime(time);
+        return true;
     }
 
 }
