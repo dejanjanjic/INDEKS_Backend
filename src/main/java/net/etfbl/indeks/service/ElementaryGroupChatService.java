@@ -51,14 +51,12 @@ public class ElementaryGroupChatService {
 
     @Transactional
     public boolean updateElementaryChatGroup(Long groupId, String groupName) {
-        GroupChat group = groupRepository.findById(groupId).orElseThrow(() -> new IllegalStateException("group doesn't exist"));
-        if(groupName!=null &&
-                groupName.length()>0 &&
-                !Objects.equals(group.getName(), groupName)){
-            group.setName(groupName);
-            return true;
+        Optional<GroupChat> group = groupRepository.findById(groupId);
+        if(group.isEmpty())
+        {
+            return false;
         }
-
-        return false;
+        group.get().setName(groupName);
+        return true;
     }
 }
