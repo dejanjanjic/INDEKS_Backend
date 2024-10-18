@@ -1,45 +1,41 @@
 package net.etfbl.indeks.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
 @Table
-public class Subject
-{
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+public class Subject {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
-    public Subject()
-    {
+//    @OneToMany(mappedBy = "subject")
+//    private List<TutoringOffer> tutoringOffers;
 
-    }
-    public Subject(Long id, String name)
-    {
-        this.id = id;
+    public Subject() {}
+
+    public Subject(String name) {
         this.name = name;
     }
 
-    public Subject(String name)
-    {
-        this.name=name;
-    }
+//    public List<TutoringOffer> getTutoringOffers() {
+//        return tutoringOffers;
+//    }
+//
+//    public void setTutoringOffers(List<TutoringOffer> tutoringOffers) {
+//        this.tutoringOffers = tutoringOffers;
+//    }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getName() {
         return name;
@@ -50,10 +46,10 @@ public class Subject
     }
 
     @Override
-    public String toString()
-    {
-        return "Subject{id="+id+", name="+name+"}";
+    public String toString() {
+        return "Subject{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
-
-
 }

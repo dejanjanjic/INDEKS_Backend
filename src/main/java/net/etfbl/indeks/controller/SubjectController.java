@@ -4,6 +4,7 @@ package net.etfbl.indeks.controller;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.model.GroupChat;
 import net.etfbl.indeks.model.Subject;
+import net.etfbl.indeks.model.TutoringOffer;
 import net.etfbl.indeks.service.AccountService;
 import net.etfbl.indeks.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class SubjectController
     }
 
     @GetMapping
-    public List<Subject> getSubjects(){
-        return subjectService.getSubjects();
+    public ResponseEntity<List<Subject>> getSubjects(){
+        return ResponseEntity.ok(subjectService.getSubjects());
     }
 
     @GetMapping(path = "{id}")
