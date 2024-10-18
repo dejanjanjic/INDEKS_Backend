@@ -4,6 +4,7 @@ import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +21,36 @@ public class AccountService {
     public List<Account> getAccounts() {
         return accountRepository.findAll();
     }
-
-    public void addNewAccount(Account account) {
-        accountRepository.save(account);
+    public Optional<Account> getAccountById(Long accountId) {
+        return accountRepository.findById(accountId);
     }
 
-    public void deleteAccount(Long accountId) {
+    public Account addNewAccount(Account account) {
+        Optional<Account> accountByEmail = accountRepository.findByEmail(account.getEmail());
+        if(accountByEmail.isEmpty()){
+            return accountRepository.save(account);
+        }
+        return null;
+    }
 
+    public boolean deleteAccount(Long accountId) {
+        boolean exists = accountRepository.existsById(accountId);
+        if(!exists){
+            return false;
+        }
+        accountRepository.deleteById(accountId);
+        return true;
+    }
+
+
+    @Transactional
+    public boolean updateAccount(Account account) {
+        Optional<Account> temp = accountRepository.findById(account.getId());
+        if(temp.isEmpty()){
+            return false;
+        }
+        temp.get().setEmail(account.getEmail());
+        temp.get().setPassword(account.getPassword());
+        return true;
     }
 }
