@@ -14,8 +14,7 @@ public class UserAccount {
     private Boolean suspended;
 
     @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "accountId",
-            referencedColumnName = "id")
+    @JoinColumn(name = "id")
     @MapsId
     private Account account;
 
