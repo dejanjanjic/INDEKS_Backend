@@ -9,18 +9,23 @@ public class ElementaryGroupChatMember {
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
-    @JoinColumn(name = "id")
     private Long id;
-    private int groupId;
-    private int accountId;
+
+    @ManyToOne
+    @JoinColumn(name = "groupId")
+    private ElementaryGroupChat elementaryGroupChat;
+
+    @ManyToOne
+    @JoinColumn(name = "accountId")
+    private StudentAccount studentAccount;
 
     public ElementaryGroupChatMember() {
     }
 
-    public ElementaryGroupChatMember(Long id, int groupId, int accountId) {
+    public ElementaryGroupChatMember(Long id, ElementaryGroupChat elementaryGroupChat, StudentAccount studentAccount) {
         this.id = id;
-        this.groupId = groupId;
-        this.accountId = accountId;
+        this.elementaryGroupChat = elementaryGroupChat;
+        this.studentAccount = studentAccount;
     }
 
     public Long getId() {
@@ -31,20 +36,19 @@ public class ElementaryGroupChatMember {
         this.id = id;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public ElementaryGroupChat getElementaryGroupChat() {
+        return elementaryGroupChat;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setElementaryGroupChat(ElementaryGroupChat elementaryGroupChat) {
+        this.elementaryGroupChat = elementaryGroupChat;
     }
 
-    public int getAccountId() {
-        return accountId;
+    public StudentAccount getStudentAccount() {
+        return studentAccount;
     }
 
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setStudentAccount(StudentAccount studentAccount) {
+        this.studentAccount = studentAccount;
     }
-
 }
