@@ -1,6 +1,10 @@
 package net.etfbl.indeks.service;
 
+import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.StudentAccount;
+import net.etfbl.indeks.model.UserAccount;
+import net.etfbl.indeks.repository.ScheduleRepository;
 import net.etfbl.indeks.repository.StudentAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +17,15 @@ import java.util.Optional;
 public class StudentAccountService {
 
     private final StudentAccountRepository studentAccountRepository;
+    private final UserAccountService userAccountService;
+    private final ScheduleRepository scheduleRepository;
+
 
     @Autowired
-    public StudentAccountService(StudentAccountRepository studentAccountRepository){
+    public StudentAccountService(StudentAccountRepository studentAccountRepository,UserAccountService userAccountService,ScheduleRepository scheduleRepository){
         this.studentAccountRepository = studentAccountRepository;
+        this.userAccountService = userAccountService;
+        this.scheduleRepository = scheduleRepository;
     }
     public List<StudentAccount> getStudentAccounts() {
         return studentAccountRepository.findAll();
@@ -25,12 +34,11 @@ public class StudentAccountService {
     public Optional<StudentAccount> getStudentAccountById(Long studentAccountId) {
         return studentAccountRepository.findById(studentAccountId);
     }
-    public StudentAccount addNewStudentAccount(StudentAccount studentAccount) {
-        Optional<StudentAccount> existingAccount = studentAccountRepository.findById(studentAccount.getId());
-        if(existingAccount.isEmpty()){
-            return studentAccountRepository.save(studentAccount);
-        }
-        return null;
+    @Transactional
+    public StudentAccount addNewStudentAccount(AddUserAccountDTO  studentAccount) {
+        UserAccount acc = userAccountService.addNewUserAccount(studentAccount);
+        Schedule sch = scheduleRepository.save(new Schedule(""));
+        return studentAccountRepository.save(new StudentAccount(acc,sch));
     }
     public boolean deleteStudentAccount(Long studentAccountId) {
         boolean exists = studentAccountRepository.existsById(studentAccountId);
@@ -40,16 +48,4 @@ public class StudentAccountService {
         studentAccountRepository.deleteById(studentAccountId);
         return true;
     }
-
-    @Transactional
-    public boolean updateStudentAccount(StudentAccount studentAccount) {
-        Optional<StudentAccount> tempStudent = studentAccountRepository.findById(studentAccount.getId());
-        if(tempStudent.isEmpty()){
-            return false;
-        }
-        tempStudent.get().setSchedule(studentAccount.getSchedule());
-        tempStudent.get().setUserAccount(studentAccount.getUserAccount());
-        return true;
-    }
-
 }

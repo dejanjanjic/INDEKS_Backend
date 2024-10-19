@@ -39,8 +39,8 @@ public class StudentAccountController {
     }
 
     @PostMapping
-    public ResponseEntity<StudentAccount> registerNewStudentAccount(@RequestBody AddUserAccountDTO studentAccount) {
-        StudentAccount newAccount = studentAccountService.addNewStudentAccount(studentAccount);
+    public ResponseEntity<StudentAccount> registerNewStudentAccount(@RequestBody AddUserAccountDTO addUserAccountDTO) {
+        StudentAccount newAccount = studentAccountService.addNewStudentAccount(addUserAccountDTO);
         if (newAccount != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(newAccount);
         } else {
