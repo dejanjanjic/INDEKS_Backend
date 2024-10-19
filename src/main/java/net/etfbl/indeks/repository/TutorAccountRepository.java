@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface TutorAccountRepository extends JpaRepository<TutorAccount, Long> {
-    @Query("SELECT ta FROM TutorAccount ta JOIN sa.userAccount ua JOIN ua.account a WHERE a.email = :email")
+    @Query("SELECT ta FROM TutorAccount ta JOIN ta.userAccount ua JOIN ua.account a WHERE a.email = :email")
     Optional<TutorAccount> findByEmail(@Param("email") String email);
 }
