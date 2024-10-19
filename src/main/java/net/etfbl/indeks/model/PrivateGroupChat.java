@@ -9,7 +9,7 @@ public class PrivateGroupChat {
     @Id
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "id")
     private GroupChat groupChat;
