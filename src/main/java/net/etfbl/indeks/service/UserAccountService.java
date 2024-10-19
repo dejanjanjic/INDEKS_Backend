@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -56,7 +55,7 @@ public class UserAccountService {
 
     @Transactional
     public boolean updateUserAccount(UserAccount userAccount) {
-        Optional<UserAccount> temp = userAccountRepository.findById(userAccount.getAccountId());
+        Optional<UserAccount> temp = userAccountRepository.findById(userAccount.getId());
         if(temp.isEmpty()){
             return false;
         }

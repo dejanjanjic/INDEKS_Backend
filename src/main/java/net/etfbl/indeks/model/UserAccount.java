@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table
 public class UserAccount {
     @Id
-    private Long accountId;
+    private Long id;
 
     private String firstName;
     private String lastName;
@@ -36,12 +36,12 @@ public class UserAccount {
         this.account = account;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getId() {
+        return id;
     }
 
-    public void setAccountId(Long id) {
-        this.accountId = id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -87,7 +87,7 @@ public class UserAccount {
     @Override
     public String toString() {
         return "UserAccount{" +
-                "id=" + accountId +
+                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", active=" + active +
