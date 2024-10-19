@@ -21,17 +21,19 @@ public class Review {
     @JsonBackReference
     private TutoringOffer tutoringOffer;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id")
-//    private StudentAccount studentAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "studentAccountId")
+    @JsonBackReference
+    private StudentAccount studentAccount;
 
     public Review() {}
 
-    public Review(String comment, LocalDateTime dateTime, TutoringOffer tutoringOffer) {
+    public Review(String comment, LocalDateTime dateTime, TutoringOffer tutoringOffer,StudentAccount studentAccount) {
         this.comment = comment;
         this.dateTime = dateTime;
         this.tutoringOffer = tutoringOffer;
-        //this.studentAccount = studentAccount;
+        this.studentAccount = studentAccount;
     }
 
     public Long getId() {
@@ -66,6 +68,14 @@ public class Review {
         this.tutoringOffer = tutoringOffer;
     }
 
+    public StudentAccount getStudentAccount() {
+        return studentAccount;
+    }
+
+    public void setStudentAccount(StudentAccount studentAccount) {
+        this.studentAccount = studentAccount;
+    }
+
     @Override
     public String toString() {
         return "Review{" +
@@ -73,7 +83,7 @@ public class Review {
                 ", comment='" + comment + '\'' +
                 ", dateTime=" + dateTime +
                 ", tutoringOffer=" + tutoringOffer +
-                ", studentAccount="+// studentAccount +
+                ", studentAccount="+ studentAccount +
                 '}';
     }
 }

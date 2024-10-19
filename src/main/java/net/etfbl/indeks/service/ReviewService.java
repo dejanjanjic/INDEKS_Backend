@@ -1,10 +1,20 @@
 package net.etfbl.indeks.service;
 
-import net.etfbl.indeks.model.Review;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
+import net.etfbl.indeks.dto.AddReviewDTO;
+import net.etfbl.indeks.dto.UpdateReviewDTO;
+import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.ReviewRepository;
+import net.etfbl.indeks.repository.StudentAccountRepository;
+import net.etfbl.indeks.repository.TutoringOfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +36,33 @@ public class ReviewService
         return reviewRepository.findById(id);
     }
 
-    public Review addNewReview(Review review) {
-       reviewRepository.save(review);
-       return  review;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
+    public Review addNewReview(AddReviewDTO addReviewDTO)
+    {
+        TutoringOffer tutoringOffer = entityManager.find(TutoringOffer.class, addReviewDTO.getTutoringOfferId());
+        if (tutoringOffer == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutoring Offer not found");
+        }
+
+        StudentAccount studentAccount = entityManager.find(StudentAccount.class, addReviewDTO.getStudentAccountId());
+        if (studentAccount == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student Account not found");
+        }
+
+        Review newReview = new Review(
+                addReviewDTO.getComment(),
+                addReviewDTO.getDateTime(),
+                tutoringOffer,
+                studentAccount
+        );
+
+        entityManager.persist(newReview);
+
+        return newReview;
     }
 
     public boolean deleteReview(Long id) {
@@ -42,14 +76,20 @@ public class ReviewService
 
 
     @Transactional
-    public boolean updateReview(Review review) {
-        Optional<Review> temp = reviewRepository.findById(review.getId());
-        if(temp.isEmpty()){
+    public boolean updateReview(UpdateReviewDTO updateReviewDTO) {
+        Optional<Review> temp = reviewRepository.findById(updateReviewDTO.getId());
+
+        if (temp.isEmpty()) {
             return false;
         }
-        temp.get().setComment(review.getComment());
-        temp.get().setDateTime(review.getDateTime());
-        temp.get().setTutoringOffer(review.getTutoringOffer());
+
+        Review existingReview = temp.get();
+        existingReview.setComment(updateReviewDTO.getComment());
+        existingReview.setDateTime(updateReviewDTO.getDateTime());
+
+        reviewRepository.save(existingReview);
+
         return true;
     }
+
 }

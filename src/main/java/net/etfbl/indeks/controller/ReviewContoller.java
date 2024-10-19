@@ -1,8 +1,13 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
+import net.etfbl.indeks.dto.AddReviewDTO;
+import net.etfbl.indeks.dto.UpdateReviewDTO;
+import net.etfbl.indeks.model.PrivateGroupChat;
 import net.etfbl.indeks.model.Review;
 import net.etfbl.indeks.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +42,8 @@ public class ReviewContoller
     }
 
     @PostMapping
-    public ResponseEntity<Review> registerNewReview(@RequestBody Review review){
-        Review temp = reviewService.addNewReview(review);
+    public ResponseEntity<Review> registerNewReview(@RequestBody AddReviewDTO addReviewDTO){
+        Review temp = reviewService.addNewReview(addReviewDTO);
         if(temp != null){
             return ResponseEntity.ok(temp);
         }else{
@@ -57,8 +62,8 @@ public class ReviewContoller
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateReview(@RequestBody Review review){
-        boolean updated = reviewService.updateReview(review);
+    public ResponseEntity<Void> updateReview(@RequestBody UpdateReviewDTO updateReviewDTO){
+        boolean updated = reviewService.updateReview(updateReviewDTO);
         if(updated){
             return ResponseEntity.noContent().build();
         }else{

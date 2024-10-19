@@ -1,6 +1,9 @@
 package net.etfbl.indeks.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table
@@ -16,6 +19,10 @@ public class StudentAccount {
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
+
+    @OneToMany(mappedBy = "studentAccount" , cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Review> reviews;
 
     public Schedule getSchedule() {
         return schedule;
