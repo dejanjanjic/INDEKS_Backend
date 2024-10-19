@@ -21,7 +21,9 @@ public class Schedule {
         this.id = id;
         this.content = content;
     }
-
+    public Schedule( String content) {
+        this.content = content;
+    }
     public Schedule(Long id) {
         this.id = id;
     }

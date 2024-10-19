@@ -1,5 +1,6 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddUserAccountDTO;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.model.StudentAccount;
 import net.etfbl.indeks.service.StudentAccountService;
@@ -38,7 +39,7 @@ public class StudentAccountController {
     }
 
     @PostMapping
-    public ResponseEntity<StudentAccount> registerNewStudentAccount(@RequestBody StudentAccount studentAccount) {
+    public ResponseEntity<StudentAccount> registerNewStudentAccount(@RequestBody AddUserAccountDTO studentAccount) {
         StudentAccount newAccount = studentAccountService.addNewStudentAccount(studentAccount);
         if (newAccount != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(newAccount);
@@ -55,13 +56,5 @@ public class StudentAccountController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PutMapping
-    public ResponseEntity<Void> updateStudentAccount(@RequestBody StudentAccount studentAccount) {
-        boolean updated = studentAccountService.updateStudentAccount(studentAccount);
-        if (updated) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 }

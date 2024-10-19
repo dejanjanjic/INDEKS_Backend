@@ -8,13 +8,12 @@ public class StudentAccount {
     @Id
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name="id")
     private UserAccount userAccount;
 
-    @OneToOne
-    @MapsId
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
 
@@ -34,7 +33,11 @@ public class StudentAccount {
         this.userAccount = userAccount;
         //this.id = userAccount.getAccountId();
     }
-
+    public StudentAccount(UserAccount userAccount,Schedule sch){
+        this.userAccount = userAccount;
+        this.schedule=sch;
+        //this.id = userAccount.getAccountId();
+    }
     public UserAccount getUserAccount(){ return userAccount;}
 
     public void setUserAccount(UserAccount userAccount){
