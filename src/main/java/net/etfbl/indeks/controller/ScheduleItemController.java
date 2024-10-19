@@ -1,5 +1,7 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddScheduleItemDTO;
+import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.ScheduleItem;
 import net.etfbl.indeks.service.ScheduleItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +39,11 @@ public class ScheduleItemController {
     }
 
     @PostMapping
-    public void addScheduleItem(@RequestBody ScheduleItem scheduleItem) {
-        scheduleItemService.addNewScheduleItem(scheduleItem);
+    public ResponseEntity<ScheduleItem> addScheduleItem(@RequestBody AddScheduleItemDTO addScheduleItemDTO) {
+        scheduleItemService.addNewScheduleItem(addScheduleItemDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 
     @DeleteMapping(path = "{scheduleItemId}")
     public ResponseEntity<Void> deleteScheduleItem(@PathVariable("scheduleItemId") Long scheduleItemId) {
@@ -51,9 +55,9 @@ public class ScheduleItemController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateScheduleItem(@RequestBody ScheduleItem scheduleItem) {
-        boolean updated = scheduleItemService.updateScheduleItem(scheduleItem.getId(), scheduleItem.getDay(), scheduleItem.getTime());
+    @PutMapping(path = "{scheduleItemId}")
+    public ResponseEntity<Void> updateScheduleItem(@PathVariable("scheduleItemId") Long scheduleItemId, @RequestBody AddScheduleItemDTO addScheduleItemDTO) {
+        boolean updated = scheduleItemService.updateScheduleItem(scheduleItemId, addScheduleItemDTO);
         if (updated) {
             return ResponseEntity.noContent().build();
         } else {

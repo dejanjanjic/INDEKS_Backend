@@ -9,20 +9,20 @@ public class ScheduleItem {
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
-    @JoinColumn(name = "id")
     private Long id;
     private int day;
-    private Long scheduleId;
     private String time;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "scheduleId")
+    private Schedule schedule;
 
-    public ScheduleItem() {
-    }
+    public ScheduleItem() {}
 
-    public ScheduleItem(Long id, int day, String time, Long scheduleId) {
+    public ScheduleItem(Long id, int day, String time,Schedule schedule) {
         this.id = id;
         this.day = day;
         this.time = time;
-        this.scheduleId = scheduleId;
+        this.schedule = schedule;
     }
 
     public Long getId() {
@@ -41,19 +41,13 @@ public class ScheduleItem {
         this.day = day;
     }
 
-    public Long getScheduleId() {
-        return scheduleId;
-    }
-
-    public void setScheduleId(Long scheduleId) {
-        this.scheduleId = scheduleId;
-    }
-
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
+    public void setTime(String time) { this.time = time;}
+
+    public void setSchedule(Schedule schedule) {this.schedule = schedule;}
+
+    public Schedule getSchedule() {return schedule;}
 }

@@ -2,6 +2,9 @@ package net.etfbl.indeks.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table
 public class Schedule {
@@ -19,8 +22,8 @@ public class Schedule {
         this.content = content;
     }
 
-    public Schedule(String content) {
-        this.content = content;
+    public Schedule(Long id) {
+        this.id = id;
     }
 
     public Long getId() {

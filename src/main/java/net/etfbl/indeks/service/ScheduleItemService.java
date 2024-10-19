@@ -1,5 +1,6 @@
 package net.etfbl.indeks.service;
 
+import net.etfbl.indeks.dto.AddScheduleItemDTO;
 import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.ScheduleItem;
 import net.etfbl.indeks.repository.ScheduleItemRepository;
@@ -42,23 +43,30 @@ public class ScheduleItemService {
         return true;
     }
 
-    public void addNewScheduleItem(ScheduleItem scheduleItem) {
-        Optional<Schedule> schedule = scheduleRepository.findById(scheduleItem.getScheduleId());
+    public void addNewScheduleItem(AddScheduleItemDTO addScheduleItemDTO) {
+        ScheduleItem scheduleItem = new ScheduleItem();
+        scheduleItem.setDay(addScheduleItemDTO.getDay());
+        scheduleItem.setTime(addScheduleItemDTO.getTime());
+
+        Optional<Schedule> schedule = scheduleRepository.findById(addScheduleItemDTO.getScheduleId());
         if (schedule.isPresent()) {
+            scheduleItem.setSchedule(schedule.get());
             scheduleItemRepository.save(scheduleItem);
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Schedule with ID " + scheduleItem.getScheduleId() + " not found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Schedule with ID " + addScheduleItemDTO.getScheduleId() + " not found");
         }
     }
 
     @Transactional
-    public boolean updateScheduleItem(Long scheduleItemId, int day, String time) {
-        Optional<ScheduleItem> scheduleItem = scheduleItemRepository.findById(scheduleItemId);
-        if (scheduleItem.isEmpty()) {
+    public boolean updateScheduleItem(Long scheduleItemId, AddScheduleItemDTO addScheduleItemDTO) {
+        Optional<ScheduleItem> scheduleItemOptional = scheduleItemRepository.findById(scheduleItemId);
+        if (scheduleItemOptional.isEmpty()) {
             return false;
         }
-        scheduleItem.get().setDay(day);
-        scheduleItem.get().setTime(time);
+        ScheduleItem scheduleItem = scheduleItemOptional.get();
+        scheduleItem.setDay(addScheduleItemDTO.getDay());
+        scheduleItem.setTime(addScheduleItemDTO.getTime());
+        scheduleItem.setSchedule(new Schedule(addScheduleItemDTO.getScheduleId())); // samo ako je potrebno
         return true;
     }
 
