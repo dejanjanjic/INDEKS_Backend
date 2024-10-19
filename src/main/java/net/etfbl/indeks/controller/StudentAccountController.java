@@ -36,4 +36,32 @@ public class StudentAccountController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping
+    public ResponseEntity<StudentAccount> registerNewStudentAccount(@RequestBody StudentAccount studentAccount) {
+        StudentAccount newAccount = studentAccountService.addNewStudentAccount(studentAccount);
+        if (newAccount != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(newAccount);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+    @DeleteMapping(path = "{accountId}")
+    public ResponseEntity<Void> deleteStudentAccount(@PathVariable("accountId") Long accountId) {
+        boolean deleted = studentAccountService.deleteStudentAccount(accountId);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping
+    public ResponseEntity<Void> updateStudentAccount(@RequestBody StudentAccount studentAccount) {
+        boolean updated = studentAccountService.updateStudentAccount(studentAccount);
+        if (updated) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
