@@ -32,14 +32,14 @@ public class StudentAccount {
 
     public StudentAccount(UserAccount userAccount){
         this.userAccount = userAccount;
-        this.id = userAccount.getAccountId();
+        //this.id = userAccount.getAccountId();
     }
 
     public UserAccount getUserAccount(){ return userAccount;}
 
     public void setUserAccount(UserAccount userAccount){
         this.userAccount = userAccount;
-        this.id = userAccount.getAccountId();
+        //this.id = userAccount.getAccountId();
     }
 
     public Long getId(){ return id;}
