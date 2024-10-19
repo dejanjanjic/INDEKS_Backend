@@ -15,11 +15,11 @@ public class Message {
     private String text;
     private LocalDateTime time;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "single_chat_id", referencedColumnName = "id")
     private SingleChat singleChat;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "group_chat_id", referencedColumnName = "id")
     private GroupChat groupChat;
 
