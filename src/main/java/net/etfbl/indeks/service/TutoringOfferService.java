@@ -1,10 +1,18 @@
 package net.etfbl.indeks.service;
 
+import jakarta.persistence.EntityManager;
+import net.etfbl.indeks.dto.AddTutoringOfferDTO;
+import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
+import net.etfbl.indeks.model.Review;
+import net.etfbl.indeks.model.Subject;
+import net.etfbl.indeks.model.TutorAccount;
 import net.etfbl.indeks.model.TutoringOffer;
 import net.etfbl.indeks.repository.TutoringOfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +20,8 @@ import java.util.Optional;
 @Service
 public class TutoringOfferService
 {
+    @Autowired
+    private EntityManager entityManager;
     private final TutoringOfferRepository tutoringOfferRepository;
 
     @Autowired
@@ -27,9 +37,27 @@ public class TutoringOfferService
     }
 
 
-    public TutoringOffer addNewTutoringOffer(TutoringOffer tutoringOffer) {
-        tutoringOfferRepository.save(tutoringOffer);
-        return tutoringOffer;
+    @Transactional
+    public TutoringOffer addNewTutoringOffer(AddTutoringOfferDTO addTutoringOfferDTO) {
+        Subject subject = entityManager.find(Subject.class, addTutoringOfferDTO.getSubjectId());
+        if (subject == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
+        }
+
+        TutorAccount tutorAccount = entityManager.find(TutorAccount.class, addTutoringOfferDTO.getTutorAccountId());
+        if (tutorAccount == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor Account not found");
+        }
+
+        TutoringOffer newTutoringOffer = new TutoringOffer(
+                addTutoringOfferDTO.getDescription(),
+                subject,
+                tutorAccount
+        );
+
+        entityManager.persist(newTutoringOffer);
+
+        return newTutoringOffer;
     }
 
 
@@ -44,12 +72,19 @@ public class TutoringOfferService
 
 
     @Transactional
-    public boolean updateTutoringOffer(TutoringOffer tutoringOffer) {
-        Optional<TutoringOffer> temp = tutoringOfferRepository.findById(tutoringOffer.getId());
-        if(temp.isEmpty()){
+    public boolean updateTutoringOffer(UpdateTutoringOfferDTO updateTutoringOfferDTO) {
+        Optional<TutoringOffer> temp = tutoringOfferRepository.findById(updateTutoringOfferDTO.getId());
+
+        if (temp.isEmpty()) {
             return false;
         }
-        temp.get().setDescription(tutoringOffer.getDescription());
+
+        TutoringOffer existingTutoringOffer = temp.get();
+        existingTutoringOffer.setDescription(updateTutoringOfferDTO.getDescription());
+        tutoringOfferRepository.save(existingTutoringOffer);
+
+
         return true;
     }
+
 }

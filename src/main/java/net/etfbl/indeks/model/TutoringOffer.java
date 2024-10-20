@@ -19,11 +19,13 @@ public class TutoringOffer {
 
     @ManyToOne
     @JoinColumn(name = "subjectId")
+    @JsonBackReference
     private Subject subject;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id")
-//    private InstructorAccount instructorAccount;
+    @ManyToOne
+    @JoinColumn(name = "tutorAccountId")
+    @JsonBackReference
+    private TutorAccount tutorAccount;
 
     @OneToMany(mappedBy = "tutoringOffer" , cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -32,10 +34,10 @@ public class TutoringOffer {
 
     public TutoringOffer() {}
 
-    public TutoringOffer(String description, Subject subject) {
+    public TutoringOffer(String description, Subject subject, TutorAccount tutorAccount) {
         this.description = description;
         this.subject = subject;
-        //this.instructorAccount = instructorAccount;
+        this.tutorAccount = tutorAccount;
     }
 
     public Long getId() {
@@ -70,13 +72,21 @@ public class TutoringOffer {
         this.reviews = reviews;
     }
 
+    public TutorAccount getTutorAccount() {
+        return tutorAccount;
+    }
+
+    public void setTutorAccount(TutorAccount tutorAccount) {
+        this.tutorAccount = tutorAccount;
+    }
+
     @Override
     public String toString() {
         return "TutoringOffer{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", subject=" + subject +
-                ", instructorAccount=" + //instructorAccount +
+                ", tutorAccount=" + tutorAccount +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddTutoringOfferDTO;
+import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
 import net.etfbl.indeks.model.TutoringOffer;
 import net.etfbl.indeks.service.TutoringOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +39,8 @@ public class TutoringOfferController
     }
 
     @PostMapping
-    public ResponseEntity<TutoringOffer> registerNewTutoringOffer(@RequestBody TutoringOffer tutoringOffer){
-        TutoringOffer temp = tutoringOfferService.addNewTutoringOffer(tutoringOffer);
+    public ResponseEntity<TutoringOffer> registerNewTutoringOffer(@RequestBody AddTutoringOfferDTO addTutoringOfferDTO){
+        TutoringOffer temp = tutoringOfferService.addNewTutoringOffer(addTutoringOfferDTO);
         if(temp != null){
             return ResponseEntity.ok(temp);
         }else{
@@ -57,8 +59,8 @@ public class TutoringOfferController
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateTutoringOffer(@RequestBody TutoringOffer tutoringOffer){
-        boolean updated = tutoringOfferService.updateTutoringOffer(tutoringOffer);
+    public ResponseEntity<Void> updateTutoringOffer(@RequestBody UpdateTutoringOfferDTO updateTutoringOfferDTO){
+        boolean updated = tutoringOfferService.updateTutoringOffer(updateTutoringOfferDTO);
         if(updated){
             return ResponseEntity.noContent().build();
         }else{

@@ -1,5 +1,6 @@
 package net.etfbl.indeks.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,7 +16,8 @@ public class TutorAccount {
     @JoinColumn(name="id")
     private UserAccount userAccount;
 
-    @OneToMany
+    @OneToMany(mappedBy = "tutorAccount")
+    @JsonManagedReference
     private List<TutoringOffer> tutoringOffers;
 
     public TutorAccount(){

@@ -1,6 +1,9 @@
 package net.etfbl.indeks.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table
@@ -12,8 +15,9 @@ public class Subject {
 
     private String name;
 
-//    @OneToMany(mappedBy = "subject")
-//    private List<TutoringOffer> tutoringOffers;
+    @OneToMany(mappedBy = "subject")
+    @JsonManagedReference
+    private List<TutoringOffer> tutoringOffers;
 
     public Subject() {}
 
@@ -21,13 +25,13 @@ public class Subject {
         this.name = name;
     }
 
-//    public List<TutoringOffer> getTutoringOffers() {
-//        return tutoringOffers;
-//    }
-//
-//    public void setTutoringOffers(List<TutoringOffer> tutoringOffers) {
-//        this.tutoringOffers = tutoringOffers;
-//    }
+    public List<TutoringOffer> getTutoringOffers() {
+        return tutoringOffers;
+    }
+
+    public void setTutoringOffers(List<TutoringOffer> tutoringOffers) {
+        this.tutoringOffers = tutoringOffers;
+    }
 
     public Long getId() {
         return id;
