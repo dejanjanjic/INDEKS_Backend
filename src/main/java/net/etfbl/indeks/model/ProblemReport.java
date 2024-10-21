@@ -13,7 +13,7 @@ public class ProblemReport {
 
     private String reason;
     private LocalDateTime time;
-    private int type;
+    private Integer type;
 
 //    @ManyToOne
 //    @JoinColumn(name="id")
@@ -74,11 +74,11 @@ public class ProblemReport {
         this.time = time;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

@@ -1,21 +1,18 @@
 package net.etfbl.indeks.dto;
 
-import java.time.LocalDateTime;
+public class UpdateProblemReportDTO {
 
-public class AddProblemReportDTO {
     private Long id;
     private String reason;
-    private LocalDateTime time;
     private Integer type;
 
-    public AddProblemReportDTO() {
+    public UpdateProblemReportDTO() {
 
     }
 
-    public AddProblemReportDTO(Long id, String reason, LocalDateTime time, Integer type) {
+    public UpdateProblemReportDTO(Long id, String reason, Integer type) {
         this.id = id;
         this.reason = reason;
-        this.time = time;
         this.type = type;
     }
 
@@ -33,14 +30,6 @@ public class AddProblemReportDTO {
 
     public void setReason(String reason) {
         this.reason = reason;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
     }
 
     public Integer getType() {
