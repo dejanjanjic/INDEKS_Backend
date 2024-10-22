@@ -24,6 +24,10 @@ public class StudentAccount {
     @JsonManagedReference
     private List<Review> reviews;
 
+    @OneToOne(mappedBy = "studentAccount", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private StudentAnnouncementVisibility studentAnnouncementVisibility;
+
     public Schedule getSchedule() {
         return schedule;
     }
@@ -53,4 +57,12 @@ public class StudentAccount {
     }
 
     public Long getId(){ return id;}
+
+    public StudentAnnouncementVisibility getStudentAnnouncementVisibility() {
+        return studentAnnouncementVisibility;
+    }
+
+    public void setStudentAnnouncementVisibility(StudentAnnouncementVisibility studentAnnouncementVisibility) {
+        this.studentAnnouncementVisibility = studentAnnouncementVisibility;
+    }
 }
