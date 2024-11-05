@@ -1,4 +1,4 @@
-package net.etfbl.indeks.model;
+package net.etfbl.indeks.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

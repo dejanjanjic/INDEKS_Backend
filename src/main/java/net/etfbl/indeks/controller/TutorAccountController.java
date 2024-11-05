@@ -1,7 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
-import net.etfbl.indeks.model.Encryption;
+import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.TutorAccount;
 import net.etfbl.indeks.service.TutorAccountService;
 import org.springframework.beans.factory.annotation.Autowired;

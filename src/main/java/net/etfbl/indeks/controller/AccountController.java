@@ -1,7 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.model.Account;
-import net.etfbl.indeks.model.Encryption;
+import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
