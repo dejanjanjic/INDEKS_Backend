@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.model.Schedule;
+import net.etfbl.indeks.model.ScheduleItem;
 import net.etfbl.indeks.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,12 @@ public class ScheduleController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{scheduleId}/items")
+    public ResponseEntity<List<ScheduleItem>> getScheduleItems(@PathVariable Long scheduleId) {
+        List<ScheduleItem> scheduleItems = scheduleService.getScheduleItems(scheduleId);
+        return new ResponseEntity<>(scheduleItems, HttpStatus.OK);
     }
 
 //    @PutMapping

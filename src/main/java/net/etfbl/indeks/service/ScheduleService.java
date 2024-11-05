@@ -1,6 +1,9 @@
 package net.etfbl.indeks.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.model.Schedule;
+import net.etfbl.indeks.model.ScheduleItem;
 import net.etfbl.indeks.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,9 @@ import java.util.Optional;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public ScheduleService(ScheduleRepository scheduleRepository) {
@@ -37,6 +43,14 @@ public class ScheduleService {
         }
         scheduleRepository.deleteById(id);
         return true;
+    }
+
+    public List<ScheduleItem> getScheduleItems(Long scheduleId) {
+
+        return entityManager.createQuery(
+                "SELECT si FROM ScheduleItem si WHERE si.schedule.id = :scheduleId", ScheduleItem.class)
+                .setParameter("scheduleId", scheduleId)
+                .getResultList();
     }
 
 //    @Transactional

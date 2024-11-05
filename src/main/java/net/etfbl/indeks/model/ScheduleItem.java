@@ -1,5 +1,6 @@
 package net.etfbl.indeks.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class ScheduleItem {
     private String time;
     @ManyToOne(optional = false)
     @JoinColumn(name = "scheduleId")
+    @JsonBackReference
     private Schedule schedule;
 
     private String content;

@@ -1,5 +1,6 @@
 package net.etfbl.indeks.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,6 +15,9 @@ public class Schedule {
     )
     private Long id;
 
+    @OneToMany(mappedBy = "schedule")
+    @JsonManagedReference
+    private List<ScheduleItem> scheduleItems;
     public Schedule() {}
 
     public Schedule(Long id) {
@@ -31,4 +35,11 @@ public class Schedule {
         this.id = id;
     }
 
+    public List<ScheduleItem> getScheduleItems() {
+        return scheduleItems;
+    }
+
+    public void setScheduleItems(List<ScheduleItem> scheduleItems) {
+        this.scheduleItems = scheduleItems;
+    }
 }
