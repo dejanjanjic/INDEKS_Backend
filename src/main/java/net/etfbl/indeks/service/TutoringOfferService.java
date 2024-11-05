@@ -87,4 +87,22 @@ public class TutoringOfferService
         return true;
     }
 
+    public Double getAverageRatingForTutoringOffer(Long tutoringOfferId) {
+        TutoringOffer tutoringOffer = tutoringOfferRepository.findById(tutoringOfferId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutoring Offer not found"));
+
+        List<Review> reviews = tutoringOffer.getReviews();
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+
+        double averageRating = reviews.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        return averageRating;
+    }
+
+
 }

@@ -67,4 +67,11 @@ public class TutoringOfferController
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/{id}/averageRating")
+    public ResponseEntity<Double> getAverageRatingForTutoringOffer(@PathVariable Long id) {
+        Double averageRating = tutoringOfferService.getAverageRatingForTutoringOffer(id);
+        return ResponseEntity.ok(averageRating);
+    }
+
 }
