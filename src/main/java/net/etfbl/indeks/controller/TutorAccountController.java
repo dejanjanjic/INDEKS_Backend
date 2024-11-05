@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.model.Encryption;
 import net.etfbl.indeks.model.TutorAccount;
 import net.etfbl.indeks.service.TutorAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class TutorAccountController {
 
     private final TutorAccountService tutorAccountService;
+    private Encryption encryption = new Encryption();
 
     @Autowired
     public TutorAccountController(TutorAccountService tutorAccountService) {
@@ -39,6 +41,7 @@ public class TutorAccountController {
 
     @PostMapping
     public ResponseEntity<TutorAccount> registerNewTutorAccount(@RequestBody AddUserAccountDTO addUserAccountDTO) {
+        addUserAccountDTO.setPassword(encryption.encryptPassword(addUserAccountDTO.getPassword()));
         TutorAccount newAccount = tutorAccountService.addNewTutorAccount(addUserAccountDTO);
         if (newAccount != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(newAccount);

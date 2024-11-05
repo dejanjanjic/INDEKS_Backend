@@ -1,7 +1,6 @@
 package net.etfbl.indeks.model;
 
 import jakarta.persistence.*;
-
 @Entity
 @Table
 public class Account {

@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.model.Account;
+import net.etfbl.indeks.model.Encryption;
 import net.etfbl.indeks.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @RequestMapping(path = "api/v1/account")
 public class AccountController {
     private final AccountService accountService;
+    private Encryption encryption = new Encryption();
 
     @Autowired
     public AccountController(AccountService accountService){
@@ -37,6 +39,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<Account> registerNewAccount(@RequestBody Account account){
+        account.setPassword(encryption.encryptPassword(account.getPassword()));
         Account temp = accountService.addNewAccount(account);
         if(temp != null){
             return ResponseEntity.ok(temp);
@@ -57,6 +60,7 @@ public class AccountController {
 
     @PutMapping
     public ResponseEntity<Void> updateAccount(@RequestBody Account account){
+        account.setPassword(encryption.encryptPassword(account.getPassword()));
         boolean updated = accountService.updateAccount(account);
         if(updated){
             return ResponseEntity.noContent().build();

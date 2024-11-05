@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.model.Encryption;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequestMapping(path = "api/v1/userAccount")
 public class UserAccountController {
     private final UserAccountService userAccountService;
+    private Encryption encryption = new Encryption();
 
     @Autowired
     public UserAccountController(UserAccountService userAccountService){
@@ -38,6 +40,7 @@ public class UserAccountController {
 
     @PostMapping
     public ResponseEntity<UserAccount> registerNewUserAccount(@RequestBody AddUserAccountDTO addUserAccountDTO){
+        addUserAccountDTO.setPassword(encryption.encryptPassword(addUserAccountDTO.getPassword()));
         UserAccount temp = userAccountService.addNewUserAccount(addUserAccountDTO);
         if(temp != null){
             return ResponseEntity.ok(temp);
