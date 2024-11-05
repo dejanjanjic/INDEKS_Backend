@@ -5,6 +5,7 @@ import net.etfbl.indeks.service.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,11 @@ public class AnnouncementController {
 
     @GetMapping("/year/{year}")
     public List<Announcement> getAnnouncementsByYear(@PathVariable int year) {
-        return announcementService.getAnnouncementsByYear(year);
+        return announcementService.getAnnouncementsByYear(year)
+                .stream()
+                .sorted(Comparator.comparing(Announcement::getId).reversed())
+                .toList();
     }
+
 
 }
