@@ -9,14 +9,16 @@ public class AddReviewDTO
     private LocalDateTime dateTime;
     private Long tutoringOfferId;
     private Long studentAccountId;
+    private double rating;
 
     public AddReviewDTO() {}
 
-    public AddReviewDTO( String comment, LocalDateTime dateTime, Long tutoringOfferId, Long studentAccountId) {
+    public AddReviewDTO( String comment, LocalDateTime dateTime, Long tutoringOfferId, Long studentAccountId,double rating) {
         this.comment = comment;
         this.dateTime = dateTime;
         this.tutoringOfferId = tutoringOfferId;
         this.studentAccountId = studentAccountId;
+        this.rating = rating;
     }
 
 
@@ -51,5 +53,13 @@ public class AddReviewDTO
 
     public void setStudentAccountId(Long studentAccountId) {
         this.studentAccountId = studentAccountId;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 }

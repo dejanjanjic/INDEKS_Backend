@@ -16,6 +16,8 @@ public class Review {
     private String comment;
     private LocalDateTime dateTime;
 
+    private double rating;
+
     @ManyToOne
     @JoinColumn(name = "tutoringOfferId")
     @JsonBackReference
@@ -29,11 +31,12 @@ public class Review {
 
     public Review() {}
 
-    public Review(String comment, LocalDateTime dateTime, TutoringOffer tutoringOffer,StudentAccount studentAccount) {
+    public Review(String comment, LocalDateTime dateTime, TutoringOffer tutoringOffer,StudentAccount studentAccount,double rating) {
         this.comment = comment;
         this.dateTime = dateTime;
         this.tutoringOffer = tutoringOffer;
         this.studentAccount = studentAccount;
+        this.rating = rating;
     }
 
     public Long getId() {
@@ -74,6 +77,14 @@ public class Review {
 
     public void setStudentAccount(StudentAccount studentAccount) {
         this.studentAccount = studentAccount;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     @Override

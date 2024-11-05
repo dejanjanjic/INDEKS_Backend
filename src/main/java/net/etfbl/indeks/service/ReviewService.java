@@ -57,7 +57,8 @@ public class ReviewService
                 addReviewDTO.getComment(),
                 addReviewDTO.getDateTime(),
                 tutoringOffer,
-                studentAccount
+                studentAccount,
+                addReviewDTO.getRating()
         );
 
         entityManager.persist(newReview);
@@ -86,6 +87,7 @@ public class ReviewService
         Review existingReview = temp.get();
         existingReview.setComment(updateReviewDTO.getComment());
         existingReview.setDateTime(updateReviewDTO.getDateTime());
+        existingReview.setRating(updateReviewDTO.getRating());
 
         reviewRepository.save(existingReview);
 

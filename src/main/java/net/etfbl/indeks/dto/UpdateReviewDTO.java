@@ -8,12 +8,14 @@ public class UpdateReviewDTO {
     private String comment;
     private LocalDateTime dateTime;
 
+    private  double rating;
     public UpdateReviewDTO() {}
 
-    public UpdateReviewDTO(Long id, String comment, LocalDateTime dateTime) {
+    public UpdateReviewDTO(Long id, String comment, LocalDateTime dateTime,double rating) {
         this.id = id;
         this.comment = comment;
         this.dateTime = dateTime;
+        this.rating = rating;
     }
 
     public Long getId() {
@@ -38,5 +40,13 @@ public class UpdateReviewDTO {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 }
