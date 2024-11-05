@@ -52,13 +52,13 @@ public class ScheduleController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateSchedule(@RequestBody Schedule schedule) {
-        boolean updated = scheduleService.updateSchedule(schedule.getId(), schedule.getContent());
-        if (updated) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @PutMapping
+//    public ResponseEntity<Void> updateSchedule(@RequestBody Schedule schedule) {
+//        boolean updated = scheduleService.updateSchedule(schedule.getId(), schedule.getContent());
+//        if (updated) {
+//            return ResponseEntity.noContent().build();
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }

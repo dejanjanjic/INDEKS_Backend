@@ -16,13 +16,16 @@ public class ScheduleItem {
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
 
+    private String content;
+
     public ScheduleItem() {}
 
-    public ScheduleItem(Long id, int day, String time,Schedule schedule) {
-        this.id = id;
+    public ScheduleItem( int day, String time,Schedule schedule, String content)
+    {
         this.day = day;
         this.time = time;
         this.schedule = schedule;
+        this.content = content;
     }
 
     public Long getId() {
@@ -50,4 +53,12 @@ public class ScheduleItem {
     public void setSchedule(Schedule schedule) {this.schedule = schedule;}
 
     public Schedule getSchedule() {return schedule;}
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

@@ -39,13 +39,13 @@ public class ScheduleService {
         return true;
     }
 
-    @Transactional
-    public boolean updateSchedule(Long scheduleId, String content) {
-        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
-        if (schedule.isEmpty()) {
-            return false;
-        }
-        schedule.get().setContent(content);
-        return true;
-    }
+//    @Transactional
+//    public boolean updateSchedule(Long scheduleId, String content) {
+//        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+//        if (schedule.isEmpty()) {
+//            return false;
+//        }
+//        schedule.get().setContent(content);
+//        return true;
+//    }
 }

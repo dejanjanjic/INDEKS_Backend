@@ -1,27 +1,24 @@
 package net.etfbl.indeks.dto;
 
 public class AddScheduleItemDTO {
-    private Long id;
+
     private int day;
     private String time;
     private Long scheduleId;
 
+    private String content;
+
     public AddScheduleItemDTO() {}
 
-    public AddScheduleItemDTO(Long id, int day, String time, Long scheduleId) {
-        this.id = id;
+    public AddScheduleItemDTO(int day, String time, Long scheduleId,String content)
+    {
+
         this.day = day;
         this.time = time;
         this.scheduleId = scheduleId;
+        this.content = content;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public int getDay() {
         return day;
@@ -47,5 +44,11 @@ public class AddScheduleItemDTO {
         this.scheduleId = scheduleId;
     }
 
+    public String getContent() {
+        return content;
+    }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

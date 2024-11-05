@@ -13,19 +13,14 @@ public class Schedule {
             strategy = GenerationType.IDENTITY
     )
     private Long id;
-    private String content;
 
     public Schedule() {}
 
-    public Schedule(Long id, String content) {
-        this.id = id;
-        this.content = content;
-    }
-    public Schedule( String content) {
-        this.content = content;
-    }
     public Schedule(Long id) {
         this.id = id;
+    }
+    public Schedule( String content) {
+
     }
 
     public Long getId() {
@@ -36,11 +31,4 @@ public class Schedule {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

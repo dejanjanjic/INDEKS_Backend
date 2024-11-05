@@ -47,6 +47,7 @@ public class ScheduleItemService {
         ScheduleItem scheduleItem = new ScheduleItem();
         scheduleItem.setDay(addScheduleItemDTO.getDay());
         scheduleItem.setTime(addScheduleItemDTO.getTime());
+        scheduleItem.setContent(addScheduleItemDTO.getContent());
 
         Optional<Schedule> schedule = scheduleRepository.findById(addScheduleItemDTO.getScheduleId());
         if (schedule.isPresent()) {
@@ -66,7 +67,8 @@ public class ScheduleItemService {
         ScheduleItem scheduleItem = scheduleItemOptional.get();
         scheduleItem.setDay(addScheduleItemDTO.getDay());
         scheduleItem.setTime(addScheduleItemDTO.getTime());
-        scheduleItem.setSchedule(new Schedule(addScheduleItemDTO.getScheduleId())); // samo ako je potrebno
+        scheduleItem.setSchedule(new Schedule(addScheduleItemDTO.getScheduleId()));
+        scheduleItem.setContent(addScheduleItemDTO.getContent());
         return true;
     }
 
