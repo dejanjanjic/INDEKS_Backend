@@ -12,6 +12,8 @@ public class Account {
     private String email;
     private String password;
 
+    private String recoveryToken;
+
     public Account() {
     }
 
@@ -48,6 +50,14 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRecoveryToken() {
+        return recoveryToken;
+    }
+
+    public void setRecoveryToken(String recoveryToken) {
+        this.recoveryToken = recoveryToken;
     }
 
     @Override

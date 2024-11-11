@@ -13,6 +13,8 @@ public class UserAccount {
     private Boolean active;
     private Boolean suspended;
 
+    private String recoveryToken;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id")
     @MapsId
@@ -82,6 +84,14 @@ public class UserAccount {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public String getRecoveryToken() {
+        return recoveryToken;
+    }
+
+    public void setRecoveryToken(String recoveryToken) {
+        this.recoveryToken = recoveryToken;
     }
 
     @Override
