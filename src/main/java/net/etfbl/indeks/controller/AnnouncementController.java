@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/announcements")
+@RequestMapping("/api/v1/announcements")
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
