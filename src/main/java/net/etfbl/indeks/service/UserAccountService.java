@@ -2,7 +2,7 @@ package net.etfbl.indeks.service;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
 import net.etfbl.indeks.model.Account;
-import net.etfbl.indeks.model.Encryption;
+import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.AccountRepository;
 import net.etfbl.indeks.repository.UserAccountRepository;
