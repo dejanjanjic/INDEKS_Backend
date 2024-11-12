@@ -24,6 +24,9 @@ public class AccountService {
     public Optional<Account> getAccountById(Long accountId) {
         return accountRepository.findById(accountId);
     }
+    public Optional<Account> getAccountByEMail(String eMail) {
+        return accountRepository.findByEmail(eMail);
+    }
 
     public Account addNewAccount(Account account) {
         Optional<Account> accountByEmail = accountRepository.findByEmail(account.getEmail());
