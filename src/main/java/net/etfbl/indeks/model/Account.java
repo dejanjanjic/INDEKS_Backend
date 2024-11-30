@@ -19,7 +19,7 @@ public class Account {
     private String email;
     private String password;
 
-//    private String recoveryToken;
+    private String recoveryToken;
 
     public Account() {
     }
@@ -56,9 +56,9 @@ public class Account {
 //        return List.of();
 //    }
 //
-//    public String getPassword() {
-//        return password;
-//    }
+    public String getPassword() {
+        return password;
+    }
 //
 //    @Override
 //    public String getUsername() {
@@ -89,13 +89,13 @@ public class Account {
         this.password = password;
     }
 
-//    public String getRecoveryToken() {
-//        return recoveryToken;
-//    }
-//
-//    public void setRecoveryToken(String recoveryToken) {
-//        this.recoveryToken = recoveryToken;
-//    }
+    public String getRecoveryToken() {
+        return recoveryToken;
+    }
+
+    public void setRecoveryToken(String recoveryToken) {
+        this.recoveryToken = recoveryToken;
+    }
 
     @Override
     public String toString() {
