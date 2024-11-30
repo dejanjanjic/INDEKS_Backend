@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity
 @Table
-public class Account implements UserDetails {
+//public class Account implements UserDetails {
+public class Account {
     @Id
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
@@ -18,7 +19,7 @@ public class Account implements UserDetails {
     private String email;
     private String password;
 
-    private String recoveryToken;
+//    private String recoveryToken;
 
     public Account() {
     }
@@ -50,51 +51,51 @@ public class Account implements UserDetails {
         this.email = email;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return List.of();
+//    }
+//
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return email;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return true;
+//    }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getRecoveryToken() {
-        return recoveryToken;
-    }
-
-    public void setRecoveryToken(String recoveryToken) {
-        this.recoveryToken = recoveryToken;
-    }
+//    public String getRecoveryToken() {
+//        return recoveryToken;
+//    }
+//
+//    public void setRecoveryToken(String recoveryToken) {
+//        this.recoveryToken = recoveryToken;
+//    }
 
     @Override
     public String toString() {
