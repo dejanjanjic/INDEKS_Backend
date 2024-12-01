@@ -69,36 +69,36 @@ public class UserAccountController {
         }
     }
 
-    @PostMapping("/password-recovery")
-    public ResponseEntity<Void> sendPasswordRecoveryEmail(@RequestParam String email) {
-        boolean success = userAccountService.sendPasswordRecoveryEmail(email);
-        if (success) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @PostMapping("/password-recovery")
+//    public ResponseEntity<Void> sendPasswordRecoveryEmail(@RequestParam String email) {
+//        boolean success = userAccountService.sendPasswordRecoveryEmail(email);
+//        if (success) {
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
-    @PutMapping("/verify-token")
-    public ResponseEntity<Void> verifyToken(@RequestParam String email, @RequestParam String token) {
-
-        boolean tokenValid = userAccountService.verifyRecoveryToken(email, token);
-        if (tokenValid) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-    @PutMapping("/password-reset")
-    public ResponseEntity<Void> resetPassword(@RequestParam String email, @RequestParam String newPassword) {
-
-        boolean passwordUpdated = userAccountService.updatePassword(email, newPassword);
-        if (passwordUpdated) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+//    @PutMapping("/verify-token")
+//    public ResponseEntity<Void> verifyToken(@RequestParam String email, @RequestParam String token) {
+//
+//        boolean tokenValid = userAccountService.verifyRecoveryToken(email, token);
+//        if (tokenValid) {
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+//    @PutMapping("/password-reset")
+//    public ResponseEntity<Void> resetPassword(@RequestParam String email, @RequestParam String newPassword) {
+//
+//        boolean passwordUpdated = userAccountService.updatePassword(email, newPassword);
+//        if (passwordUpdated) {
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 
 
 }
