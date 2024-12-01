@@ -2,6 +2,7 @@ package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
 import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
+import net.etfbl.indeks.dto.GetMessageDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.PrivateGroupChat;
 import net.etfbl.indeks.service.PrivateGroupChatService;
@@ -67,5 +68,11 @@ public class PrivateGroupChatController {
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/{chatId}/messages")
+    public ResponseEntity<List<GetMessageDTO>> getMessagesFromChat(@PathVariable Long chatId, @RequestParam Long userId) {
+        List<GetMessageDTO> messages = privateGroupChatService.getMessagesFromChat(chatId, userId);
+        return ResponseEntity.ok(messages);
     }
 }

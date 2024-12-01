@@ -1,9 +1,13 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddMessageDTO;
+import net.etfbl.indeks.dto.GetMessageDTO;
 import net.etfbl.indeks.model.Message;
+import net.etfbl.indeks.model.SingleChat;
 import net.etfbl.indeks.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +37,15 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<Message> addNewMessage(@RequestBody Message message) {
-        messageService.addNewMessage(message);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+    public ResponseEntity<Message> addNewMessage(@RequestBody AddMessageDTO addMessageDTO)
+    {
+
+        Message temp = messageService.addNewMessage(addMessageDTO);
+        if(temp != null){
+            return ResponseEntity.ok(temp);
+        }else{
+            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
+        }
     }
 
     @DeleteMapping(path = "{messageId}")
