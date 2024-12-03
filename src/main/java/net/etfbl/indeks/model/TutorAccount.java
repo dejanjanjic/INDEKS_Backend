@@ -26,16 +26,25 @@ public class TutorAccount {
 
     public TutorAccount(UserAccount userAccount){
         this.userAccount = userAccount;
-        //this.id = userAccount.getAccountId();
     }
-
 
     public UserAccount getUserAccount(){ return userAccount;}
 
     public void setUserAccount(UserAccount userAccount){
         this.userAccount = userAccount;
-        //this.id = userAccount.getAccountId();
     }
 
     public Long getId(){ return id;}
+
+    public List<TutoringOffer> getTutoringOffers() {
+        return tutoringOffers;
+    }
+
+    public void setTutoringOffers(List<TutoringOffer> tutoringOffers) {
+        this.tutoringOffers = tutoringOffers;
+    }
+
+    public void addTutoringOffer(TutoringOffer tutoringOffer) {
+        tutoringOffers.add(tutoringOffer);
+    }
 }

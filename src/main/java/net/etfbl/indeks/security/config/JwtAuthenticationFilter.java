@@ -41,23 +41,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+
         final String authHeader = request.getHeader("Authorization");
 
+        if (request.getServletPath().startsWith("/api/v1/auth")) { filterChain.doFilter(request, response); return; }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("Authorization header is missing or does not start with 'Bearer '");
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
             final String jwt = authHeader.substring(7);
-            final String userEmail = jwtService.extractUsername(jwt);
+            final String userEmail = jwtService.extractEmail(jwt);
+            System.out.println("Extracted email: " + userEmail);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                System.out.println("Loaded UserDetails: " + userDetails.getUsername());
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    System.out.println("Token is valid");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -67,11 +74,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
+            } else {
+                System.out.println("nije proslo rodjo|");
             }
+
+            System.out.println("proslo drugi");
 
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
+            exception.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
+
 }

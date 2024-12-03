@@ -24,7 +24,12 @@ public class ElementaryGroupChatController {
 
     @GetMapping
     public ResponseEntity<List<ElementaryGroupChat>> getElementaryGroupChats() {
+        System.out.println("test");
         List<ElementaryGroupChat> chats = elementaryGroupChatService.getElementaryGroupChats();
+        if(!chats.isEmpty())
+            System.out.println("dobar je");
+        else
+            System.out.println("nedobar je");
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 

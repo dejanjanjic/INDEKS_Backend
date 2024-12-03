@@ -2,7 +2,6 @@ package net.etfbl.indeks.security.dto;
 
 public class LoginAccountDTO {
     private String email;
-
     private String password;
 
     public LoginAccountDTO() {

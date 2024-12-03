@@ -38,6 +38,10 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -61,6 +65,7 @@ public class JwtService {
             long expiration
     ) {
 
+        System.out.println("userDetails username: " + userDetails.getUsername());
         Optional<Account> account = accountService.getAccountByEMail(userDetails.getUsername());
         account.ifPresent(value -> extraClaims.put("accountId", value.getId()));
 
@@ -100,4 +105,6 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }
