@@ -13,8 +13,7 @@ public class UserAccount {
     private Boolean active;
     private Boolean suspended;
 
-    @Transient
-    private String recoveryToken;
+    private transient String recoveryToken;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id")

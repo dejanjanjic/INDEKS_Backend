@@ -1,7 +1,6 @@
 package net.etfbl.indeks.dto;
 
 public class AddSingleChatDTO {
-
     private Long firstParticipantId;
     private Long secondParticipantId;
 
@@ -10,11 +9,9 @@ public class AddSingleChatDTO {
     }
 
     public AddSingleChatDTO(Long firstParticipantId, Long secondParticipantId) {
-
         this.firstParticipantId = firstParticipantId;
         this.secondParticipantId = secondParticipantId;
     }
-
 
     public Long getFirstParticipantId() {
         return firstParticipantId;

@@ -1,7 +1,8 @@
 package net.etfbl.indeks.security.dto;
 
 public class RegisterAccountDTO {
-    private Long id;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private String type;
@@ -10,19 +11,28 @@ public class RegisterAccountDTO {
 
     }
 
-    public RegisterAccountDTO(Long id, String email, String password, String type) {
-        this.id = id;
+    public RegisterAccountDTO(String firstName, String lastName, String email, String password, String type) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.type = type;
     }
 
-    public Long getId() {
-        return id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

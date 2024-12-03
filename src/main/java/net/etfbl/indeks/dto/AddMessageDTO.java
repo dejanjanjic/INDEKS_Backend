@@ -5,21 +5,19 @@ import net.etfbl.indeks.model.MessageStatus;
 import java.time.LocalDateTime;
 
 public class AddMessageDTO {
-
     private String text;
     private LocalDateTime time;
     private Long singleChatId;
     private Long groupChatId;
     private MessageStatus status;
-    private Long userAccountId;
+    private String userAccountId;
 
     public AddMessageDTO () {
 
     }
 
     public AddMessageDTO(String text, LocalDateTime time, Long singleChatId,
-                         Long groupChatId, MessageStatus status, Long userAccountId) {
-
+                         Long groupChatId, MessageStatus status, String userAccountId) {
         this.text = text;
         this.time = time;
         this.singleChatId = singleChatId;
@@ -27,8 +25,6 @@ public class AddMessageDTO {
         this.status = status;
         this.userAccountId = userAccountId;
     }
-
-
 
     public String getText() {
         return text;
@@ -70,11 +66,11 @@ public class AddMessageDTO {
         this.status = status;
     }
 
-    public Long getUserAccountId() {
+    public String getUserAccountId() {
         return userAccountId;
     }
 
-    public void setUserAccountId(Long userAccountId) {
+    public void setUserAccountId(String userAccountId) {
         this.userAccountId = userAccountId;
     }
 }
