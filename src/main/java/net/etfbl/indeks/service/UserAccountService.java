@@ -88,32 +88,22 @@ public class UserAccountService {
 
             Account account = accountOpt.get();
 
-            String recoveryToken =  UUID.randomUUID().toString().substring(0,8);
+            String newPassword =  UUID.randomUUID().toString().substring(0,8);
 
-            account.setRecoveryToken(recoveryToken);
+            String encryptedPassword = encryption.encryptPassword(newPassword);
+            account.setPassword(encryptedPassword);
 
             accountRepository.save(account);
 
             emailService.sendEmail(email, "Oporavka lozinke",
-                    "Unesite ovaj kod za oporavku u aplikaciji: " + recoveryToken);
+                    "Vaša nova lozinka je: " + newPassword+", možete ju promjeniti u aplikaciji.");
 
             return true;
         }
         return false;
     }
 
-    @Transactional
-    public boolean verifyRecoveryToken(String email, String token) {
-        Optional<Account> accountOpt = accountRepository.findByEmail(email);
-        if (accountOpt.isPresent()) {
-            Account account = accountOpt.get();
 
-            if (account.getRecoveryToken() != null && account.getRecoveryToken().equals(token)) {
-                return true;
-            }
-        }
-        return false;
-    }
     @Transactional
     public boolean updatePassword(String email, String newPassword) {
         Optional<Account> accountOpt = accountRepository.findByEmail(email);
