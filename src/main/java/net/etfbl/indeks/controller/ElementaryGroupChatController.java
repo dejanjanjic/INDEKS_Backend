@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
+import net.etfbl.indeks.dto.GetMessageDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.service.ElementaryGroupChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +65,11 @@ public class ElementaryGroupChatController {
         } else {
             return new ResponseEntity( HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/{chatId}/messages")
+    public ResponseEntity<List<GetMessageDTO>> getMessagesFromChat(@PathVariable Long chatId, @RequestParam Long userId) {
+        List<GetMessageDTO> messages = elementaryGroupChatService.getMessagesFromChat(chatId, userId);
+        return ResponseEntity.ok(messages);
     }
 }

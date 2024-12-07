@@ -11,11 +11,11 @@ public class SingleChat {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "first_participant_id", referencedColumnName = "id")
+    @JoinColumn(name ="firstParticipantId", referencedColumnName = "id")
     private UserAccount firstParticipant;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "second_participant_id", referencedColumnName = "id")
+    @JoinColumn(name = "secondParticipantId", referencedColumnName = "id")
     private UserAccount secondParticipant;
 
     public SingleChat() {

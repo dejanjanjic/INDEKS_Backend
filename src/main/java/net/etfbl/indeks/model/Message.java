@@ -16,17 +16,18 @@ public class Message {
     private LocalDateTime time;
 
     @ManyToOne
-    @JoinColumn(name = "single_chat_id", referencedColumnName = "id")
+    @JoinColumn(name = "singleChatId", referencedColumnName = "id")
     private SingleChat singleChat;
 
     @ManyToOne
-    @JoinColumn(name = "group_chat_id", referencedColumnName = "id")
+    @JoinColumn(name = "groupChatId", referencedColumnName = "id")
     private GroupChat groupChat;
 
+    @Enumerated(EnumType.STRING)
     private MessageStatus status;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_account_id", referencedColumnName = "id")
+    @JoinColumn(name = "senderId", referencedColumnName = "id")
     private UserAccount userAccount;
 
     public Message() {

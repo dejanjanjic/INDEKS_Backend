@@ -2,24 +2,34 @@ package net.etfbl.indeks.service;
 
 
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
-import net.etfbl.indeks.model.ElementaryGroupChat;
-import net.etfbl.indeks.model.GroupChat;
+import net.etfbl.indeks.dto.GetMessageDTO;
+import net.etfbl.indeks.model.*;
 
 import net.etfbl.indeks.repository.ElementaryGroupChatRepository;
 import net.etfbl.indeks.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ElementaryGroupChatService {
+
+    @Autowired
+    private EntityManager entityManager;
     private final ElementaryGroupChatRepository elementaryGroupChatRepository;
     private final GroupRepository groupRepository;
+
+
 
     @Autowired
     ElementaryGroupChatService(ElementaryGroupChatRepository elementaryGroupChatRepository,GroupRepository groupRepository) {
@@ -38,6 +48,39 @@ public class ElementaryGroupChatService {
     @Transactional
     public ElementaryGroupChat addNewElementaryGroupChat(AddElementaryGroupChatDTO group) {
         return elementaryGroupChatRepository.save(new ElementaryGroupChat(groupRepository.save(new GroupChat(group.getName()))));
+    }
+
+    @Transactional
+    public List<GetMessageDTO> getMessagesFromChat(Long chatId, Long userId) {
+
+
+        ElementaryGroupChat chat = entityManager.find(ElementaryGroupChat.class, chatId);
+        if (chat == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
+        }
+
+
+        UserAccount user = entityManager.find(UserAccount.class, userId);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+
+        String queryStr = "SELECT m FROM Message m WHERE m.groupChat.id = :chatId ORDER BY m.time ASC";
+        TypedQuery<Message> query = entityManager.createQuery(queryStr, Message.class);
+        query.setParameter("chatId", chatId);
+        List<Message> messages = query.getResultList();
+
+
+        return messages.stream().map(message -> {
+            boolean isSentByUser = message.getUserAccount().getId().equals(user.getId());
+            return new GetMessageDTO(
+                    String.valueOf(message.getId()),
+                    message.getText(),
+                    message.getTime(),
+                    isSentByUser
+            );
+        }).collect(Collectors.toList());
     }
 
     public boolean deleteGroup(Long groupId) {
