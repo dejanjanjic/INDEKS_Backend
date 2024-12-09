@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**") //TODO ONEMOGUCITI PUTANJE
+                .requestMatchers("/**") //TODO ONEMOGUCITI PUTANJE
                 .permitAll()
                 .anyRequest()
                 .authenticated()
