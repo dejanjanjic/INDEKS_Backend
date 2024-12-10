@@ -38,7 +38,10 @@ public class SecurityConfiguration {
                         "/api/v1/password-recovery",
                         "/api/v1/password-reset",
                         "/api/v1/auth/**",
-                        "/swagger-ui/index.html#/"
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**"
                 )
                 .permitAll()
                 .anyRequest()
