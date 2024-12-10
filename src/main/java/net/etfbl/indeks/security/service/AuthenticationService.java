@@ -18,6 +18,7 @@ public class AuthenticationService {
     private final AccountRepository accountRepository;
     private final StudentAccountRepository studentAccountRepository;
     private final TutorAccountRepository tutorAccountRepository;
+    private final AdminAccountRepository adminAccountRepository;
     private final ScheduleRepository scheduleRepository;
     private final StudentAnnouncementVisibilityRepository studentAnnouncementVisibilityRepository;
 
@@ -29,6 +30,7 @@ public class AuthenticationService {
             AccountRepository accountRepository,
             StudentAccountRepository studentAccountRepository,
             TutorAccountRepository tutorAccountRepository,
+            AdminAccountRepository adminAccountRepository,
             ScheduleRepository scheduleRepository,
             StudentAnnouncementVisibilityRepository studentAnnouncementVisibilityRepository,
             AuthenticationManager authenticationManager,
@@ -38,6 +40,7 @@ public class AuthenticationService {
         this.accountRepository = accountRepository;
         this.studentAccountRepository = studentAccountRepository;
         this.tutorAccountRepository = tutorAccountRepository;
+        this.adminAccountRepository = adminAccountRepository;
         this.scheduleRepository = scheduleRepository;
         this.studentAnnouncementVisibilityRepository = studentAnnouncementVisibilityRepository;
         this.passwordEncoder = passwordEncoder;
@@ -100,6 +103,8 @@ public class AuthenticationService {
                 System.out.println("WRONG USER TYPE FLAG!");
                 return RegistrationStatus.INVALID_FLAG;
             }
+
+
         }
 
         return RegistrationStatus.SUCCESS;
