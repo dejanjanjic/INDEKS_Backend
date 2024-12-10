@@ -65,6 +65,10 @@ public class AuthenticationService {
                 if (studentCheck.isPresent())
                     return RegistrationStatus.ACCOUNT_ALREADY_EXISTS;
 
+//                if(!"student.etf.unibl.org".equals(input.getEmail().split("@")[1])) {
+//                    return RegistrationStatus.INVALID_STUDENT_EMAIL;
+//                }
+
                 Schedule schedule = new Schedule();
                 scheduleRepository.save(schedule);
 

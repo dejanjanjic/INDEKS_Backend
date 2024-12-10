@@ -1,13 +1,11 @@
 package net.etfbl.indeks.security.controller;
 
 import net.etfbl.indeks.model.Account;
-import net.etfbl.indeks.repository.AccountRepository;
 import net.etfbl.indeks.security.dto.LoginAccountDTO;
 import net.etfbl.indeks.security.dto.RegisterAccountDTO;
 import net.etfbl.indeks.security.enumeration.RegistrationStatus;
 import net.etfbl.indeks.security.service.AuthenticationService;
 import net.etfbl.indeks.security.service.JwtService;
-import net.etfbl.indeks.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.Optional;
 
 @RequestMapping("/api/v1/auth")
 @RestController
@@ -46,6 +43,10 @@ public class AuthenticationController {
             case ACCOUNT_ALREADY_EXISTS -> {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(Map.of("error", "Account already exists. Please try logging in."));
+            }
+            case INVALID_STUDENT_EMAIL -> {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Invalid email domain for student account."));
             }
             default -> {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
