@@ -13,7 +13,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import net.etfbl.indeks.model.Account;
+import net.etfbl.indeks.model.StudentAccount;
+import net.etfbl.indeks.model.TutorAccount;
+import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.service.AccountService;
+import net.etfbl.indeks.service.StudentAccountService;
+import net.etfbl.indeks.service.TutorAccountService;
+import net.etfbl.indeks.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +28,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
     private final AccountService accountService;
+    private final StudentAccountService studentAccountService;
+    private final TutorAccountService tutorAccountService;
 
     @Autowired
-    public JwtService(AccountService accountService) {
+    public JwtService(AccountService accountService, StudentAccountService studentAccountService,
+                      TutorAccountService tutorAccountService) {
         this.accountService = accountService;
+        this.studentAccountService = studentAccountService;
+        this.tutorAccountService = tutorAccountService;
     }
 
     @Value("${security.jwt.secret-key}")
@@ -68,6 +79,29 @@ public class JwtService {
         System.out.println("userDetails username: " + userDetails.getUsername());
         Optional<Account> account = accountService.getAccountByEMail(userDetails.getUsername());
         account.ifPresent(value -> extraClaims.put("accountId", value.getId()));
+
+        String firstName = "";
+        String lastName = "";
+        String accountType = "";
+
+        Optional<StudentAccount> studentAccount = studentAccountService.getStudentAccountById(account.get().getId());
+        if(studentAccount.isPresent()) {
+            firstName = studentAccount.get().getUserAccount().getFirstName();
+            lastName = studentAccount.get().getUserAccount().getLastName();
+            accountType = "STUDENT";
+        }
+
+
+        Optional<TutorAccount> tutorAccount = tutorAccountService.getTutorAccountById(account.get().getId());
+        if(tutorAccount.isPresent()) {
+            firstName = tutorAccount.get().getUserAccount().getFirstName();
+            lastName = tutorAccount.get().getUserAccount().getLastName();
+            accountType = "TUTOR";
+        }
+
+        extraClaims.put("firstName", firstName);
+        extraClaims.put("lastName", lastName);
+        extraClaims.put("accountType", accountType);
 
         return Jwts
                 .builder()

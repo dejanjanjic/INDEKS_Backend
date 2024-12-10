@@ -98,8 +98,6 @@ public class AuthenticationService {
             }
         }
 
-        System.out.println("dobro je");
-
         return RegistrationStatus.SUCCESS;
     }
 
