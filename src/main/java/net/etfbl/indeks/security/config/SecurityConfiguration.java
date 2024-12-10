@@ -33,7 +33,13 @@ public class SecurityConfiguration {
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/**") //TODO ONEMOGUCITI PUTANJE
+                .requestMatchers(
+                        "/api/v1/verify-token",
+                        "/api/v1/password-recovery",
+                        "/api/v1/password-reset",
+                        "/api/v1/auth/**",
+                        "/swagger-ui/index.html#/"
+                )
                 .permitAll()
                 .anyRequest()
                 .authenticated()

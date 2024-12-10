@@ -74,11 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-            } else {
-                System.out.println("nije proslo rodjo|");
             }
-
-            System.out.println("proslo drugi");
 
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
