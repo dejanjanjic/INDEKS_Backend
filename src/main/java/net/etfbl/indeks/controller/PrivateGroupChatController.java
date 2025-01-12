@@ -49,8 +49,11 @@ public class PrivateGroupChatController {
 
     @PostMapping
     public ResponseEntity<PrivateGroupChat> registerNewPrivateGroupChat(@RequestBody AddPrivateGroupChatDTO group) {
-        PrivateGroupChat PrGroup =privateGroupChatService.addNewPrivateGroupChat(group);
-        return new ResponseEntity<>(PrGroup, HttpStatus.OK);
+
+        PrivateGroupChat privateGroupChat = privateGroupChatService.addNewPrivateGroupChat(group);
+        privateGroupChatService.addGroupMembers(group);
+
+        return new ResponseEntity<>(privateGroupChat, HttpStatus.OK);
     }
 
 
