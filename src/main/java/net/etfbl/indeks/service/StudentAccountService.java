@@ -6,6 +6,7 @@ import net.etfbl.indeks.model.StudentAccount;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.ScheduleRepository;
 import net.etfbl.indeks.repository.StudentAccountRepository;
+import net.etfbl.indeks.security.roles.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,7 @@ public class StudentAccountService {
     }
     @Transactional
     public StudentAccount addNewStudentAccount(AddUserAccountDTO  studentAccount) {
-        UserAccount acc = userAccountService.addNewUserAccount(studentAccount);
+        UserAccount acc = userAccountService.addNewUserAccount(studentAccount, Roles.STUDENT);
         Schedule sch = scheduleRepository.save(new Schedule(""));
         return studentAccountRepository.save(new StudentAccount(acc,sch));
     }

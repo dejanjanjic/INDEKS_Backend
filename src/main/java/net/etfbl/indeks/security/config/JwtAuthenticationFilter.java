@@ -77,7 +77,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
+
+
+            System.out.println("resi");
         } catch (Exception exception) {
+
+            System.out.println("nije ovdje");
+
             exception.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500
             handlerExceptionResolver.resolveException(request, response, null, exception);

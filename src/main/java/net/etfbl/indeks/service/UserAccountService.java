@@ -2,6 +2,7 @@ package net.etfbl.indeks.service;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
 import net.etfbl.indeks.model.Account;
+import net.etfbl.indeks.security.roles.Roles;
 import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.AccountRepository;
@@ -38,10 +39,10 @@ public class UserAccountService {
     }
 
     @Transactional
-    public UserAccount addNewUserAccount(AddUserAccountDTO addUserAccountDTO){
+    public UserAccount addNewUserAccount(AddUserAccountDTO addUserAccountDTO, Roles role){
         Optional<Account> accountByEmail = accountRepository.findByEmail(addUserAccountDTO.getEmail());
         if(accountByEmail.isEmpty()){
-            Account account = new Account(addUserAccountDTO.getEmail(), addUserAccountDTO.getPassword());
+            Account account = new Account(addUserAccountDTO.getEmail(), addUserAccountDTO.getPassword(), role);
             Account savedAccount = accountRepository.save(account);
             UserAccount userAccount = new UserAccount(addUserAccountDTO.getFirstName(), addUserAccountDTO.getLastName(), true, false, savedAccount);
 
@@ -71,9 +72,11 @@ public class UserAccountService {
         }
         if(userAccount.getLastName() != null){
             updatedUserAccount.setLastName(userAccount.getLastName());
-        }if(userAccount.getActive() != null){
+        }
+        if(userAccount.getActive() != null){
             updatedUserAccount.setActive(userAccount.getActive());
-        }if(userAccount.getSuspended() != null){
+        }
+        if(userAccount.getSuspended() != null){
             updatedUserAccount.setSuspended(userAccount.getSuspended());
         }
 

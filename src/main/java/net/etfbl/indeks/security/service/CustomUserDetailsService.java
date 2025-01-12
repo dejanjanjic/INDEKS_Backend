@@ -23,9 +23,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String role = account.getRole().name();
+
         return User.withUsername(account.getEmail())
                 .password(account.getPassword())
-                .roles("USER")
+                .roles(role) // Automatski dodaje prefiks "ROLE_"
                 .build();
     }
 }

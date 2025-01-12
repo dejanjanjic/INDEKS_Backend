@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
 import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
+import net.etfbl.indeks.dto.AddPrivateGroupChatMemberDTO;
 import net.etfbl.indeks.dto.GetMessageDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.GroupRepository;
@@ -25,13 +26,17 @@ public class PrivateGroupChatService {
     @Autowired
     private EntityManager entityManager;
 
+    private final PrivateGroupChatMemberService privateGroupChatMemberService;
+
     private final PrivateGroupChatRepository privateGroupChatRepository;
     private final GroupRepository groupRepository;
 
     @Autowired
-    PrivateGroupChatService(PrivateGroupChatRepository privateGroupChatRepository,GroupRepository groupRepository) {
+    PrivateGroupChatService(PrivateGroupChatRepository privateGroupChatRepository,GroupRepository groupRepository,
+                            PrivateGroupChatMemberService privateGroupChatMemberService) {
         this.privateGroupChatRepository = privateGroupChatRepository;
         this.groupRepository=groupRepository;
+        this.privateGroupChatMemberService = privateGroupChatMemberService;
     }
 
     public List<PrivateGroupChat> getPrivateGroupChats() {
@@ -47,6 +52,21 @@ public class PrivateGroupChatService {
         return privateGroupChatRepository.save(new PrivateGroupChat(groupRepository.save(new GroupChat(group.getName()))));
     }
 
+    public void addGroupMembers(AddPrivateGroupChatDTO group) {
+
+        Optional<GroupChat> groupChat = groupRepository.findByName(group.getName());
+        if(groupChat.isPresent()) {
+
+            List<Long> membersIds = group.getMemberIds();
+
+            for (Long membersId : membersIds) {
+
+                AddPrivateGroupChatMemberDTO memberDTO = new AddPrivateGroupChatMemberDTO(groupChat.get().getId(), membersId);
+                privateGroupChatMemberService.addNewPrivateGroupChatMember(memberDTO);
+
+            }
+        }
+    }
 
     public boolean deleteGroup(Long groupId) {
         boolean exists = privateGroupChatRepository.existsById(groupId);
@@ -55,7 +75,8 @@ public class PrivateGroupChatService {
         }
         privateGroupChatRepository.deleteById(groupId);
         groupRepository.deleteById(groupId);
-        return exists;
+
+        return true;
     }
 
     @Transactional

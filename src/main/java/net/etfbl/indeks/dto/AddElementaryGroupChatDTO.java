@@ -1,19 +1,14 @@
 package net.etfbl.indeks.dto;
 
-public class AddElementaryGroupChatDTO
-{
+public class AddElementaryGroupChatDTO {
 
     private String name;
 
-    public AddElementaryGroupChatDTO() {
-    }
-
+    public AddElementaryGroupChatDTO() { }
 
     public AddElementaryGroupChatDTO(String name) {
         this.name = name;
     }
-
-
 
     public String getName() {
         return name;

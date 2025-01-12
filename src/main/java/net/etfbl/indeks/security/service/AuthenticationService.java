@@ -5,6 +5,7 @@ import net.etfbl.indeks.repository.*;
 import net.etfbl.indeks.security.dto.LoginAccountDTO;
 import net.etfbl.indeks.security.dto.RegisterAccountDTO;
 import net.etfbl.indeks.security.enumeration.RegistrationStatus;
+import net.etfbl.indeks.security.roles.Roles;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -82,6 +83,7 @@ public class AuthenticationService {
                 studentAccount.setUserAccount(userAccount);
                 studentAccount.setSchedule(schedule);
                 studentAccount.setStudentAnnouncementVisibility(null);
+                userAccount.getAccount().setRole(Roles.STUDENT);
 
                 studentAccountRepository.save(studentAccount);
                 System.out.println("New student registered!");

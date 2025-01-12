@@ -7,6 +7,7 @@ import net.etfbl.indeks.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,17 @@ public class PrivateGroupChatMemberService {
 
     public Optional<PrivateGroupChatMember> getPrivateGroupChatMember(Long id) {
         return privateGroupChatMemberRepository.findById(id);
+    }
+
+    public List<Long> getMembersByGroupChatId(Long privateGroupChatId) {
+        List<PrivateGroupChatMember> members = privateGroupChatMemberRepository.findByPrivateGroupChat_Id(privateGroupChatId);
+
+        List<Long> memberIds = new ArrayList<>();
+        for (PrivateGroupChatMember member : members) {
+            memberIds.add(member.getUserAccount().getAccount().getId());
+        }
+
+        return memberIds;
     }
 
     public boolean deletePrivateGroupChatMember(Long id) {

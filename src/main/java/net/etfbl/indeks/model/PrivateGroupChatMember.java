@@ -4,40 +4,24 @@ import jakarta.persistence.*;
 
 @Entity
 @Table
+@IdClass(PrivateGroupChatMemberId.class) // Ovdje navodimo klasu koja predstavlja kombinirani primarni ključ
 public class PrivateGroupChatMember
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne
     @JoinColumn(name = "groupid")
-    private UserAccount userAccount;
-
-    @ManyToOne
-    @JoinColumn(name = "accountid")
     private PrivateGroupChat privateGroupChat;
 
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "accountid")
+    private UserAccount userAccount;
 
     public PrivateGroupChatMember(){}
 
     public PrivateGroupChatMember(UserAccount userAccount, PrivateGroupChat privateGroupChat) {
         this.userAccount = userAccount;
         this.privateGroupChat = privateGroupChat;
-    }
-
-    public PrivateGroupChatMember(Long id, UserAccount userAccount, PrivateGroupChat privateGroupChat) {
-        this.id = id;
-        this.userAccount = userAccount;
-        this.privateGroupChat = privateGroupChat;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public UserAccount getUserAccount() {

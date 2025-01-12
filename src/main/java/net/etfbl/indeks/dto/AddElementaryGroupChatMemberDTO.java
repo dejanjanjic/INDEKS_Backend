@@ -1,25 +1,15 @@
 package net.etfbl.indeks.dto;
 
 public class AddElementaryGroupChatMemberDTO {
-    private Long id;
     private Long elementaryGroupChatId;
     private Long studentAccountId;
 
     public AddElementaryGroupChatMemberDTO() {
     }
 
-    public AddElementaryGroupChatMemberDTO(Long id, Long elementaryGroupChatId, Long studentAccountId) {
-        this.id = id;
+    public AddElementaryGroupChatMemberDTO(Long elementaryGroupChatId, Long studentAccountId) {
         this.elementaryGroupChatId = elementaryGroupChatId;
         this.studentAccountId = studentAccountId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getElementaryGroupChatId() {
@@ -37,5 +27,4 @@ public class AddElementaryGroupChatMemberDTO {
     public void setStudentAccountId(Long studentAccountId) {
         this.studentAccountId = studentAccountId;
     }
-
 }

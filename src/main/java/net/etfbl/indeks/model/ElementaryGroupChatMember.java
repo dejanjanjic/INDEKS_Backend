@@ -4,36 +4,25 @@ import jakarta.persistence.*;
 
 @Entity
 @Table
+@IdClass(ElementaryGroupChatMemberId.class)
 public class ElementaryGroupChatMember {
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "groupId")
+    @Id
     private ElementaryGroupChat elementaryGroupChat;
 
     @ManyToOne
     @JoinColumn(name = "accountId")
+    @Id
     private StudentAccount studentAccount;
 
     public ElementaryGroupChatMember() {
     }
 
-    public ElementaryGroupChatMember(Long id, ElementaryGroupChat elementaryGroupChat, StudentAccount studentAccount) {
-        this.id = id;
+    public ElementaryGroupChatMember(ElementaryGroupChat elementaryGroupChat, StudentAccount studentAccount) {
         this.elementaryGroupChat = elementaryGroupChat;
         this.studentAccount = studentAccount;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public ElementaryGroupChat getElementaryGroupChat() {

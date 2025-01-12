@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-
-
-
 @RestController
 @RequestMapping(path = "api/v1/privateGroupChatMember")
 public class PrivateGroupChatMemberController {
@@ -46,6 +43,9 @@ public class PrivateGroupChatMemberController {
 
     @PostMapping
     public ResponseEntity<PrivateGroupChatMember> addPrivateGroupChatMember(@RequestBody AddPrivateGroupChatMemberDTO privateGroupChatMemberDTO) {
+
+        System.out.println("uslo");
+
         privateGroupChatMemberService.addNewPrivateGroupChatMember(privateGroupChatMemberDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -58,6 +58,14 @@ public class PrivateGroupChatMemberController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+
+
+    @GetMapping("/novi/{groupChatId}")
+    public ResponseEntity<List<Long>> getMembersByGroupChatId(@PathVariable Long groupChatId) {
+        List<Long> members = privateGroupChatMemberService.getMembersByGroupChatId(groupChatId);
+        return ResponseEntity.ok(members);
     }
 
 }

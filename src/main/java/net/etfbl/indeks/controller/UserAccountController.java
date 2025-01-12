@@ -38,16 +38,17 @@ public class UserAccountController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<UserAccount> registerNewUserAccount(@RequestBody AddUserAccountDTO addUserAccountDTO){
-        addUserAccountDTO.setPassword(encryption.encryptPassword(addUserAccountDTO.getPassword()));
-        UserAccount temp = userAccountService.addNewUserAccount(addUserAccountDTO);
-        if(temp != null){
-            return ResponseEntity.ok(temp);
-        }else{
-            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
-        }
-    }
+    // ne treba jer je potrebno defnisati ulogu a to ne ide preko ovog endpointa
+//    @PostMapping
+//    public ResponseEntity<UserAccount> registerNewUserAccount(@RequestBody AddUserAccountDTO addUserAccountDTO){
+//        addUserAccountDTO.setPassword(encryption.encryptPassword(addUserAccountDTO.getPassword()));
+//        UserAccount temp = userAccountService.addNewUserAccount(addUserAccountDTO);
+//        if(temp != null){
+//            return ResponseEntity.ok(temp);
+//        }else{
+//            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
+//        }
+//    }
 
     @DeleteMapping(path = "{userAccountId}")
     public ResponseEntity<Void> deleteUserAccount(@PathVariable("userAccountId")Long userAccountId){
