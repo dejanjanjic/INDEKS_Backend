@@ -1,6 +1,7 @@
 package net.etfbl.indeks.service;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.UserAccount;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -101,6 +103,23 @@ public class UserAccountService {
             return true;
         }
         return false;
+    }
+
+
+    public List<UserAccountSummaryDTO> getUserAccountSummaries() {
+        List<UserAccount> userAccounts = userAccountRepository.findAll();
+        List<UserAccountSummaryDTO> summaries = new ArrayList<>();
+
+        for (UserAccount userAccount : userAccounts) {
+            UserAccountSummaryDTO summary = new UserAccountSummaryDTO(
+                    userAccount.getFirstName(),
+                    userAccount.getLastName(),
+                    userAccount.getActive()
+            );
+            summaries.add(summary);
+        }
+
+        return summaries;
     }
 
 

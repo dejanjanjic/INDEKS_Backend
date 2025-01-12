@@ -3,8 +3,10 @@ package net.etfbl.indeks.controller;
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
 import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
 import net.etfbl.indeks.dto.GetMessageDTO;
+import net.etfbl.indeks.dto.GroupMessageDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.PrivateGroupChat;
+import net.etfbl.indeks.service.MessageService;
 import net.etfbl.indeks.service.PrivateGroupChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,10 @@ import java.util.Optional;
 public class PrivateGroupChatController {
 
     private final PrivateGroupChatService privateGroupChatService;
+
+
+    @Autowired
+    private MessageService messageService;
 
     @Autowired
     public PrivateGroupChatController(PrivateGroupChatService privateGroupChatService) {
@@ -73,6 +79,12 @@ public class PrivateGroupChatController {
     @GetMapping("/{chatId}/messages")
     public ResponseEntity<List<GetMessageDTO>> getMessagesFromChat(@PathVariable Long chatId, @RequestParam Long userId) {
         List<GetMessageDTO> messages = privateGroupChatService.getMessagesFromChat(chatId, userId);
+        return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("/group/{groupChatId}")
+    public ResponseEntity<List<GroupMessageDTO>> getMessagesFromGroup(@PathVariable Long groupChatId) {
+        List<GroupMessageDTO> messages = messageService.getMessagesFromGroup(groupChatId);
         return ResponseEntity.ok(messages);
     }
 }

@@ -3,13 +3,16 @@ package net.etfbl.indeks.service;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import net.etfbl.indeks.dto.AddMessageDTO;
+import net.etfbl.indeks.dto.GroupMessageDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.MessageRepository;
+import net.etfbl.indeks.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,5 +88,33 @@ public class MessageService {
             return true;
         }
         return false;
+    }
+
+
+
+
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
+    public List<GroupMessageDTO> getMessagesFromGroup(Long groupChatId) {
+        List<Message> messages = messageRepository.findByGroupChatIdOrderByTimeAsc(groupChatId);
+        List<GroupMessageDTO> messageDTOs = new ArrayList<>();
+
+        for (Message message : messages) {
+            String senderFullName = message.getUserAccount().getFirstName() + " " + message.getUserAccount().getLastName();
+            String groupChatName = message.getGroupChat().getName();
+            GroupMessageDTO dto = new GroupMessageDTO(
+                    message.getId(),
+                    message.getText(),
+                    message.getTime(),
+                    senderFullName,  // Set full name here
+                    groupChatName,
+                    message.getStatus()
+            );
+            messageDTOs.add(dto);
+        }
+
+        return messageDTOs;
     }
 }

@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.service.UserAccountService;
@@ -67,6 +68,11 @@ public class UserAccountController {
         }else{
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/user-accounts/summary")
+    public List<UserAccountSummaryDTO> getUserAccountSummaries() {
+        return userAccountService.getUserAccountSummaries();
     }
 
 //    @PostMapping("/password-recovery")
