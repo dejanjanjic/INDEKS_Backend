@@ -2,6 +2,7 @@ package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.ScheduleItem;
+import net.etfbl.indeks.repository.ScheduleRepository;
 import net.etfbl.indeks.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,14 @@ public class ScheduleController {
         List<ScheduleItem> scheduleItems = scheduleService.getScheduleItems(scheduleId);
         return new ResponseEntity<>(scheduleItems, HttpStatus.OK);
     }
+
+
+        @PutMapping("/{scheduleId}/update")
+        public ResponseEntity<String> updateSchedule(@PathVariable Long scheduleId, int num) {
+            scheduleService.fetchAndUpdateSchedule(scheduleId,num);
+            return ResponseEntity.ok("Schedule updated successfully");
+        }
+
 
 //    @PutMapping
 //    public ResponseEntity<Void> updateSchedule(@RequestBody Schedule schedule) {
