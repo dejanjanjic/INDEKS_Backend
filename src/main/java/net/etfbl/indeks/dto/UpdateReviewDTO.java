@@ -7,8 +7,8 @@ public class UpdateReviewDTO {
     private Long id;
     private String comment;
     private LocalDateTime dateTime;
-
     private  double rating;
+
     public UpdateReviewDTO() {}
 
     public UpdateReviewDTO(Long id, String comment, LocalDateTime dateTime,double rating) {

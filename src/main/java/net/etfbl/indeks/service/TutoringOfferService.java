@@ -3,10 +3,7 @@ package net.etfbl.indeks.service;
 import jakarta.persistence.EntityManager;
 import net.etfbl.indeks.dto.AddTutoringOfferDTO;
 import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
-import net.etfbl.indeks.model.Review;
-import net.etfbl.indeks.model.Subject;
-import net.etfbl.indeks.model.TutorAccount;
-import net.etfbl.indeks.model.TutoringOffer;
+import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.TutoringOfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,15 +41,15 @@ public class TutoringOfferService
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
         }
 
-        TutorAccount tutorAccount = entityManager.find(TutorAccount.class, addTutoringOfferDTO.getTutorAccountId());
-        if (tutorAccount == null) {
+        StudentAccount studentAccount = entityManager.find(StudentAccount.class, addTutoringOfferDTO.getTutorAccountId());
+        if (studentAccount == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor Account not found");
         }
 
         TutoringOffer newTutoringOffer = new TutoringOffer(
                 addTutoringOfferDTO.getDescription(),
                 subject,
-                tutorAccount
+                studentAccount
         );
 
         entityManager.persist(newTutoringOffer);

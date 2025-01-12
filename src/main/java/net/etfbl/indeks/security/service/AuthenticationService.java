@@ -89,18 +89,18 @@ public class AuthenticationService {
                 System.out.println("New student registered!");
 
             }
-            case "TUTOR" -> {
-                Optional<TutorAccount> tutorCheck = tutorAccountRepository.findByEmail(input.getEmail());
-                if (tutorCheck.isPresent())
-                    return RegistrationStatus.ACCOUNT_ALREADY_EXISTS;
-
-                TutorAccount tutorAccount = new TutorAccount();
-                tutorAccount.setUserAccount(userAccount);
-                tutorAccount.setTutoringOffers(new ArrayList<>());
-
-                tutorAccountRepository.save(tutorAccount);
-                System.out.println("New tutor registered!");
-            }
+//            case "TUTOR" -> {
+//                Optional<TutorAccount> tutorCheck = tutorAccountRepository.findByEmail(input.getEmail());
+//                if (tutorCheck.isPresent())
+//                    return RegistrationStatus.ACCOUNT_ALREADY_EXISTS;
+//
+//                TutorAccount tutorAccount = new TutorAccount();
+//                tutorAccount.setUserAccount(userAccount);
+//                tutorAccount.setTutoringOffers(new ArrayList<>());
+//
+//                tutorAccountRepository.save(tutorAccount);
+//                System.out.println("New tutor registered!");
+//            }
             default -> {
                 System.out.println("WRONG USER TYPE FLAG!");
                 return RegistrationStatus.INVALID_FLAG;
