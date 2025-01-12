@@ -105,13 +105,13 @@ public class UserAccountService {
         return false;
     }
 
-
     public List<UserAccountSummaryDTO> getUserAccountSummaries() {
         List<UserAccount> userAccounts = userAccountRepository.findAll();
         List<UserAccountSummaryDTO> summaries = new ArrayList<>();
 
         for (UserAccount userAccount : userAccounts) {
             UserAccountSummaryDTO summary = new UserAccountSummaryDTO(
+                    userAccount.getId(),  // Pass the ID here
                     userAccount.getFirstName(),
                     userAccount.getLastName(),
                     userAccount.getActive()
@@ -121,6 +121,7 @@ public class UserAccountService {
 
         return summaries;
     }
+
 
 
     @Transactional

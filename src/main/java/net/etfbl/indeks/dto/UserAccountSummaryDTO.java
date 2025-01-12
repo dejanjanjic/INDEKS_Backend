@@ -1,6 +1,7 @@
 package net.etfbl.indeks.dto;
 
 public class UserAccountSummaryDTO {
+    private Long id;  // Add ID field
     private String firstName;
     private String lastName;
     private Boolean active;
@@ -9,13 +10,22 @@ public class UserAccountSummaryDTO {
     public UserAccountSummaryDTO() {
     }
 
-    public UserAccountSummaryDTO(String firstName, String lastName, Boolean active) {
+    public UserAccountSummaryDTO(Long id, String firstName, String lastName, Boolean active) {
+        this.id = id;  // Initialize ID
         this.firstName = firstName;
         this.lastName = lastName;
         this.active = active;
     }
 
     // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
