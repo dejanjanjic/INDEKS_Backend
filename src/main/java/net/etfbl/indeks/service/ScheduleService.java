@@ -133,6 +133,7 @@ public class ScheduleService {
                     day++;
                 }
             }
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching and parsing the schedule", e);
         }

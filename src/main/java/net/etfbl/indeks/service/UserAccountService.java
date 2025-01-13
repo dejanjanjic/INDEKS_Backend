@@ -1,5 +1,7 @@
 package net.etfbl.indeks.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.dto.AddUserAccountDTO;
 import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.model.Account;
@@ -22,6 +24,8 @@ public class UserAccountService {
     private final UserAccountRepository userAccountRepository;
     private final AccountRepository accountRepository;
     private final EmailService emailService;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private Encryption encryption = new Encryption();
 
@@ -109,21 +113,29 @@ public class UserAccountService {
     }
 
     public List<UserAccountSummaryDTO> getUserAccountSummaries() {
-        List<UserAccount> userAccounts = userAccountRepository.findAll();
+        // Fetch user accounts and join with account table to get email
+        List<Object[]> results = entityManager.createQuery(
+                "SELECT ua.id, ua.firstName, ua.lastName, ua.active, a.email " +
+                        "FROM UserAccount ua " +
+                        "JOIN Account a ON ua.id = a.id", Object[].class
+        ).getResultList();
+
         List<UserAccountSummaryDTO> summaries = new ArrayList<>();
 
-        for (UserAccount userAccount : userAccounts) {
+        for (Object[] result : results) {
             UserAccountSummaryDTO summary = new UserAccountSummaryDTO(
-                    userAccount.getId(),  // Pass the ID here
-                    userAccount.getFirstName(),
-                    userAccount.getLastName(),
-                    userAccount.getActive()
+                    ((Number) result[0]).longValue(), // ID
+                    (String) result[1],              // First Name
+                    (String) result[2],              // Last Name
+                    (Boolean) result[3],             // Active
+                    (String) result[4]               // Email
             );
             summaries.add(summary);
         }
 
         return summaries;
     }
+
 
 
 

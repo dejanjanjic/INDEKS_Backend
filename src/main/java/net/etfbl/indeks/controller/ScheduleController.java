@@ -61,11 +61,12 @@ public class ScheduleController {
     }
 
 
-        @PutMapping("/{scheduleId}/update")
-        public ResponseEntity<String> updateSchedule(@PathVariable Long scheduleId, int num) {
-            scheduleService.fetchAndUpdateSchedule(scheduleId,num);
-            return ResponseEntity.ok("Schedule updated successfully");
-        }
+    @PutMapping("/{scheduleId}/update")
+    public ResponseEntity<String> updateSchedule(@PathVariable Long scheduleId, @RequestParam int num) {
+        scheduleService.fetchAndUpdateSchedule(scheduleId, num);
+        return ResponseEntity.ok("Schedule updated successfully");
+    }
+
 
 
 //    @PutMapping
