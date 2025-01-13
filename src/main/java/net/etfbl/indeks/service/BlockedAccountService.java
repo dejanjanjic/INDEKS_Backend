@@ -6,6 +6,7 @@ import net.etfbl.indeks.model.BlockedAccount;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.BlockedAccountRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +43,7 @@ public class BlockedAccountService {
         return blockedAccountRepository.save(blockedAccount);
     }
 
+    @Transactional
     public void unblockUser(Long userId, Long blockedUserId) {
         blockedAccountRepository.deleteByUserAccountIdAndBlockedUserId(userId, blockedUserId);
     }
