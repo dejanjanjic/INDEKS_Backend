@@ -164,11 +164,11 @@ public class UserAccountService {
                 .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
 
         if (Boolean.TRUE.equals(userAccount.getActive())) {
-            userAccount.setActive(true);
+            userAccount.setActive(false);
         }
         else
         {
-            userAccount.setActive(false);
+            userAccount.setActive(true);
         }
 
         return userAccountRepository.save(userAccount);
