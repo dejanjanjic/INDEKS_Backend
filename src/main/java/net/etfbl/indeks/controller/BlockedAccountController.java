@@ -30,6 +30,6 @@ public class BlockedAccountController {
     @DeleteMapping("/{userId}/unblock/{blockedUserId}")
     public ResponseEntity<Void> unblockUser(@PathVariable Long userId, @PathVariable Long blockedUserId) {
         blockedAccountService.unblockUser(userId, blockedUserId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
