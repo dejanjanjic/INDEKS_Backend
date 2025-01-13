@@ -76,6 +76,18 @@ public class UserAccountController {
         return userAccountService.getUserAccountSummaries();
     }
 
+    @PostMapping("/{id}/suspend")
+    public ResponseEntity<UserAccount> suspendAccount(@PathVariable Long id) {
+        UserAccount suspendedAccount = userAccountService.suspendAccount(id);
+        return ResponseEntity.ok(suspendedAccount);
+    }
+
+    @PostMapping("/{id}/unsuspend")
+    public ResponseEntity<UserAccount> unsuspendAccount(@PathVariable Long id) {
+        UserAccount unsuspendedAccount = userAccountService.unsuspendAccount(id);
+        return ResponseEntity.ok(unsuspendedAccount);
+    }
+
 //    @PostMapping("/password-recovery")
 //    public ResponseEntity<Void> sendPasswordRecoveryEmail(@RequestParam String email) {
 //        boolean success = userAccountService.sendPasswordRecoveryEmail(email);

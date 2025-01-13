@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/blocked-accounts")
+@RequestMapping("/api/v1/blocked-accounts")
 public class BlockedAccountController {
     private final BlockedAccountService blockedAccountService;
 

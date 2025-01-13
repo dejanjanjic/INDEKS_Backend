@@ -3,14 +3,24 @@ package net.etfbl.indeks.dto;
 import java.time.LocalDateTime;
 
 public class BlockedUserDTO {
+    private Long id;  // Add this field
     private String firstName;
     private String lastName;
     private LocalDateTime dateBlocked;
 
-    public BlockedUserDTO(String firstName, String lastName, LocalDateTime dateBlocked) {
+    public BlockedUserDTO(Long id, String firstName, String lastName, LocalDateTime dateBlocked) {
+        this.id = id;  // Initialize id
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateBlocked = dateBlocked;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -40,7 +50,8 @@ public class BlockedUserDTO {
     @Override
     public String toString() {
         return "BlockedUserDTO{" +
-                "firstName='" + firstName + '\'' +
+                "id=" + id +  // Include id in the toString output
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dateBlocked=" + dateBlocked +
                 '}';

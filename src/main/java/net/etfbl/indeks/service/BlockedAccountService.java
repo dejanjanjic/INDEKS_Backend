@@ -23,12 +23,14 @@ public class BlockedAccountService {
         List<BlockedAccount> blockedAccounts = blockedAccountRepository.findByUserAccountId(userId);
         return blockedAccounts.stream()
                 .map(blockedAccount -> new BlockedUserDTO(
+                        blockedAccount.getBlockedUser().getId(),  // Add blocked user ID
                         blockedAccount.getBlockedUser().getFirstName(),
                         blockedAccount.getBlockedUser().getLastName(),
                         blockedAccount.getDateBlocked()
                 ))
                 .collect(Collectors.toList());
     }
+
 
     public BlockedAccount blockUser(Long userId, Long blockedUserId) {
         BlockedAccount blockedAccount = new BlockedAccount();
