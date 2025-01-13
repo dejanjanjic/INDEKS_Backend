@@ -82,11 +82,11 @@ public class UserAccountController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{id}/unsuspend")
-    public ResponseEntity<Void> unsuspendAccount(@PathVariable Long id) {
-        UserAccount unsuspendedAccount = userAccountService.unsuspendAccount(id);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/{id}/unsuspend")
+//    public ResponseEntity<Void> unsuspendAccount(@PathVariable Long id) {
+//        UserAccount unsuspendedAccount = userAccountService.unsuspendAccount(id);
+//        return ResponseEntity.ok().build();
+//    }
 
 //    @PostMapping("/password-recovery")
 //    public ResponseEntity<Void> sendPasswordRecoveryEmail(@RequestParam String email) {

@@ -162,20 +162,25 @@ public class UserAccountService {
     public UserAccount suspendAccount(Long id) {
         UserAccount userAccount = userAccountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
+
         if (Boolean.TRUE.equals(userAccount.getActive())) {
-            throw new IllegalStateException("Account is already suspended");
+            userAccount.setActive(true);
         }
-        userAccount.setActive(true);
+        else
+        {
+            userAccount.setActive(false);
+        }
+
         return userAccountRepository.save(userAccount);
     }
 
-    public UserAccount unsuspendAccount(Long id) {
-        UserAccount userAccount = userAccountRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
-        if (Boolean.FALSE.equals(userAccount.getActive())) {
-            throw new IllegalStateException("Account is not suspended");
-        }
-        userAccount.setActive(false);
-        return userAccountRepository.save(userAccount);
-    }
+//    public UserAccount unsuspendAccount(Long id) {
+//        UserAccount userAccount = userAccountRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
+//        if (Boolean.FALSE.equals(userAccount.getActive())) {
+//            throw new IllegalStateException("Account is not suspended");
+//        }
+//        userAccount.setActive(false);
+//        return userAccountRepository.save(userAccount);
+//    }
 }
