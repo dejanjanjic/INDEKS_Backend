@@ -82,6 +82,11 @@ public class UserAccountController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}/pushToken")
+    public ResponseEntity<String> updatePushNotificationToken(@PathVariable Long id, @RequestParam String token) {
+        userAccountService.updatePushNotificationToken(id, token);
+        return ResponseEntity.ok("Push notification token updated successfully.");
+    }
 //    @PostMapping("/{id}/unsuspend")
 //    public ResponseEntity<Void> unsuspendAccount(@PathVariable Long id) {
 //        UserAccount unsuspendedAccount = userAccountService.unsuspendAccount(id);

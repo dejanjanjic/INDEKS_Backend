@@ -16,6 +16,8 @@ public class UserAccount {
 
     private transient String recoveryToken;
 
+
+    private String pushNotificationToken;
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id")
     @MapsId
@@ -116,6 +118,14 @@ public class UserAccount {
 
     public void setRecoveryToken(String recoveryToken) {
         this.recoveryToken = recoveryToken;
+    }
+
+    public String getPushNotificationToken() {
+        return pushNotificationToken;
+    }
+
+    public void setPushNotificationToken(String pushNotificationToken) {
+        this.pushNotificationToken = pushNotificationToken;
     }
 
     @Override

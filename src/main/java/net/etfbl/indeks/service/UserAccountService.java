@@ -158,7 +158,12 @@ public class UserAccountService {
         return false;
     }
 
-
+    public void updatePushNotificationToken(Long id, String token) {
+        UserAccount userAccount = userAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("UserAccount not found with id: " + id));
+        userAccount.setPushNotificationToken(token);
+        userAccountRepository.save(userAccount);
+    }
     public UserAccount suspendAccount(Long id) {
         UserAccount userAccount = userAccountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
