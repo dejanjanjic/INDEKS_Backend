@@ -63,21 +63,7 @@ public class ScheduleController {
 
     @PutMapping
     public ResponseEntity<String> updateSchedule(@RequestBody UpdateScheduleDTO scheduleDTO) {
-
         scheduleService.fetchAndUpdateSchedule(scheduleDTO.getId(), scheduleDTO.getNum());
-
-        System.out.println("izasao iz metode");
-
         return ResponseEntity.ok("Schedule updated successfully");
     }
-
-//    @PutMapping
-//    public ResponseEntity<Void> updateSchedule(@RequestBody Schedule schedule) {
-//        boolean updated = scheduleService.updateSchedule(schedule.getId(), schedule.getContent());
-//        if (updated) {
-//            return ResponseEntity.noContent().build();
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
 }
