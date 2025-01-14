@@ -1,6 +1,7 @@
 package net.etfbl.indeks.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table
@@ -15,10 +16,18 @@ public class UserAccount {
 
     private transient String recoveryToken;
 
+
+    private String pushNotificationToken;
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id")
     @MapsId
     private Account account;
+
+    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlockedAccount> blockedAccounts;
+
+    @OneToMany(mappedBy = "blockedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlockedAccount> blockedBy;
 
     public UserAccount() {
     }
@@ -38,6 +47,7 @@ public class UserAccount {
         this.account = account;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -86,12 +96,36 @@ public class UserAccount {
         this.account = account;
     }
 
+    public List<BlockedAccount> getBlockedAccounts() {
+        return blockedAccounts;
+    }
+
+    public void setBlockedAccounts(List<BlockedAccount> blockedAccounts) {
+        this.blockedAccounts = blockedAccounts;
+    }
+
+    public List<BlockedAccount> getBlockedBy() {
+        return blockedBy;
+    }
+
+    public void setBlockedBy(List<BlockedAccount> blockedBy) {
+        this.blockedBy = blockedBy;
+    }
+
     public String getRecoveryToken() {
         return recoveryToken;
     }
 
     public void setRecoveryToken(String recoveryToken) {
         this.recoveryToken = recoveryToken;
+    }
+
+    public String getPushNotificationToken() {
+        return pushNotificationToken;
+    }
+
+    public void setPushNotificationToken(String pushNotificationToken) {
+        this.pushNotificationToken = pushNotificationToken;
     }
 
     @Override

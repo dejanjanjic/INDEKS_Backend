@@ -76,6 +76,23 @@ public class UserAccountController {
         return userAccountService.getUserAccountSummaries();
     }
 
+    @PostMapping("/{id}/suspend")
+    public ResponseEntity<Void> suspendAccount(@PathVariable Long id) {
+        UserAccount suspendedAccount = userAccountService.suspendAccount(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/pushToken")
+    public ResponseEntity<String> updatePushNotificationToken(@PathVariable Long id, @RequestParam String token) {
+        userAccountService.updatePushNotificationToken(id, token);
+        return ResponseEntity.ok("Push notification token updated successfully.");
+    }
+//    @PostMapping("/{id}/unsuspend")
+//    public ResponseEntity<Void> unsuspendAccount(@PathVariable Long id) {
+//        UserAccount unsuspendedAccount = userAccountService.unsuspendAccount(id);
+//        return ResponseEntity.ok().build();
+//    }
+
 //    @PostMapping("/password-recovery")
 //    public ResponseEntity<Void> sendPasswordRecoveryEmail(@RequestParam String email) {
 //        boolean success = userAccountService.sendPasswordRecoveryEmail(email);
