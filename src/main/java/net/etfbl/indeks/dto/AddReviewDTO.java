@@ -21,8 +21,6 @@ public class AddReviewDTO
         this.rating = rating;
     }
 
-
-
     public String getComment() {
         return comment;
     }

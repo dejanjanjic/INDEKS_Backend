@@ -65,7 +65,8 @@ public class ScheduleService {
                 .getResultList();
     }
 
-    public void fetchAndUpdateSchedule(Long scheduleId, int number) {
+    public void fetchAndUpdateSchedule(Long scheduleId, Integer number) {
+
         try {
             String year = "";
             String group = "";
@@ -97,7 +98,6 @@ public class ScheduleService {
             }
             reader.close();
 
-
             JSONArray scheduleData = new JSONArray(response.toString());
 
             Optional<Schedule> scheduleOptional = scheduleRepository.findById(scheduleId);
@@ -106,33 +106,42 @@ public class ScheduleService {
             }
 
             Schedule schedule = scheduleOptional.get();
-
             scheduleItemRepository.deleteByScheduleId(scheduleId);
 
             for (int i = 0; i < scheduleData.length(); i++) {
                 JSONArray timeSlot = scheduleData.getJSONArray(i);
+
+                if (timeSlot.isNull(0)) {
+                    continue;
+                }
+
                 String time = timeSlot.getString(0);
                 int day = 0;
 
                 for (int j = 1; j < timeSlot.length(); j++) {
-                    String content = timeSlot.isNull(j) ? null : timeSlot.getString(j).trim();
-
-                    if (content == null || content.isEmpty()) {
+                    if (timeSlot.isNull(j)) {
                         day++;
                         continue;
                     }
 
+                    String content = timeSlot.getString(j).trim();
+
+                    if (content.isEmpty()) {
+                        day++;
+                        continue;
+                    }
 
                     ScheduleItem scheduleItem = new ScheduleItem();
                     scheduleItem.setTime(time);
                     scheduleItem.setDay(day);
-                    scheduleItem.setContent(content.substring(0, Math.min(200, content.length())));
+                    scheduleItem.setContent(content.substring(0, Math.min(200, content.length()))); // Truncate na 200 karaktera
                     scheduleItem.setSchedule(schedule);
-                    scheduleItemRepository.save(scheduleItem);
 
+                    scheduleItemRepository.save(scheduleItem);
                     day++;
                 }
             }
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching and parsing the schedule", e);
         }

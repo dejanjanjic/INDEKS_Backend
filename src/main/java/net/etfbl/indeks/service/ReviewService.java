@@ -36,7 +36,6 @@ public class ReviewService
         return reviewRepository.findById(id);
     }
 
-
     @PersistenceContext
     private EntityManager entityManager;
 

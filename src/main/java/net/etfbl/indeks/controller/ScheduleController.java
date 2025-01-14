@@ -1,5 +1,6 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.UpdateScheduleDTO;
 import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.ScheduleItem;
 import net.etfbl.indeks.repository.ScheduleRepository;
@@ -60,13 +61,15 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleItems, HttpStatus.OK);
     }
 
+    @PutMapping
+    public ResponseEntity<String> updateSchedule(@RequestBody UpdateScheduleDTO scheduleDTO) {
 
-        @PutMapping("/{scheduleId}/update")
-        public ResponseEntity<String> updateSchedule(@PathVariable Long scheduleId, int num) {
-            scheduleService.fetchAndUpdateSchedule(scheduleId,num);
-            return ResponseEntity.ok("Schedule updated successfully");
-        }
+        scheduleService.fetchAndUpdateSchedule(scheduleDTO.getId(), scheduleDTO.getNum());
 
+        System.out.println("izasao iz metode");
+
+        return ResponseEntity.ok("Schedule updated successfully");
+    }
 
 //    @PutMapping
 //    public ResponseEntity<Void> updateSchedule(@RequestBody Schedule schedule) {
