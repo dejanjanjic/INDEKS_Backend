@@ -3,8 +3,10 @@ package net.etfbl.indeks.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import net.etfbl.indeks.model.Announcement;
 import net.etfbl.indeks.model.AnnouncementAttachment;
+import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.AnnouncementRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,8 +56,10 @@ public class AnnouncementService
                                 entityManager.persist(attachment);
                             }
                         }
-                    } else {
 
+                        // Trigger push notifications
+                        sendNotificationsForAnnouncement(announcement);
+                    } else {
                         System.out.println("Announcement with ID " + announcement.getId() + " already exists.");
                     }
                 }
@@ -64,6 +68,48 @@ public class AnnouncementService
             e.printStackTrace();
         }
     }
+
+
+    @Autowired
+    private PushNotificationService pushNotificationService;
+
+    @Transactional
+    public void sendNotificationsForAnnouncement(Announcement announcement) {
+
+        TypedQuery<UserAccount> query = entityManager.createQuery(
+                "SELECT ua FROM UserAccount ua " +
+                        "WHERE ua.id IN (SELECT v.studentAccount.id FROM StudentAnnouncementVisibility v " +
+                        "WHERE " +
+                        "(v.canSeeYear1 = true AND :year = 1) OR " +
+                        "(v.canSeeYear2 = true AND :year = 2) OR " +
+                        "(v.canSeeYear3 = true AND :year = 3) OR " +
+                        "(v.canSeeYear4 = true AND :year = 4) OR " +
+                        "(v.canSeeMaster = true AND :year = 5) OR " +
+                        "(v.canSeeDoctorate = true AND :year = 6))",
+                UserAccount.class);
+        query.setParameter("year", announcement.getYear());
+
+        List<UserAccount> users = query.getResultList();
+
+        // Send push notifications
+        for (UserAccount user : users) {
+            if (user.getPushNotificationToken() != null ) {
+                try {
+                    pushNotificationService.sendPushNotification(
+                            user.getPushNotificationToken(),
+                            announcement.getTitle(),
+                            announcement.getHeader() != null ? announcement.getHeader() : "Provjerite detalje u aplikaciji!"
+                    );
+
+                    System.out.println("------------"+user.getPushNotificationToken()+"------------"+announcement.getTitle());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Failed to send notification to user: " + user.getId());
+                }
+            }
+        }
+    }
+
 
     public static List<Announcement> fetchObjectsFromApi(int announcementYear) throws Exception {
         List<Announcement> objects = new ArrayList<>();

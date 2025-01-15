@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,11 +36,9 @@ public class MessageService {
     public Optional<Message> getMessageById(Long id) {
         return messageRepository.findById(id);
     }
-
+//TO DO: NAPRAVITII ZA GRUPE ISTO SLATI!!!!!
     @Transactional
-    public Message addNewMessage(AddMessageDTO addMessageDTO)
-    {
-
+    public Message addNewMessage(AddMessageDTO addMessageDTO) {
         UserAccount sender = entityManager.find(UserAccount.class, addMessageDTO.getUserAccountId());
         if (sender == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sender not found");
@@ -50,9 +49,8 @@ public class MessageService {
 
         if (addMessageDTO.getSingleChatId() != null) {
             singleChat = entityManager.find(SingleChat.class, addMessageDTO.getSingleChatId());
-
         }
-        if (addMessageDTO.getGroupChatId()!=null) {
+        if (addMessageDTO.getGroupChatId() != null) {
             groupChat = entityManager.find(GroupChat.class, addMessageDTO.getGroupChatId());
         }
 
@@ -66,7 +64,24 @@ public class MessageService {
 
         entityManager.persist(message);
 
+      if (singleChat != null) {
+
+            UserAccount recipient = singleChat.getOtherUser(sender);
+            if (recipient != null) {
+                sendNotificationToUser(recipient.getPushNotificationToken(), message.getUserAccount().getFirstName()+" "+message.getUserAccount().getLastName(), message.getText());
+            }
+        }
+
         return message;
+    }
+
+    private void sendNotificationToUser(String pushToken, String title, String body) {
+        try {
+            PushNotificationService pushNotificationService = new PushNotificationService();
+            pushNotificationService.sendPushNotification(pushToken, title, body);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception as needed
+        }
     }
 
 

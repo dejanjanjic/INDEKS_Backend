@@ -50,4 +50,19 @@ public class SingleChat {
     public void setSecondParticipant(UserAccount secondParticipant) {
         this.secondParticipant = secondParticipant;
     }
+
+    public UserAccount getOtherUser(UserAccount user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        if (user.equals(firstParticipant)) {
+            return secondParticipant;
+        } else if (user.equals(secondParticipant)) {
+            return firstParticipant;
+        } else {
+            throw new IllegalArgumentException("User is not part of this chat");
+        }
+    }
+
 }
