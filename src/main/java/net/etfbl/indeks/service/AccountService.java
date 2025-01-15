@@ -1,7 +1,9 @@
 package net.etfbl.indeks.service;
 
+import net.etfbl.indeks.dto.UpdateAccountDTO;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.repository.AccountRepository;
+import net.etfbl.indeks.util.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
+    private final Encryption encryption = new Encryption();
 
     @Autowired
     public AccountService(AccountRepository accountRepository){
@@ -61,5 +64,23 @@ public class AccountService {
         }
         accountRepository.save(updatedAccount);
         return true;
+    }
+
+    @Transactional
+    public void changePassword(UpdateAccountDTO updateAccountDTO) {
+
+        String password = encryption.encryptPassword(updateAccountDTO.getPassword());
+
+        if(!password.isEmpty()) {
+            Account account = accountRepository.findByEmail(updateAccountDTO.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Account not found!"));
+
+            if (!password.equals(account.getPassword())) {
+                account.setPassword(password);
+            } else {
+                throw new IllegalArgumentException("New password must be different!");
+            }
+            accountRepository.save(account);
+        }
     }
 }
