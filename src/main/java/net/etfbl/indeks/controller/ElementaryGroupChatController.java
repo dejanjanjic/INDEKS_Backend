@@ -3,6 +3,7 @@ package net.etfbl.indeks.controller;
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
 import net.etfbl.indeks.dto.GetMessageDTO;
 import net.etfbl.indeks.dto.GroupMessageDTO;
+import net.etfbl.indeks.dto.MessageWithSenderDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.service.ElementaryGroupChatService;
 import net.etfbl.indeks.service.MessageService;
@@ -79,8 +80,8 @@ public class ElementaryGroupChatController {
     }
 
     @GetMapping("/{chatId}/messages")
-    public ResponseEntity<List<GetMessageDTO>> getMessagesFromChat(@PathVariable Long chatId, @RequestParam Long userId) {
-        List<GetMessageDTO> messages = elementaryGroupChatService.getMessagesFromChat(chatId, userId);
+    public ResponseEntity<List<MessageWithSenderDTO>> getMessagesFromChat(@PathVariable Long chatId, @RequestParam Long userId) {
+        List<MessageWithSenderDTO> messages = elementaryGroupChatService.getMessagesFromChat(chatId, userId);
         return ResponseEntity.ok(messages);
     }
 
