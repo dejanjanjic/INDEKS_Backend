@@ -61,7 +61,7 @@ public class ElementaryGroupChatController {
     public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId) {
         boolean isDeleted = elementaryGroupChatService.deleteGroup(groupId);
         if (isDeleted) {
-            return new ResponseEntity( HttpStatus.NO_CONTENT);
+            return new ResponseEntity( HttpStatus.OK);
         } else {
             return new ResponseEntity( HttpStatus.NOT_FOUND);
         }
