@@ -6,16 +6,18 @@ public class SingleChatSummaryDTO {
     private String name;
     private String sender;
     private String lastMessage;
-    private boolean isGroup; // New field
+    private boolean isGroup; // This field already tracks group chats
+    private boolean isElementaryGroup; // New field for elementary group chats
 
     // Constructors, getters, and setters
 
-    public SingleChatSummaryDTO(String id, String name, String sender, String lastMessage, boolean isGroup) {
+    public SingleChatSummaryDTO(String id, String name, String sender, String lastMessage, boolean isGroup, boolean isElementaryGroup) {
         this.id = id;
         this.name = name;
         this.sender = sender;
         this.lastMessage = lastMessage;
         this.isGroup = isGroup; // Initialize the isGroup field
+        this.isElementaryGroup = isElementaryGroup; // Initialize the isElementaryGroup field
     }
 
     public String getId() {
@@ -56,5 +58,13 @@ public class SingleChatSummaryDTO {
 
     public void setGroup(boolean isGroup) {
         this.isGroup = isGroup;
+    }
+
+    public boolean isElementaryGroup() {
+        return isElementaryGroup;
+    }
+
+    public void setElementaryGroup(boolean isElementaryGroup) {
+        this.isElementaryGroup = isElementaryGroup;
     }
 }

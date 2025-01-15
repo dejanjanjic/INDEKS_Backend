@@ -100,19 +100,19 @@ public class SingleChatService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-
+        // Fetch single chats
         String singleChatQueryStr = "SELECT c FROM SingleChat c WHERE c.firstParticipant = :user OR c.secondParticipant = :user";
         TypedQuery<SingleChat> singleChatQuery = entityManager.createQuery(singleChatQueryStr, SingleChat.class);
         singleChatQuery.setParameter("user", user);
         List<SingleChat> singleChats = singleChatQuery.getResultList();
 
-
+        // Fetch elementary group chats
         String elementaryGroupChatQueryStr = "SELECT egc FROM ElementaryGroupChat egc WHERE EXISTS (SELECT 1 FROM ElementaryGroupChatMember egcm WHERE egcm.elementaryGroupChat.id = egc.id AND egcm.studentAccount.id = :userId)";
         TypedQuery<ElementaryGroupChat> elementaryGroupChatQuery = entityManager.createQuery(elementaryGroupChatQueryStr, ElementaryGroupChat.class);
         elementaryGroupChatQuery.setParameter("userId", userId);
         List<ElementaryGroupChat> elementaryGroupChats = elementaryGroupChatQuery.getResultList();
 
-
+        // Fetch private group chats
         String privateGroupChatQueryStr = "SELECT pgc FROM PrivateGroupChat pgc WHERE EXISTS (SELECT 1 FROM PrivateGroupChatMember pgcm WHERE pgcm.privateGroupChat.id = pgc.id AND pgcm.userAccount.id = :userId)";
         TypedQuery<PrivateGroupChat> privateGroupChatQuery = entityManager.createQuery(privateGroupChatQueryStr, PrivateGroupChat.class);
         privateGroupChatQuery.setParameter("userId", userId);
@@ -120,7 +120,7 @@ public class SingleChatService {
 
         List<SingleChatSummaryDTO> chatSummaries = new ArrayList<>();
 
-
+        // Processing SingleChats
         for (SingleChat chat : singleChats) {
             LastMessageInfo lastMessageInfo = getLastMessageFromChat(chat.getId());
             UserAccount otherParticipant = chat.getFirstParticipant().equals(user) ? chat.getSecondParticipant() : chat.getFirstParticipant();
@@ -129,11 +129,12 @@ public class SingleChatService {
                     otherParticipant.getFirstName() + " " + otherParticipant.getLastName(),
                     lastMessageInfo.getSender(),
                     lastMessageInfo.getMessage(),
-                    false
+                    false,
+                    false // Not an elementary group
             ));
         }
 
-
+        // Processing ElementaryGroupChats
         for (ElementaryGroupChat chat : elementaryGroupChats) {
             LastMessageInfo lastMessageInfo = getLastMessageFromChat(chat.getId());
             String groupName = chat.getGroupChat().getName();
@@ -142,11 +143,12 @@ public class SingleChatService {
                     groupName,
                     lastMessageInfo.getSender(),
                     lastMessageInfo.getMessage(),
-                    true
+                    true,
+                    true // This is an elementary group
             ));
         }
 
-
+        // Processing PrivateGroupChats
         for (PrivateGroupChat chat : privateGroupChats) {
             LastMessageInfo lastMessageInfo = getLastMessageFromChat(chat.getId());
             String groupName = "Private Group";
@@ -155,7 +157,8 @@ public class SingleChatService {
                     groupName,
                     lastMessageInfo.getSender(),
                     lastMessageInfo.getMessage(),
-                    true
+                    true,
+                    false // Not an elementary group
             ));
         }
 
