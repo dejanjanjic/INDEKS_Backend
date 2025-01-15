@@ -54,7 +54,7 @@ public class ElementaryGroupChatService {
     @Transactional
     public List<MessageWithSenderDTO> getMessagesFromChat(Long chatId, Long userId) {
 
-        PrivateGroupChat chat = entityManager.find(PrivateGroupChat.class, chatId);
+        ElementaryGroupChat chat = entityManager.find(ElementaryGroupChat.class, chatId);
         if (chat == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
         }
