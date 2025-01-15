@@ -88,6 +88,19 @@ public class AuthenticationService {
                 studentAccountRepository.save(studentAccount);
                 System.out.println("New student registered!");
 
+
+                StudentAnnouncementVisibility studentAnnouncementVisibility = new StudentAnnouncementVisibility();
+                studentAnnouncementVisibility.setStudentAccount(studentAccount);
+                studentAnnouncementVisibility.setCanSeeYear1(true); // Default visibility settings
+                studentAnnouncementVisibility.setCanSeeYear2(true);
+                studentAnnouncementVisibility.setCanSeeYear3(true);
+                studentAnnouncementVisibility.setCanSeeYear4(true);
+                studentAnnouncementVisibility.setCanSeeMaster(false);
+                studentAnnouncementVisibility.setCanSeeDoctorate(false);
+
+                studentAnnouncementVisibilityRepository.save(studentAnnouncementVisibility);
+
+
             }
 //            case "TUTOR" -> {
 //                Optional<TutorAccount> tutorCheck = tutorAccountRepository.findByEmail(input.getEmail());
