@@ -10,6 +10,7 @@ import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.SingleChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -166,6 +167,29 @@ public class SingleChatService {
     }
 
 
+
+    @Transactional
+    public ResponseEntity<Boolean> doesSingleChatExist(Long firstParticipantId, Long secondParticipantId) {
+        // Fetch the users
+        UserAccount firstParticipant = entityManager.find(UserAccount.class, firstParticipantId);
+        UserAccount secondParticipant = entityManager.find(UserAccount.class, secondParticipantId);
+
+        if (firstParticipant == null || secondParticipant == null) {
+            // Returning a 200 OK with 'false' if either user is not found
+            return ResponseEntity.ok(false);
+        }
+
+        // Check if a SingleChat exists using COUNT
+        String queryStr = "SELECT COUNT(c) FROM SingleChat c WHERE (c.firstParticipant = :firstParticipant AND c.secondParticipant = :secondParticipant) OR (c.firstParticipant = :secondParticipant AND c.secondParticipant = :firstParticipant)";
+        TypedQuery<Long> query = entityManager.createQuery(queryStr, Long.class);
+        query.setParameter("firstParticipant", firstParticipant);
+        query.setParameter("secondParticipant", secondParticipant);
+
+        Long count = query.getSingleResult();  // Get the count of existing chats
+
+        // Returning true if the chat exists, otherwise false
+        return ResponseEntity.ok(count > 0);
+    }
     private LastMessageInfo getLastMessageFromChat(Long chatId) {
 
         String messageQueryStr = "SELECT m FROM Message m WHERE m.singleChat.id = :chatId OR m.groupChat.id=:chatId ORDER BY m.time DESC";
