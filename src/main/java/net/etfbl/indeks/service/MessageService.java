@@ -7,6 +7,7 @@ import net.etfbl.indeks.dto.GroupMessageDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.MessageRepository;
 import net.etfbl.indeks.repository.UserAccountRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class MessageService {
         return messageRepository.findById(id);
     }
 //TO DO: NAPRAVITII ZA GRUPE ISTO SLATI!!!!!
+
+
     @Transactional
     public Message addNewMessage(AddMessageDTO addMessageDTO) {
         UserAccount sender = entityManager.find(UserAccount.class, addMessageDTO.getUserAccountId());
@@ -45,35 +48,88 @@ public class MessageService {
         }
 
         SingleChat singleChat = null;
-        GroupChat groupChat = null;
+        Message message = null;
 
         if (addMessageDTO.getSingleChatId() != null) {
             singleChat = entityManager.find(SingleChat.class, addMessageDTO.getSingleChatId());
         }
-        if (addMessageDTO.getGroupChatId() != null) {
-            groupChat = entityManager.find(GroupChat.class, addMessageDTO.getGroupChatId());
-        }
 
-        Message message = new Message(
+        // Create and persist the message
+        message = new Message(
                 addMessageDTO.getText(),
                 singleChat,
-                groupChat,
+                null, // GroupChat will be resolved dynamically
                 addMessageDTO.getStatus(),
                 sender
         );
 
         entityManager.persist(message);
 
-      if (singleChat != null) {
-
+        if (singleChat != null) {
+            // Handle single chat message
             UserAccount recipient = singleChat.getOtherUser(sender);
             if (recipient != null) {
-                sendNotificationToUser(recipient.getPushNotificationToken(), message.getUserAccount().getFirstName()+" "+message.getUserAccount().getLastName(), message.getText());
+                sendNotificationToUser(
+                        recipient.getPushNotificationToken(),
+                        sender.getFirstName() + " " + sender.getLastName(),
+                        message.getText()
+                );
+            }
+        }
+
+        if (addMessageDTO.getGroupChatId() != null) {
+            long groupChatId = addMessageDTO.getGroupChatId();
+
+            // Attempt to find the group in PrivateGroupChat
+            PrivateGroupChat privateGroupChat = entityManager.find(PrivateGroupChat.class, groupChatId);
+
+            if (privateGroupChat != null) {
+                // Handle PrivateGroupChat
+                List<PrivateGroupChatMember> privateGroupMembers = entityManager
+                        .createQuery("SELECT m FROM PrivateGroupChatMember m WHERE m.privateGroupChat.id = :groupChatId", PrivateGroupChatMember.class)
+                        .setParameter("groupChatId", groupChatId)
+                        .getResultList();
+
+                for (PrivateGroupChatMember member : privateGroupMembers) {
+                    UserAccount memberAccount = member.getUserAccount();
+                    if (!memberAccount.equals(sender)) {
+                        sendNotificationToUser(
+                                memberAccount.getPushNotificationToken(),
+                                privateGroupChat.getGroupChat().getName(),
+                                message.getText()
+                        );
+                    }
+                }
+            } else {
+                // Attempt to find the group in ElementaryGroupChat
+                ElementaryGroupChat elementaryGroupChat = entityManager.find(ElementaryGroupChat.class, groupChatId);
+
+                if (elementaryGroupChat != null) {
+                    // Handle ElementaryGroupChat
+                    List<ElementaryGroupChatMember> elementaryGroupMembers = entityManager
+                            .createQuery("SELECT m FROM ElementaryGroupChatMember m WHERE m.elementaryGroupChat.id = :groupChatId", ElementaryGroupChatMember.class)
+                            .setParameter("groupChatId", groupChatId)
+                            .getResultList();
+
+                    for (ElementaryGroupChatMember member : elementaryGroupMembers) {
+                        UserAccount studentAccount = member.getStudentAccount().getUserAccount();
+                        if (!studentAccount.equals(sender)) {
+                            sendNotificationToUser(
+                                    studentAccount.getPushNotificationToken(),
+                                    elementaryGroupChat.getGroupChat().getName(),
+                                    message.getText()
+                            );
+                        }
+                    }
+                } else {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group chat not found");
+                }
             }
         }
 
         return message;
     }
+
 
     private void sendNotificationToUser(String pushToken, String title, String body) {
         try {
