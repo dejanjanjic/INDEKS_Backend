@@ -5,6 +5,7 @@ import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.repository.AccountRepository;
 import net.etfbl.indeks.util.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +15,12 @@ import java.util.Optional;
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
-    private final Encryption encryption = new Encryption();
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository){
+    public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder){
         this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Account> getAccounts() {
@@ -81,18 +83,14 @@ public class AccountService {
         Account account = accountRepository.findByEmail(eMail)
                 .orElseThrow(() -> new RuntimeException("Account not found!"));
 
-        String encryptedOldPassword = encryption.encryptPassword(oldPassword);
-        if (!encryptedOldPassword.equals(account.getPassword())) {
+        if(!passwordEncoder.matches(oldPassword, account.getPassword())) {
             throw new IllegalArgumentException("Incorrect old password!");
         }
 
-
-
-        String encryptedNewPassword = encryption.encryptPassword(newPassword);
-        if (encryptedNewPassword.equals(account.getPassword())) {
+        if(passwordEncoder.matches(newPassword, account.getPassword())) {
             throw new IllegalArgumentException("New password must be different!");
         }
 
-        account.setPassword(encryptedNewPassword);
+        account.setPassword(passwordEncoder.encode(newPassword));
     }
 }

@@ -9,8 +9,10 @@ import net.etfbl.indeks.security.roles.Roles;
 import net.etfbl.indeks.util.Encryption;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.beans.Encoder;
 import java.util.Optional;
 
 @Service
@@ -24,7 +26,11 @@ public class AuthenticationService {
 
     private final Encryption encryption = new Encryption();
 
+    private final Encoder encoder = new Encoder();
+
     private final AuthenticationManager authenticationManager;
+
+    private final PasswordEncoder passwordEncoder;
 
     public AuthenticationService(
             AccountRepository accountRepository,
@@ -33,7 +39,8 @@ public class AuthenticationService {
             AdminAccountRepository adminAccountRepository,
             ScheduleRepository scheduleRepository,
             StudentAnnouncementVisibilityRepository studentAnnouncementVisibilityRepository,
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            PasswordEncoder passwordEncoder
     ) {
         this.authenticationManager = authenticationManager;
         this.accountRepository = accountRepository;
@@ -42,6 +49,7 @@ public class AuthenticationService {
         this.adminAccountRepository = adminAccountRepository;
         this.scheduleRepository = scheduleRepository;
         this.studentAnnouncementVisibilityRepository = studentAnnouncementVisibilityRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public RegistrationStatus signup(RegisterAccountDTO input) {
@@ -50,7 +58,21 @@ public class AuthenticationService {
 
         Account account = new Account();
         account.setEmail(input.getEmail());
-        account.setPassword(encryption.encryptPassword(input.getPassword()));
+
+        account.setPassword(passwordEncoder.encode(input.getPassword()));
+
+        if("ADMIN".equals(input.getType())) {
+
+            account.setRole(Roles.ADMIN);
+
+            AdminAccount adminAccount = new AdminAccount();
+            adminAccount.setAccount(account);
+
+            adminAccountRepository.save(adminAccount);
+            System.out.println("New admin registered!");
+
+            return RegistrationStatus.SUCCESS;
+        }
 
         UserAccount userAccount = new UserAccount();
         userAccount.setFirstName(input.getFirstName());
@@ -115,8 +137,6 @@ public class AuthenticationService {
                 System.out.println("WRONG USER TYPE FLAG!");
                 return RegistrationStatus.INVALID_FLAG;
             }
-
-
         }
 
         return RegistrationStatus.SUCCESS;
