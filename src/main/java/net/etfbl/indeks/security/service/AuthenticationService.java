@@ -6,12 +6,11 @@ import net.etfbl.indeks.security.dto.LoginAccountDTO;
 import net.etfbl.indeks.security.dto.RegisterAccountDTO;
 import net.etfbl.indeks.security.enumeration.RegistrationStatus;
 import net.etfbl.indeks.security.roles.Roles;
+import net.etfbl.indeks.util.Encryption;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -23,7 +22,7 @@ public class AuthenticationService {
     private final ScheduleRepository scheduleRepository;
     private final StudentAnnouncementVisibilityRepository studentAnnouncementVisibilityRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final Encryption encryption = new Encryption();
 
     private final AuthenticationManager authenticationManager;
 
@@ -34,8 +33,7 @@ public class AuthenticationService {
             AdminAccountRepository adminAccountRepository,
             ScheduleRepository scheduleRepository,
             StudentAnnouncementVisibilityRepository studentAnnouncementVisibilityRepository,
-            AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder
+            AuthenticationManager authenticationManager
     ) {
         this.authenticationManager = authenticationManager;
         this.accountRepository = accountRepository;
@@ -44,7 +42,6 @@ public class AuthenticationService {
         this.adminAccountRepository = adminAccountRepository;
         this.scheduleRepository = scheduleRepository;
         this.studentAnnouncementVisibilityRepository = studentAnnouncementVisibilityRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public RegistrationStatus signup(RegisterAccountDTO input) {
@@ -53,7 +50,7 @@ public class AuthenticationService {
 
         Account account = new Account();
         account.setEmail(input.getEmail());
-        account.setPassword(passwordEncoder.encode(input.getPassword()));
+        account.setPassword(encryption.encryptPassword(input.getPassword()));
 
         UserAccount userAccount = new UserAccount();
         userAccount.setFirstName(input.getFirstName());

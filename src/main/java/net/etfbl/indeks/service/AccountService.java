@@ -69,18 +69,30 @@ public class AccountService {
     @Transactional
     public void changePassword(UpdateAccountDTO updateAccountDTO) {
 
-        String password = encryption.encryptPassword(updateAccountDTO.getPassword());
+        String eMail = updateAccountDTO.getEmail();
+        String oldPassword = updateAccountDTO.getOldPassword();
+        String newPassword = updateAccountDTO.getNewPassword();
 
-        if(!password.isEmpty()) {
-            Account account = accountRepository.findByEmail(updateAccountDTO.getEmail())
-                    .orElseThrow(() -> new RuntimeException("Account not found!"));
-
-            if (!password.equals(account.getPassword())) {
-                account.setPassword(password);
-            } else {
-                throw new IllegalArgumentException("New password must be different!");
-            }
-            accountRepository.save(account);
+        if (eMail == null || oldPassword == null || newPassword == null ||
+                eMail.isEmpty() || oldPassword.isEmpty() || newPassword.isEmpty()) {
+            throw new IllegalArgumentException("All fields must be filled!");
         }
+
+        Account account = accountRepository.findByEmail(eMail)
+                .orElseThrow(() -> new RuntimeException("Account not found!"));
+
+        String encryptedOldPassword = encryption.encryptPassword(oldPassword);
+        if (!encryptedOldPassword.equals(account.getPassword())) {
+            throw new IllegalArgumentException("Incorrect old password!");
+        }
+
+
+
+        String encryptedNewPassword = encryption.encryptPassword(newPassword);
+        if (encryptedNewPassword.equals(account.getPassword())) {
+            throw new IllegalArgumentException("New password must be different!");
+        }
+
+        account.setPassword(encryptedNewPassword);
     }
 }

@@ -5,14 +5,16 @@ import net.etfbl.indeks.security.roles.Roles;
 public class UpdateAccountDTO {
 
     private String email;
-    private String password;
+    private String oldPassword;
+    private String newPassword;
 
     public UpdateAccountDTO() {
     }
 
-    public UpdateAccountDTO(String email, String password) {
+    public UpdateAccountDTO(String email, String oldPassword, String newPassword) {
         this.email = email;
-        this.password = password;
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
     }
 
     public String getEmail() {
@@ -23,19 +25,28 @@ public class UpdateAccountDTO {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getOldPassword() {
+        return oldPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     @Override
     public String toString() {
         return "UpdateAccountDTO{" +
                 "email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", oldPassword='" + oldPassword + '\'' +
+                ", newPassword='" + newPassword + '\'' +
                 '}';
     }
 }
