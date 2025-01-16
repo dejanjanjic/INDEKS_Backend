@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddTutoringOfferDTO;
+import net.etfbl.indeks.dto.TutoringOfferDetailsDTO;
 import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
 import net.etfbl.indeks.model.TutoringOffer;
 import net.etfbl.indeks.service.TutoringOfferService;
@@ -72,6 +73,19 @@ public class TutoringOfferController
     public ResponseEntity<Double> getAverageRatingForTutoringOffer(@PathVariable Long id) {
         Double averageRating = tutoringOfferService.getAverageRatingForTutoringOffer(id);
         return ResponseEntity.ok(averageRating);
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<List<TutoringOfferDetailsDTO>> getTutoringOfferDetails() {
+        List<TutoringOfferDetailsDTO> tutoringOfferDetails = tutoringOfferService.getTutoringOfferDetails();
+
+        // If no tutoring offers found, return 404 not found
+        if (tutoringOfferDetails.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Otherwise, return 200 OK with the list of details
+        return ResponseEntity.ok(tutoringOfferDetails);
     }
 
 }

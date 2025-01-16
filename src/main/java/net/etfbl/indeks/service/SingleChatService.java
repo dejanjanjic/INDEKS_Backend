@@ -175,7 +175,7 @@ public class SingleChatService {
         UserAccount secondParticipant = entityManager.find(UserAccount.class, secondParticipantId);
 
         if (firstParticipant == null || secondParticipant == null) {
-            // Returning 200 OK with 'null' if either user is not found
+
             return ResponseEntity.ok(null);
         }
 

@@ -2,15 +2,22 @@ package net.etfbl.indeks.service;
 
 import jakarta.persistence.EntityManager;
 import net.etfbl.indeks.dto.AddTutoringOfferDTO;
+import net.etfbl.indeks.dto.TutoringOfferDetailsDTO;
 import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
 import net.etfbl.indeks.model.*;
+import net.etfbl.indeks.repository.ReviewRepository;
+import net.etfbl.indeks.repository.SubjectRepository;
 import net.etfbl.indeks.repository.TutoringOfferRepository;
+import net.etfbl.indeks.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,5 +108,52 @@ public class TutoringOfferService
         return averageRating;
     }
 
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;  // Add the Review repository to fetch reviews
+
+    public List<TutoringOfferDetailsDTO> getTutoringOfferDetails() {
+        List<TutoringOffer> tutoringOffers = tutoringOfferRepository.findAll();  // Retrieve all tutoring offers
+
+        List<TutoringOfferDetailsDTO> offerDetailsDTOList = new ArrayList<>();
+
+        for (TutoringOffer offer : tutoringOffers) {
+            // Fetch related user (acting as instructor)
+            UserAccount instructor = userAccountRepository.findById(offer.getTutorAccount().getId()).orElse(null);
+            // Fetch related subject
+            Subject subject = subjectRepository.findById(offer.getSubject().getId()).orElse(null);
+
+            // Calculate the average rating from reviews for the tutoring offer
+            Double averageRating = calculateAverageRating(offer.getId());
+
+            if (instructor != null && subject != null) {
+                String instructorName = instructor.getFirstName() + " " + instructor.getLastName();
+                offerDetailsDTOList.add(new TutoringOfferDetailsDTO(instructorName, subject.getName(), offer.getId(), averageRating));
+            }
+        }
+
+        return offerDetailsDTOList;
+    }
+
+    private Double calculateAverageRating(long tutoringOfferId) {
+        List<Review> reviews = reviewRepository.findByTutoringOfferId(tutoringOfferId);  // Retrieve reviews for this tutoring offer
+
+        if (reviews.isEmpty()) {
+            return 0.0;  // If no reviews, return 0.0
+        }
+
+        double totalRating = 0.0;
+        for (Review review : reviews) {
+            totalRating += review.getRating();
+        }
+
+        return totalRating / reviews.size();  // Return the average rating as a Double
+    }
 
 }
