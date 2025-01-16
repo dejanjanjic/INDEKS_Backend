@@ -151,7 +151,7 @@ public class SingleChatService {
         // Processing PrivateGroupChats
         for (PrivateGroupChat chat : privateGroupChats) {
             LastMessageInfo lastMessageInfo = getLastMessageFromChat(chat.getId());
-            String groupName = "Private Group";
+            String groupName = chat.getGroupChat().getName();
             chatSummaries.add(new SingleChatSummaryDTO(
                     String.valueOf(chat.getId()),
                     groupName,
