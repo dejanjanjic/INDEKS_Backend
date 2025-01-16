@@ -3,6 +3,7 @@ package net.etfbl.indeks.service;
 import jakarta.persistence.EntityManager;
 import net.etfbl.indeks.dto.AddTutoringOfferDTO;
 import net.etfbl.indeks.dto.TutoringOfferDetailsDTO;
+import net.etfbl.indeks.dto.TutoringOfferWithReviewsDTO;
 import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.ReviewRepository;
@@ -154,6 +155,47 @@ public class TutoringOfferService
         }
 
         return totalRating / reviews.size();  // Return the average rating as a Double
+    }
+
+    // Method to fetch details for a specific tutoring offer by ID
+    public TutoringOfferWithReviewsDTO getTutoringOfferWithReviewsById(long tutoringOfferId) {
+        // Fetch the tutoring offer
+        TutoringOffer offer = tutoringOfferRepository.findById(tutoringOfferId).orElse(null);
+
+
+        if (offer == null) {
+            return null;  // Return null if tutoring offer not found
+        }
+
+        // Fetch related subject
+        Subject subject = subjectRepository.findById(offer.getSubject().getId()).orElse(null);
+        // Fetch related instructor (student account acting as the instructor)
+        UserAccount instructor = userAccountRepository.findById(offer.getTutorAccount().getId()).orElse(null);
+        // Fetch reviews for the specific tutoring offer
+        List<Review> reviews = reviewRepository.findByTutoringOfferId(offer.getId());
+
+        // Map reviews to ReviewDTO
+        List<TutoringOfferWithReviewsDTO.ReviewDTO> reviewDTOs = new ArrayList<>();
+        for (Review review : reviews) {
+            UserAccount reviewer = userAccountRepository.findById(review.getStudentAccount().getId()).orElse(null);
+            if (reviewer != null) {
+                String reviewerName = reviewer.getFirstName() + " " + reviewer.getLastName();
+                reviewDTOs.add(new TutoringOfferWithReviewsDTO.ReviewDTO(reviewerName, review.getComment(), review.getRating()));
+            }
+        }
+        // If subject or instructor is not found, return null
+        if (instructor != null && subject != null) {
+            String instructorName = instructor.getFirstName() + " " + instructor.getLastName();
+            return new TutoringOfferWithReviewsDTO(
+                    subject.getName(),
+                    instructorName,
+                    offer.getDescription(),
+                    offer.getId(),
+                    reviewDTOs
+            );
+        }
+
+        return null;  // Return null if no valid data is found
     }
 
 }
