@@ -69,4 +69,11 @@ public class SingleChatController {
         List<SingleChatSummaryDTO> chatSummaries = singleChatService.getAllChatsWithLastMessage(userId);
         return ResponseEntity.ok(chatSummaries);
     }
+
+    @GetMapping("/exists")
+    public ResponseEntity<Long> checkSingleChatExistence(
+            @RequestParam Long firstParticipantId,
+            @RequestParam Long secondParticipantId) {
+        return singleChatService.doesSingleChatExist(firstParticipantId, secondParticipantId);
+    }
 }

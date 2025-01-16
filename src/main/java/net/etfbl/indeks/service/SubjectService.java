@@ -1,13 +1,15 @@
 package net.etfbl.indeks.service;
 
+import net.etfbl.indeks.dto.AddSubjectDTO;
+import net.etfbl.indeks.dto.GetSubjectDTO;
 import net.etfbl.indeks.model.Subject;
 import net.etfbl.indeks.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SubjectService {
@@ -18,19 +20,34 @@ public class SubjectService {
         this.subjectRepository = subjectRepository;
     }
 
-    public List<Subject> getSubjects() {
-        return subjectRepository.findAll();
+    // Fetch all subjects
+    public List<GetSubjectDTO> getAllSubjects() {
+        return subjectRepository.findAll().stream()
+                .map(subject -> new GetSubjectDTO(subject.getId(), subject.getName(), subject.getYear()))
+                .collect(Collectors.toList());
     }
 
-    public Optional<Subject> getSubject(Long id) {
-        return subjectRepository.findById(id);
+    // Fetch subject by ID
+    public GetSubjectDTO getSubjectById(Long id) {
+        return subjectRepository.findById(id)
+                .map(subject -> new GetSubjectDTO(subject.getId(), subject.getName(), subject.getYear()))
+                .orElse(null);
     }
 
-    public Subject addNewSubject(Subject subject) {
-        subjectRepository.save(subject);
-        return subject;
+    // Fetch subjects by year
+    public List<GetSubjectDTO> getSubjectsByYear(int year) {
+        return subjectRepository.findByYear(year).stream()
+                .map(subject -> new GetSubjectDTO(subject.getId(), subject.getName(), subject.getYear()))
+                .collect(Collectors.toList());
     }
 
+    // Add new subject
+    public Subject addNewSubject(AddSubjectDTO addSubjectDTO) {
+        Subject subject = new Subject(addSubjectDTO.getName(), addSubjectDTO.getYear());
+        return subjectRepository.save(subject);
+    }
+
+    // Delete subject by ID
     public boolean deleteSubject(Long id) {
         boolean exists = subjectRepository.existsById(id);
         if (!exists) {
@@ -40,7 +57,7 @@ public class SubjectService {
         return true;
     }
 
-    @Transactional
+    // Update subject
     public boolean updateSubject(Subject subject) {
         Optional<Subject> temp = subjectRepository.findById(subject.getId());
         if (temp.isEmpty()) {
@@ -50,9 +67,4 @@ public class SubjectService {
         temp.get().setYear(subject.getYear());
         return true;
     }
-
-    public List<Subject> getSubjectsByYear(int year) {
-        return subjectRepository.findByYear(year);
-    }
 }
-

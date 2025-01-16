@@ -1,14 +1,14 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.AddSubjectDTO;
+import net.etfbl.indeks.dto.GetSubjectDTO;
 import net.etfbl.indeks.model.Subject;
 import net.etfbl.indeks.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/subject")
@@ -20,34 +20,39 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
+    // Get all subjects
     @GetMapping
-    public ResponseEntity<List<Subject>> getSubjects() {
-        return ResponseEntity.ok(subjectService.getSubjects());
+    public ResponseEntity<List<GetSubjectDTO>> getSubjects() {
+        return ResponseEntity.ok(subjectService.getAllSubjects());
     }
 
+    // Get subject by ID
     @GetMapping(path = "{id}")
-    public ResponseEntity<Subject> getSubject(@PathVariable(name = "id") Long id) {
-        Optional<Subject> subject = subjectService.getSubject(id);
-        return subject.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping(path = "/year/{year}")
-    public ResponseEntity<List<Subject>> getSubjectsByYear(@PathVariable int year) {
-        return ResponseEntity.ok(subjectService.getSubjectsByYear(year));
-    }
-
-    @PostMapping
-    public ResponseEntity<Subject> registerNewSubject(@RequestBody Subject subject) {
-        Subject temp = subjectService.addNewSubject(subject);
-        if (temp != null) {
-            return ResponseEntity.ok(temp);
-        } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
+    public ResponseEntity<GetSubjectDTO> getSubject(@PathVariable(name = "id") Long id) {
+        GetSubjectDTO subjectDTO = subjectService.getSubjectById(id);
+        if (subjectDTO == null) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(subjectDTO);
     }
 
-    @DeleteMapping(path = "{accountId}")
-    public ResponseEntity<Void> deleteSubject(@PathVariable("accountId") Long id) {
+    // Get subjects by year
+    @GetMapping(path = "/year/{year}")
+    public ResponseEntity<List<GetSubjectDTO>> getSubjectsByYear(@PathVariable int year) {
+        List<GetSubjectDTO> subjects = subjectService.getSubjectsByYear(year);
+        return ResponseEntity.ok(subjects);
+    }
+
+    // Add new subject
+    @PostMapping
+    public ResponseEntity<Subject> registerNewSubject(@RequestBody AddSubjectDTO addSubjectDTO) {
+        Subject newSubject = subjectService.addNewSubject(addSubjectDTO);
+        return ResponseEntity.ok(newSubject);
+    }
+
+    // Delete subject
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         boolean deleted = subjectService.deleteSubject(id);
         if (deleted) {
             return ResponseEntity.noContent().build();
@@ -56,6 +61,7 @@ public class SubjectController {
         }
     }
 
+    // Update subject
     @PutMapping
     public ResponseEntity<Void> updateSubject(@RequestBody Subject subject) {
         boolean updated = subjectService.updateSubject(subject);

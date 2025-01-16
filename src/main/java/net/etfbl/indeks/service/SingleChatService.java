@@ -10,6 +10,7 @@ import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.SingleChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -151,7 +152,7 @@ public class SingleChatService {
         // Processing PrivateGroupChats
         for (PrivateGroupChat chat : privateGroupChats) {
             LastMessageInfo lastMessageInfo = getLastMessageFromChat(chat.getId());
-            String groupName = "Private Group";
+            String groupName = chat.getGroupChat().getName();
             chatSummaries.add(new SingleChatSummaryDTO(
                     String.valueOf(chat.getId()),
                     groupName,
@@ -166,6 +167,34 @@ public class SingleChatService {
     }
 
 
+
+    @Transactional
+    public ResponseEntity<Long> doesSingleChatExist(Long firstParticipantId, Long secondParticipantId) {
+        // Fetch the users
+        UserAccount firstParticipant = entityManager.find(UserAccount.class, firstParticipantId);
+        UserAccount secondParticipant = entityManager.find(UserAccount.class, secondParticipantId);
+
+        if (firstParticipant == null || secondParticipant == null) {
+            // Returning 200 OK with 'null' if either user is not found
+            return ResponseEntity.ok(null);
+        }
+
+        // Check if a SingleChat exists
+        String queryStr = "SELECT c.id FROM SingleChat c WHERE (c.firstParticipant = :firstParticipant AND c.secondParticipant = :secondParticipant) OR (c.firstParticipant = :secondParticipant AND c.secondParticipant = :firstParticipant)";
+        TypedQuery<Long> query = entityManager.createQuery(queryStr, Long.class);
+        query.setParameter("firstParticipant", firstParticipant);
+        query.setParameter("secondParticipant", secondParticipant);
+
+        List<Long> result = query.getResultList();
+
+        if (result.isEmpty()) {
+            // Returning 200 OK with 'null' if chat doesn't exist
+            return ResponseEntity.ok(null);
+        }
+
+        // Returning the SingleChat ID if the chat exists
+        return ResponseEntity.ok(result.get(0));
+    }
     private LastMessageInfo getLastMessageFromChat(Long chatId) {
 
         String messageQueryStr = "SELECT m FROM Message m WHERE m.singleChat.id = :chatId OR m.groupChat.id=:chatId ORDER BY m.time DESC";
