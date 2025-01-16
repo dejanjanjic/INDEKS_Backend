@@ -169,26 +169,31 @@ public class SingleChatService {
 
 
     @Transactional
-    public ResponseEntity<Boolean> doesSingleChatExist(Long firstParticipantId, Long secondParticipantId) {
+    public ResponseEntity<Long> doesSingleChatExist(Long firstParticipantId, Long secondParticipantId) {
         // Fetch the users
         UserAccount firstParticipant = entityManager.find(UserAccount.class, firstParticipantId);
         UserAccount secondParticipant = entityManager.find(UserAccount.class, secondParticipantId);
 
         if (firstParticipant == null || secondParticipant == null) {
-            // Returning a 200 OK with 'false' if either user is not found
-            return ResponseEntity.ok(false);
+            // Returning 200 OK with 'null' if either user is not found
+            return ResponseEntity.ok(null);
         }
 
-        // Check if a SingleChat exists using COUNT
-        String queryStr = "SELECT COUNT(c) FROM SingleChat c WHERE (c.firstParticipant = :firstParticipant AND c.secondParticipant = :secondParticipant) OR (c.firstParticipant = :secondParticipant AND c.secondParticipant = :firstParticipant)";
+        // Check if a SingleChat exists
+        String queryStr = "SELECT c.id FROM SingleChat c WHERE (c.firstParticipant = :firstParticipant AND c.secondParticipant = :secondParticipant) OR (c.firstParticipant = :secondParticipant AND c.secondParticipant = :firstParticipant)";
         TypedQuery<Long> query = entityManager.createQuery(queryStr, Long.class);
         query.setParameter("firstParticipant", firstParticipant);
         query.setParameter("secondParticipant", secondParticipant);
 
-        Long count = query.getSingleResult();  // Get the count of existing chats
+        List<Long> result = query.getResultList();
 
-        // Returning true if the chat exists, otherwise false
-        return ResponseEntity.ok(count > 0);
+        if (result.isEmpty()) {
+            // Returning 200 OK with 'null' if chat doesn't exist
+            return ResponseEntity.ok(null);
+        }
+
+        // Returning the SingleChat ID if the chat exists
+        return ResponseEntity.ok(result.get(0));
     }
     private LastMessageInfo getLastMessageFromChat(Long chatId) {
 

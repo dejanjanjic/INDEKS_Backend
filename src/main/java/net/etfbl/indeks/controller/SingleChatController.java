@@ -71,7 +71,7 @@ public class SingleChatController {
     }
 
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> checkSingleChatExistence(
+    public ResponseEntity<Long> checkSingleChatExistence(
             @RequestParam Long firstParticipantId,
             @RequestParam Long secondParticipantId) {
         return singleChatService.doesSingleChatExist(firstParticipantId, secondParticipantId);
