@@ -15,14 +15,17 @@ public class Subject {
 
     private String name;
 
+    private int year;
+
     @OneToMany(mappedBy = "subject")
     @JsonManagedReference
     private List<TutoringOffer> tutoringOffers;
 
     public Subject() {}
 
-    public Subject(String name) {
+    public Subject(String name, int year) {
         this.name = name;
+        this.year = year;
     }
 
     public List<TutoringOffer> getTutoringOffers() {
@@ -49,11 +52,20 @@ public class Subject {
         this.name = name;
     }
 
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
     @Override
     public String toString() {
         return "Subject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", year=" + year +
                 '}';
     }
 }
