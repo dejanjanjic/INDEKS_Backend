@@ -12,16 +12,16 @@ public class PushNotificationService {
 
     private final OkHttpClient client = new OkHttpClient();
 
-    public void sendPushNotification(String pushToken, String title, String body) throws IOException {
+    public void sendPushNotification(String pushToken, String title, String body, String type) throws IOException {
         // Ensure the pushToken starts with "ExponentPushToken"
         if (!pushToken.startsWith("ExponentPushToken")) {
             throw new IllegalArgumentException("Invalid Expo Push Token");
         }
 
-        // Create the JSON payload
+        // Create the JSON payload with the dynamic type field
         String jsonPayload = String.format(
-                "{ \"to\": \"%s\", \"title\": \"%s\", \"body\": \"%s\", \"sound\": \"default\" }",
-                pushToken, title, body
+                "{ \"to\": \"%s\", \"title\": \"%s\", \"body\": \"%s\", \"sound\": \"default\", \"data\": { \"type\": \"%s\" } }",
+                pushToken, title, body, type
         );
 
         // Build the request

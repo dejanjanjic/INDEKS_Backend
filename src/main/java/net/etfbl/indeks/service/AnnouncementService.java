@@ -98,7 +98,8 @@ public class AnnouncementService
                     pushNotificationService.sendPushNotification(
                             user.getPushNotificationToken(),
                             announcement.getTitle(),
-                            announcement.getHeader() != null ? announcement.getHeader() : "Provjerite detalje u aplikaciji!"
+                            announcement.getHeader() != null ? announcement.getHeader() : "Provjerite detalje u aplikaciji!",
+                            "announcement"
                     );
 
                     System.out.println("------------"+user.getPushNotificationToken()+"------------"+announcement.getTitle());

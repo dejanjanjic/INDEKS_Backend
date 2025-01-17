@@ -134,7 +134,7 @@ public class MessageService {
     private void sendNotificationToUser(String pushToken, String title, String body) {
         try {
             PushNotificationService pushNotificationService = new PushNotificationService();
-            pushNotificationService.sendPushNotification(pushToken, title, body);
+            pushNotificationService.sendPushNotification(pushToken, title, body,"message");
         } catch (IOException e) {
             e.printStackTrace(); // Handle exception as needed
         }
