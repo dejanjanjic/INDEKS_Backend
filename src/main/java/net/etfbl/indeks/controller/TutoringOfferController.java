@@ -1,6 +1,8 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddTutoringOfferDTO;
+import net.etfbl.indeks.dto.TutoringOfferDetailsDTO;
+import net.etfbl.indeks.dto.TutoringOfferWithReviewsDTO;
 import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
 import net.etfbl.indeks.model.TutoringOffer;
 import net.etfbl.indeks.service.TutoringOfferService;
@@ -74,4 +76,31 @@ public class TutoringOfferController
         return ResponseEntity.ok(averageRating);
     }
 
+    @GetMapping("/details")
+    public ResponseEntity<List<TutoringOfferDetailsDTO>> getTutoringOfferDetails() {
+        List<TutoringOfferDetailsDTO> tutoringOfferDetails = tutoringOfferService.getTutoringOfferDetails();
+
+        // If no tutoring offers found, return 404 not found
+        if (tutoringOfferDetails.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Otherwise, return 200 OK with the list of details
+        return ResponseEntity.ok(tutoringOfferDetails);
+    }
+
+
+    // Endpoint to get tutoring offer details with reviews by tutoring offer ID
+    @GetMapping("/{tutoringOfferId}/with-reviews")
+    public ResponseEntity<TutoringOfferWithReviewsDTO> getTutoringOfferWithReviewsById(@PathVariable long tutoringOfferId) {
+        TutoringOfferWithReviewsDTO tutoringOfferDetails = tutoringOfferService.getTutoringOfferWithReviewsById(tutoringOfferId);
+
+        // If no tutoring offer found, return 404 not found
+        if (tutoringOfferDetails == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Otherwise, return 200 OK with the tutoring offer details
+        return ResponseEntity.ok(tutoringOfferDetails);
+    }
 }

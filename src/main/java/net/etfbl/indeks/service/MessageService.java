@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import net.etfbl.indeks.dto.AddMessageDTO;
 import net.etfbl.indeks.dto.GroupMessageDTO;
+import net.etfbl.indeks.dto.SingleChatSummaryDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.MessageRepository;
 import net.etfbl.indeks.repository.UserAccountRepository;
@@ -48,20 +49,27 @@ public class MessageService {
         }
 
         SingleChat singleChat = null;
+        GroupChat groupChat = null;
         Message message = null;
 
         if (addMessageDTO.getSingleChatId() != null) {
             singleChat = entityManager.find(SingleChat.class, addMessageDTO.getSingleChatId());
         }
+        if(addMessageDTO.getGroupChatId()!=null)
+        {
+            groupChat = entityManager.find(GroupChat.class, addMessageDTO.getGroupChatId());
+        }
+
 
         // Create and persist the message
         message = new Message(
                 addMessageDTO.getText(),
                 singleChat,
-                null, // GroupChat will be resolved dynamically
+                groupChat,
                 addMessageDTO.getStatus(),
                 sender
         );
+
 
         entityManager.persist(message);
 
@@ -69,22 +77,29 @@ public class MessageService {
             // Handle single chat message
             UserAccount recipient = singleChat.getOtherUser(sender);
             if (recipient != null) {
+                SingleChatSummaryDTO summary = new SingleChatSummaryDTO(
+                        singleChat.getId().toString(),
+                        sender.getFirstName() + " " + sender.getLastName(), // Not applicable for single chats
+                        sender.getFirstName() + " " + sender.getLastName(),
+                        message.getText(),
+                        false, // Not a group chat
+                        false // Not an elementary group chat
+                );
+
                 sendNotificationToUser(
                         recipient.getPushNotificationToken(),
-                        sender.getFirstName() + " " + sender.getLastName(),
-                        message.getText()
+                        summary.getSender(),
+                        summary.getLastMessage(),summary
                 );
             }
         }
 
-        if (addMessageDTO.getGroupChatId() != null) {
+        if (groupChat != null) {
             long groupChatId = addMessageDTO.getGroupChatId();
 
-            // Attempt to find the group in PrivateGroupChat
             PrivateGroupChat privateGroupChat = entityManager.find(PrivateGroupChat.class, groupChatId);
 
             if (privateGroupChat != null) {
-                // Handle PrivateGroupChat
                 List<PrivateGroupChatMember> privateGroupMembers = entityManager
                         .createQuery("SELECT m FROM PrivateGroupChatMember m WHERE m.privateGroupChat.id = :groupChatId", PrivateGroupChatMember.class)
                         .setParameter("groupChatId", groupChatId)
@@ -93,19 +108,26 @@ public class MessageService {
                 for (PrivateGroupChatMember member : privateGroupMembers) {
                     UserAccount memberAccount = member.getUserAccount();
                     if (!memberAccount.equals(sender)) {
+                        SingleChatSummaryDTO summary = new SingleChatSummaryDTO(
+                                privateGroupChat.getId().toString(),
+                                privateGroupChat.getGroupChat().getName(),
+                                sender.getFirstName() + " " + sender.getLastName(),
+                                message.getText(),
+                                true, // This is a group chat
+                                false // Not an elementary group chat
+                        );
+
                         sendNotificationToUser(
                                 memberAccount.getPushNotificationToken(),
-                                privateGroupChat.getGroupChat().getName(),
-                                message.getText()
+                                summary.getName(),
+                                summary.getLastMessage(),summary
                         );
                     }
                 }
             } else {
-                // Attempt to find the group in ElementaryGroupChat
                 ElementaryGroupChat elementaryGroupChat = entityManager.find(ElementaryGroupChat.class, groupChatId);
 
                 if (elementaryGroupChat != null) {
-                    // Handle ElementaryGroupChat
                     List<ElementaryGroupChatMember> elementaryGroupMembers = entityManager
                             .createQuery("SELECT m FROM ElementaryGroupChatMember m WHERE m.elementaryGroupChat.id = :groupChatId", ElementaryGroupChatMember.class)
                             .setParameter("groupChatId", groupChatId)
@@ -114,10 +136,19 @@ public class MessageService {
                     for (ElementaryGroupChatMember member : elementaryGroupMembers) {
                         UserAccount studentAccount = member.getStudentAccount().getUserAccount();
                         if (!studentAccount.equals(sender)) {
+                            SingleChatSummaryDTO summary = new SingleChatSummaryDTO(
+                                    elementaryGroupChat.getId().toString(),
+                                    elementaryGroupChat.getGroupChat().getName(),
+                                    sender.getFirstName() + " " + sender.getLastName(),
+                                    message.getText(),
+                                    true, // This is a group chat
+                                    true // This is an elementary group chat
+                            );
+
                             sendNotificationToUser(
                                     studentAccount.getPushNotificationToken(),
-                                    elementaryGroupChat.getGroupChat().getName(),
-                                    message.getText()
+                                    summary.getName(),
+                                    summary.getLastMessage(),summary
                             );
                         }
                     }
@@ -131,10 +162,11 @@ public class MessageService {
     }
 
 
-    private void sendNotificationToUser(String pushToken, String title, String body) {
+
+    private void sendNotificationToUser(String pushToken, String title, String body, SingleChatSummaryDTO chatSummary) {
         try {
             PushNotificationService pushNotificationService = new PushNotificationService();
-            pushNotificationService.sendPushNotification(pushToken, title, body);
+            pushNotificationService.sendPushNotification(pushToken, title, body, "message", chatSummary);
         } catch (IOException e) {
             e.printStackTrace(); // Handle exception as needed
         }
