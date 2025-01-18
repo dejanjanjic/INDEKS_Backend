@@ -1,5 +1,7 @@
 package net.etfbl.indeks.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.model.Material;
 import net.etfbl.indeks.repository.AccountRepository;
@@ -40,7 +42,14 @@ public class MaterialService {
         return true;
     }
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
+    @Transactional
+    public Material saveMaterial(Material material) {
+        entityManager.persist(material);
+        return material;
+    }
     @Transactional
     public boolean updateMaterial(Material material) {
         Optional<Material> temp = materialRepository.findById(material.getId());
