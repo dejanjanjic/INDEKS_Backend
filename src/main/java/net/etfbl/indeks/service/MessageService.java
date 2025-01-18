@@ -49,20 +49,27 @@ public class MessageService {
         }
 
         SingleChat singleChat = null;
+        GroupChat groupChat = null;
         Message message = null;
 
         if (addMessageDTO.getSingleChatId() != null) {
             singleChat = entityManager.find(SingleChat.class, addMessageDTO.getSingleChatId());
         }
+        if(addMessageDTO.getGroupChatId()!=null)
+        {
+            groupChat = entityManager.find(GroupChat.class, addMessageDTO.getGroupChatId());
+        }
+
 
         // Create and persist the message
         message = new Message(
                 addMessageDTO.getText(),
                 singleChat,
-                null,
+                groupChat,
                 addMessageDTO.getStatus(),
                 sender
         );
+
 
         entityManager.persist(message);
 
@@ -72,7 +79,7 @@ public class MessageService {
             if (recipient != null) {
                 SingleChatSummaryDTO summary = new SingleChatSummaryDTO(
                         singleChat.getId().toString(),
-                        null, // Not applicable for single chats
+                        sender.getFirstName() + " " + sender.getLastName(), // Not applicable for single chats
                         sender.getFirstName() + " " + sender.getLastName(),
                         message.getText(),
                         false, // Not a group chat
@@ -87,7 +94,7 @@ public class MessageService {
             }
         }
 
-        if (addMessageDTO.getGroupChatId() != null) {
+        if (groupChat != null) {
             long groupChatId = addMessageDTO.getGroupChatId();
 
             PrivateGroupChat privateGroupChat = entityManager.find(PrivateGroupChat.class, groupChatId);
