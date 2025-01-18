@@ -3,6 +3,8 @@ package net.etfbl.indeks.controller;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.dto.MaterialDTO;
+import net.etfbl.indeks.dto.MaterialResponseDTO;
+import net.etfbl.indeks.dto.MaterialSummaryDTO;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.model.Material;
 import net.etfbl.indeks.model.Subject;
@@ -132,5 +134,21 @@ public class MaterialController {
     }
 
 
+    @GetMapping("/material/{materialId}")
+    public ResponseEntity<?> getMaterial(@PathVariable Long materialId) {
+        MaterialResponseDTO materialResponseDTO = materialService.getMaterialAsDTO(materialId);
+
+        if (materialResponseDTO == null) {
+            return ResponseEntity.status(404).body("Material not found or error fetching content.");
+        }
+
+        return ResponseEntity.ok(materialResponseDTO);
+    }
+
+
+    @GetMapping("/materials/subject/{subjectId}")
+    public List<MaterialSummaryDTO> getMaterialsBySubject(@PathVariable Long subjectId) {
+        return materialService.getMaterialsBySubject(subjectId);
+    }
 
 }
