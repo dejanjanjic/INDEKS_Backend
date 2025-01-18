@@ -99,7 +99,7 @@ public class AnnouncementService
                             user.getPushNotificationToken(),
                             announcement.getTitle(),
                             announcement.getHeader() != null ? announcement.getHeader() : "Provjerite detalje u aplikaciji!",
-                            "announcement"
+                            "announcement",null
                     );
 
                     System.out.println("------------"+user.getPushNotificationToken()+"------------"+announcement.getTitle());
