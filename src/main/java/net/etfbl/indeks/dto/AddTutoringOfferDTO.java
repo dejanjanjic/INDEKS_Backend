@@ -30,11 +30,11 @@ public class AddTutoringOfferDTO {
         this.subjectId = subjectId;
     }
 
-    public Long getTutorAccountId() {
+    public Long getStudentAccountId() {
         return studentAccountId;
     }
 
-    public void setTutorAccountId(Long studentAccountId) {
+    public void setStudentAccountId(Long studentAccountId) {
         this.studentAccountId = studentAccountId;
     }
 

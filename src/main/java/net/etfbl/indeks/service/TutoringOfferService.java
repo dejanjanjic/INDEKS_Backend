@@ -49,7 +49,7 @@ public class TutoringOfferService
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
         }
 
-        StudentAccount studentAccount = entityManager.find(StudentAccount.class, addTutoringOfferDTO.getTutorAccountId());
+        StudentAccount studentAccount = entityManager.find(StudentAccount.class, addTutoringOfferDTO.getStudentAccountId());
         if (studentAccount == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor Account not found");
         }
