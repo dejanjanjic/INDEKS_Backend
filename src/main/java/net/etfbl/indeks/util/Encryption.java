@@ -1,5 +1,7 @@
 package net.etfbl.indeks.util;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -10,6 +12,7 @@ public class Encryption
         try {
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            BCryptPasswordEncoder BPE = new BCryptPasswordEncoder();
 
 
             byte[] hash = digest.digest(password.getBytes());

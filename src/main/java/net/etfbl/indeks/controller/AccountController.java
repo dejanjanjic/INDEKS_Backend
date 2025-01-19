@@ -54,4 +54,24 @@ public class AccountController {
         }
     }
 
+
+    @PostMapping("/recover")
+    public ResponseEntity<String> recoverAccount(@RequestParam String email) {
+        boolean result = accountService.sendRecoveryEmail(email);
+        if (!result) {
+            return ResponseEntity.badRequest().body("Account with given email not found.");
+        }
+        return ResponseEntity.ok("Recovery email sent.");
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<String> updatePassword(@RequestParam String email,
+                                                 @RequestParam String tempPassword,
+                                                 @RequestParam String newPassword) {
+        boolean result = accountService.updatePassword(email, tempPassword, newPassword);
+        if (!result) {
+            return ResponseEntity.badRequest().body("Invalid temporary password or account not found.");
+        }
+        return ResponseEntity.ok("Password updated successfully.");
+    }
 }
