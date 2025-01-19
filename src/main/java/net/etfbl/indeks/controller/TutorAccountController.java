@@ -15,9 +15,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "api/v1/tutorAccount")
 public class TutorAccountController {
-
     private final TutorAccountService tutorAccountService;
-    private Encryption encryption = new Encryption();
 
     @Autowired
     public TutorAccountController(TutorAccountService tutorAccountService) {
@@ -39,16 +37,6 @@ public class TutorAccountController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<TutorAccount> registerNewTutorAccount(@RequestBody AddUserAccountDTO addUserAccountDTO) {
-        addUserAccountDTO.setPassword(encryption.encryptPassword(addUserAccountDTO.getPassword()));
-        TutorAccount newAccount = tutorAccountService.addNewTutorAccount(addUserAccountDTO);
-        if (newAccount != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(newAccount);
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
     @DeleteMapping(path = "{accountId}")
     public ResponseEntity<Void> deleteTutorAccount(@PathVariable("accountId") Long accountId) {
         boolean deleted = tutorAccountService.deleteTutorAccount(accountId);

@@ -24,10 +24,9 @@ public class UserAccountService {
     private final UserAccountRepository userAccountRepository;
     private final AccountRepository accountRepository;
     private final EmailService emailService;
+
     @PersistenceContext
     private EntityManager entityManager;
-
-    private Encryption encryption = new Encryption();
 
     @Autowired
     public UserAccountService(UserAccountRepository userAccountRepository, AccountRepository accountRepository, EmailService emailService) {
@@ -90,27 +89,27 @@ public class UserAccountService {
         return true;
     }
 
-    public boolean sendPasswordRecoveryEmail(String email) {
-        Optional<Account> accountOpt = accountRepository.findByEmail(email);
-        if (accountOpt.isPresent())
-        {
-
-            Account account = accountOpt.get();
-
-            String newPassword =  UUID.randomUUID().toString().substring(0,8);
-
-            String encryptedPassword = encryption.encryptPassword(newPassword);
-            account.setPassword(encryptedPassword);
-
-            accountRepository.save(account);
-
-            emailService.sendEmail(email, "Oporavka lozinke",
-                    "Vaša nova lozinka je: " + newPassword+", možete ju promjeniti u aplikaciji.");
-
-            return true;
-        }
-        return false;
-    }
+//    public boolean sendPasswordRecoveryEmail(String email) {
+//        Optional<Account> accountOpt = accountRepository.findByEmail(email);
+//        if (accountOpt.isPresent())
+//        {
+//
+//            Account account = accountOpt.get();
+//
+//            String newPassword =  UUID.randomUUID().toString().substring(0,8);
+//
+//            String encryptedPassword = encryption.encryptPassword(newPassword);
+//            account.setPassword(encryptedPassword);
+//
+//            accountRepository.save(account);
+//
+//            emailService.sendEmail(email, "Oporavka lozinke",
+//                    "Vaša nova lozinka je: " + newPassword+", možete ju promjeniti u aplikaciji.");
+//
+//            return true;
+//        }
+//        return false;
+//    }
 
     public List<UserAccountSummaryDTO> getUserAccountSummaries() {
         // Fetch user accounts and join with account table to get email
@@ -139,24 +138,24 @@ public class UserAccountService {
 
 
 
-    @Transactional
-    public boolean updatePassword(String email, String newPassword) {
-        Optional<Account> accountOpt = accountRepository.findByEmail(email);
-        if (accountOpt.isPresent()) {
-            Account account = accountOpt.get();
-
-
-            String encryptedPassword = encryption.encryptPassword(newPassword);
-            account.setPassword(encryptedPassword);
-
-
-            account.setRecoveryToken(null);
-
-            accountRepository.save(account);
-            return true;
-        }
-        return false;
-    }
+//    @Transactional
+//    public boolean updatePassword(String email, String newPassword) {
+//        Optional<Account> accountOpt = accountRepository.findByEmail(email);
+//        if (accountOpt.isPresent()) {
+//            Account account = accountOpt.get();
+//
+//
+//            String encryptedPassword = encryption.encryptPassword(newPassword);
+//            account.setPassword(encryptedPassword);
+//
+//
+//            account.setRecoveryToken(null);
+//
+//            accountRepository.save(account);
+//            return true;
+//        }
+//        return false;
+//    }
 
     public void updatePushNotificationToken(Long id, String token) {
         UserAccount userAccount = userAccountRepository.findById(id)

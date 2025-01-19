@@ -7,11 +7,13 @@ import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
 import net.etfbl.indeks.model.TutoringOffer;
 import net.etfbl.indeks.service.TutoringOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,6 +41,19 @@ public class TutoringOfferController
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/student/{studentAccountId}")
+    public ResponseEntity<?> getTutoringOffersByStudentAccountId(@PathVariable Long studentAccountId) {
+        List<TutoringOffer> tutoringOffers = tutoringOfferService.getTutoringOffersByStudentAccountId(studentAccountId);
+
+        if (tutoringOffers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "This student has no tutoring offers."));
+        }
+
+        return ResponseEntity.ok(tutoringOffers);
+    }
+
+
 
     @PostMapping
     public ResponseEntity<TutoringOffer> registerNewTutoringOffer(@RequestBody AddTutoringOfferDTO addTutoringOfferDTO){
@@ -103,4 +118,6 @@ public class TutoringOfferController
         // Otherwise, return 200 OK with the tutoring offer details
         return ResponseEntity.ok(tutoringOfferDetails);
     }
+
+
 }

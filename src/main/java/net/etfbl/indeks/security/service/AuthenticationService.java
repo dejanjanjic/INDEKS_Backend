@@ -6,13 +6,11 @@ import net.etfbl.indeks.security.dto.LoginAccountDTO;
 import net.etfbl.indeks.security.dto.RegisterAccountDTO;
 import net.etfbl.indeks.security.enumeration.RegistrationStatus;
 import net.etfbl.indeks.security.roles.Roles;
-import net.etfbl.indeks.util.Encryption;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.beans.Encoder;
 import java.util.Optional;
 
 @Service
@@ -24,12 +22,7 @@ public class AuthenticationService {
     private final ScheduleRepository scheduleRepository;
     private final StudentAnnouncementVisibilityRepository studentAnnouncementVisibilityRepository;
 
-    private final Encryption encryption = new Encryption();
-
-    private final Encoder encoder = new Encoder();
-
     private final AuthenticationManager authenticationManager;
-
     private final PasswordEncoder passwordEncoder;
 
     public AuthenticationService(

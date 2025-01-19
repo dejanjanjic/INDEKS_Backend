@@ -17,7 +17,6 @@ import java.util.Optional;
 @RequestMapping(path = "api/v1/userAccount")
 public class UserAccountController {
     private final UserAccountService userAccountService;
-    private Encryption encryption = new Encryption();
 
     @Autowired
     public UserAccountController(UserAccountService userAccountService){

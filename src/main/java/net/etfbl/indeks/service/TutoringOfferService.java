@@ -109,6 +109,9 @@ public class TutoringOfferService
         return averageRating;
     }
 
+    public List<TutoringOffer> getTutoringOffersByStudentAccountId(Long studentAccountId) {
+        return tutoringOfferRepository.findByStudentAccountId(studentAccountId);
+    }
 
     @Autowired
     private UserAccountRepository userAccountRepository;
