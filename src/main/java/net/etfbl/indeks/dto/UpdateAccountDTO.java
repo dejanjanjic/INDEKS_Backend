@@ -1,28 +1,27 @@
 package net.etfbl.indeks.dto;
 
 import net.etfbl.indeks.security.roles.Roles;
-
 public class UpdateAccountDTO {
 
-    private String email;
+    private Long userId;
     private String oldPassword;
     private String newPassword;
 
     public UpdateAccountDTO() {
     }
 
-    public UpdateAccountDTO(String email, String oldPassword, String newPassword) {
-        this.email = email;
+    public UpdateAccountDTO(Long userId, String oldPassword, String newPassword) {
+        this.userId = userId;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
     }
 
-    public String getEmail() {
-        return email;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getOldPassword() {
@@ -44,7 +43,7 @@ public class UpdateAccountDTO {
     @Override
     public String toString() {
         return "UpdateAccountDTO{" +
-                "email='" + email + '\'' +
+                "userId=" + userId +
                 ", oldPassword='" + oldPassword + '\'' +
                 ", newPassword='" + newPassword + '\'' +
                 '}';

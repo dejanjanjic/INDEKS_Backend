@@ -50,7 +50,8 @@ public class AccountController {
             return ResponseEntity.ok(Map.of("message", "Password changed!"));
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body(Map.of("error", "New password must be different from the old password!"));
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
 }

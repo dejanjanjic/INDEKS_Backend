@@ -1,10 +1,7 @@
 package net.etfbl.indeks.service;
 
 import jakarta.persistence.EntityManager;
-import net.etfbl.indeks.dto.AddTutoringOfferDTO;
-import net.etfbl.indeks.dto.TutoringOfferDetailsDTO;
-import net.etfbl.indeks.dto.TutoringOfferWithReviewsDTO;
-import net.etfbl.indeks.dto.UpdateTutoringOfferDTO;
+import net.etfbl.indeks.dto.*;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.ReviewRepository;
 import net.etfbl.indeks.repository.SubjectRepository;
@@ -21,6 +18,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TutoringOfferService
@@ -109,8 +107,15 @@ public class TutoringOfferService
         return averageRating;
     }
 
-    public List<TutoringOffer> getTutoringOffersByStudentAccountId(Long studentAccountId) {
-        return tutoringOfferRepository.findByStudentAccountId(studentAccountId);
+    public List<TutoringOfferDTO> getTutoringOffersByStudentAccountId(Long studentAccountId) {
+        return tutoringOfferRepository.findByStudentAccountId(studentAccountId)
+                .stream()
+                .map(offer -> new TutoringOfferDTO(
+                        offer.getId(),
+                        offer.getDescription(),
+                        offer.getSubject().getName() // Assuming Subject has a getName() method
+                ))
+                .collect(Collectors.toList());
     }
 
     @Autowired

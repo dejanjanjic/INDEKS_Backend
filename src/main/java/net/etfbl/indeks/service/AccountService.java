@@ -71,26 +71,27 @@ public class AccountService {
     @Transactional
     public void changePassword(UpdateAccountDTO updateAccountDTO) {
 
-        String eMail = updateAccountDTO.getEmail();
+        Long userId = updateAccountDTO.getUserId();
         String oldPassword = updateAccountDTO.getOldPassword();
         String newPassword = updateAccountDTO.getNewPassword();
 
-        if (eMail == null || oldPassword == null || newPassword == null ||
-                eMail.isEmpty() || oldPassword.isEmpty() || newPassword.isEmpty()) {
+        if (userId == null || oldPassword == null || newPassword == null ||
+                oldPassword.isEmpty() || newPassword.isEmpty()) {
             throw new IllegalArgumentException("All fields must be filled!");
         }
 
-        Account account = accountRepository.findByEmail(eMail)
+        Account account = accountRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Account not found!"));
 
-        if(!passwordEncoder.matches(oldPassword, account.getPassword())) {
+        if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
             throw new IllegalArgumentException("Incorrect old password!");
         }
 
-        if(passwordEncoder.matches(newPassword, account.getPassword())) {
+        if (passwordEncoder.matches(newPassword, account.getPassword())) {
             throw new IllegalArgumentException("New password must be different!");
         }
 
         account.setPassword(passwordEncoder.encode(newPassword));
     }
+
 }
