@@ -37,6 +37,8 @@ public class SecurityConfiguration {
                         "/api/v1/verify-token",
                         "/api/v1/password-recovery",
                         "/api/v1/password-reset",
+                        "/api/v1/account/recover",
+                        "/api/v1/account/update-password",
                         "/api/v1/auth/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
