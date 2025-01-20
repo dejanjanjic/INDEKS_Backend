@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 public class IndeksBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IndeksBackendApplication.class, args);
