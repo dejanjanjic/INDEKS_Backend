@@ -1,10 +1,16 @@
 package net.etfbl.indeks.security.config;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.etfbl.indeks.model.UserAccount;
+import net.etfbl.indeks.repository.UserAccountRepository;
+import net.etfbl.indeks.security.blacklisting.service.BlacklistedTokenService;
 import net.etfbl.indeks.security.service.JwtService;
+import net.etfbl.indeks.service.UserAccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,22 +23,31 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
-
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UserAccountService userAccountService;
+    private final BlacklistedTokenService blacklistedTokenService;
 
+    private String jwtToken;
+
+    @Autowired
     public JwtAuthenticationFilter(
             JwtService jwtService,
             UserDetailsService userDetailsService,
-            HandlerExceptionResolver handlerExceptionResolver
+            HandlerExceptionResolver handlerExceptionResolver,
+            UserAccountService userAccountService,
+            BlacklistedTokenService blacklistedTokenService
     ) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
+        this.userAccountService = userAccountService;
+        this.blacklistedTokenService = blacklistedTokenService;
     }
 
     @Override
@@ -44,7 +59,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        if (request.getServletPath().startsWith("/api/v1/auth")) { filterChain.doFilter(request, response); return; }
+        if (request.getServletPath().equals("/api/v1/auth/register") || request.getServletPath().equals("/api/v1/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.out.println("Authorization header is missing or does not start with 'Bearer '");
@@ -53,8 +71,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            final String jwt = authHeader.substring(7);
-            final String userEmail = jwtService.extractEmail(jwt);
+            final String jwtToken = authHeader.substring(7);
+            this.jwtToken = jwtToken;
+
+            if (blacklistedTokenService.isTokenBlacklisted(jwtToken)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Error, this token has been blacklisted. User is logged out!.\"}");
+                return;
+            }
+
+            final String userEmail = jwtService.extractEmail(jwtToken);
             System.out.println("Extracted email: " + userEmail);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,14 +90,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
                 System.out.println("Loaded UserDetails: " + userDetails.getUsername());
 
-                if (jwtService.isTokenValid(jwt, userDetails)) {
+                if (jwtService.isTokenValid(jwtToken, userDetails)) {
                     System.out.println("Token is valid");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
-                            null,
+                            jwtToken,
                             userDetails.getAuthorities()
                     );
 
+                    System.out.println("Setting authentication with credentials: " + jwtToken);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
@@ -78,16 +106,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-
-            System.out.println("resi");
-        } catch (Exception exception) {
-
-            System.out.println("nije ovdje");
-
+        } catch (ExpiredJwtException expiredJwtException) {
+            String userEmail = jwtService.extractEmail(jwtToken);
+            Optional<UserAccount> userAccount = userAccountService.getUserAccountByEmail(userEmail);
+            userAccount.ifPresent(account -> account.setPushNotificationToken(null));
+        }
+        catch (Exception exception) {
             exception.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
-
 }

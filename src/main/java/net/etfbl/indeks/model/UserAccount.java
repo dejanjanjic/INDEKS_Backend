@@ -15,9 +15,8 @@ public class UserAccount {
     private Boolean suspended;
 
     private transient String recoveryToken;
-
-
     private String pushNotificationToken;
+
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id")
     @MapsId

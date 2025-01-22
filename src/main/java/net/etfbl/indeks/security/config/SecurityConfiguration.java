@@ -39,17 +39,20 @@ public class SecurityConfiguration {
                         "/api/v1/password-reset",
                         "/api/v1/account/recover",
                         "/api/v1/account/update-password",
-                        "/api/v1/auth/**",
+                        "/api/v1/auth/login",
+                        "/api/v1/auth/register",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
                         "/webjars/**"
                 )
-                .permitAll()
+                .permitAll() // Dozvoljeno svima bez autentifikacije
+//                .requestMatchers("/api/v1/auth/logout")
+//                .hasAnyAuthority("ROLE_STUDENT", "ROLE_ADMIN") // Specifične role
                 .requestMatchers("/**")
-                .hasAnyRole("STUDENT", "ADMIN") // Dozvoljava svim korisnicima sa ulogama 'student' ili 'admin'
+                .hasAnyAuthority("ROLE_STUDENT", "ROLE_ADMIN") // Svi ostali zahtevi za STUDENT i ADMIN
                 .anyRequest()
-                .authenticated()
+                .authenticated() // Sve ostalo zahteva autentifikaciju
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -59,6 +62,7 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
 
 
     @Bean

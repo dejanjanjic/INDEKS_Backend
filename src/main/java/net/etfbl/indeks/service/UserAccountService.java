@@ -43,6 +43,10 @@ public class UserAccountService {
         return userAccountRepository.findById(id);
     }
 
+    public Optional<UserAccount> getUserAccountByEmail(String email) {
+        return userAccountRepository.findByEmail(email);
+    }
+
     @Transactional
     public UserAccount addNewUserAccount(AddUserAccountDTO addUserAccountDTO, Roles role){
         Optional<Account> accountByEmail = accountRepository.findByEmail(addUserAccountDTO.getEmail());

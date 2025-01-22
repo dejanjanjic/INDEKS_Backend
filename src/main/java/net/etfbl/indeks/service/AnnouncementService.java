@@ -60,7 +60,7 @@ public class AnnouncementService
                         // Trigger push notifications
                         sendNotificationsForAnnouncement(announcement);
                     } else {
-                        System.out.println("Announcement with ID " + announcement.getId() + " already exists.");
+                       // System.out.println("Announcement with ID " + announcement.getId() + " already exists.");
                     }
                 }
             }
