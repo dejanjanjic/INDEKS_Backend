@@ -1,8 +1,14 @@
 package net.etfbl.indeks.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import net.etfbl.indeks.dto.BlockedUserDTO;
 import net.etfbl.indeks.model.BlockedAccount;
+import net.etfbl.indeks.model.SingleChat;
+import net.etfbl.indeks.model.UserAccount;
+import net.etfbl.indeks.repository.SingleChatRepository;
+import net.etfbl.indeks.repository.UserAccountRepository;
 import net.etfbl.indeks.service.BlockedAccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +18,12 @@ import java.util.List;
 @RequestMapping("/api/v1/blocked-accounts")
 public class BlockedAccountController {
     private final BlockedAccountService blockedAccountService;
+    @Autowired
+    private SingleChatRepository singleChatRepository;
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
 
     public BlockedAccountController(BlockedAccountService blockedAccountService) {
         this.blockedAccountService = blockedAccountService;
@@ -22,14 +34,42 @@ public class BlockedAccountController {
         return ResponseEntity.ok(blockedAccountService.getBlockedUsers(userId));
     }
 
-    @PostMapping("/{userId}/block/{blockedUserId}")
-    public ResponseEntity<BlockedAccount> blockUser(@PathVariable Long userId, @PathVariable Long blockedUserId) {
-        return ResponseEntity.ok(blockedAccountService.blockUser(userId, blockedUserId));
+    @PostMapping("/block/chat/{currentUserId}/{singleChatId}")
+    public ResponseEntity<BlockedAccount> blockUserInChat(
+            @PathVariable Long currentUserId,
+            @PathVariable Long singleChatId) {
+
+        // Fetch the SingleChat by its ID
+        SingleChat singleChat = singleChatRepository.findById(singleChatId)
+                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+
+        // Determine the other user in the chat
+        UserAccount currentUser = userAccountRepository.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserAccount otherUser = singleChat.getOtherUser(currentUser);
+
+        // Block the other user
+        BlockedAccount blockedAccount = blockedAccountService.blockUser(currentUserId, otherUser.getId());
+        return ResponseEntity.ok(blockedAccount);
     }
 
-    @DeleteMapping("/{userId}/unblock/{blockedUserId}")
-    public ResponseEntity<Void> unblockUser(@PathVariable Long userId, @PathVariable Long blockedUserId) {
-        blockedAccountService.unblockUser(userId, blockedUserId);
+    @DeleteMapping("/unblock/chat/{currentUserId}/{singleChatId}")
+    public ResponseEntity<Void> unblockUserInChat(
+            @PathVariable Long currentUserId,
+            @PathVariable Long singleChatId) {
+
+        // Fetch the SingleChat by its ID
+        SingleChat singleChat = singleChatRepository.findById(singleChatId)
+                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+
+        // Determine the other user in the chat
+        UserAccount currentUser = userAccountRepository.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        UserAccount otherUser = singleChat.getOtherUser(currentUser);
+
+        // Unblock the other user
+        blockedAccountService.unblockUser(currentUserId, otherUser.getId());
         return ResponseEntity.ok().build();
     }
+
 }
