@@ -53,22 +53,20 @@ public class BlockedAccountController {
         return ResponseEntity.ok(blockedAccount);
     }
 
-    @DeleteMapping("/unblock/chat/{currentUserId}/{singleChatId}")
+    @DeleteMapping("/unblock/chat/{currentUserId}/{blockedUserId}")
     public ResponseEntity<Void> unblockUserInChat(
             @PathVariable Long currentUserId,
-            @PathVariable Long singleChatId) {
+            @PathVariable Long blockedUserId) {
 
         // Fetch the SingleChat by its ID
-        SingleChat singleChat = singleChatRepository.findById(singleChatId)
-                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
 
-        // Determine the other user in the chat
         UserAccount currentUser = userAccountRepository.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        UserAccount otherUser = singleChat.getOtherUser(currentUser);
+        UserAccount bloeckedUser = userAccountRepository.findById(blockedUserId)
+                .orElseThrow(()->new EntityNotFoundException("User not found"));
 
         // Unblock the other user
-        blockedAccountService.unblockUser(currentUserId, otherUser.getId());
+        blockedAccountService.unblockUser(currentUserId, blockedUserId);
         return ResponseEntity.ok().build();
     }
 
