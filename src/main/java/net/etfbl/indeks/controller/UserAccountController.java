@@ -1,6 +1,7 @@
 package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.dto.UserAccountDTO;
 import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.UserAccount;
@@ -24,7 +25,7 @@ public class UserAccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserAccount>> getUserAccounts(){
+    public ResponseEntity<List<UserAccountDTO>> getUserAccounts(){
         return ResponseEntity.ok(userAccountService.getUserAccounts());
     }
 

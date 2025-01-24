@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface PotentialPasswordRepository extends JpaRepository<PotentialPassword, Long> {
     Optional<PotentialPassword> findByAccountId(Long accountId);
 
+    void deleteByAccountId(Long accountId);
 }

@@ -57,7 +57,7 @@ public class AccountService {
         Account account = accountOpt.get();
         String tempPassword = generateTemporaryPassword();
         PotentialPassword potentialPassword = new PotentialPassword(account.getId(), passwordEncoder.encode(tempPassword));
-        potentialPasswordRepository.save(potentialPassword);
+        savePotentialPassword(potentialPassword); // Ensures only one entry per user
 
         // Send the email
         try {
@@ -69,6 +69,26 @@ public class AccountService {
 
         return true;
     }
+
+
+    @Transactional
+    public void savePotentialPassword(PotentialPassword potentialPassword) {
+        // Check if a record for this accountId already exists
+        Optional<PotentialPassword> existingPotentialPassword =
+                potentialPasswordRepository.findByAccountId(potentialPassword.getAccountId());
+
+        if (existingPotentialPassword.isPresent()) {
+            // Update the existing record
+            PotentialPassword existing = existingPotentialPassword.get();
+            existing.setTempPassword(potentialPassword.getTempPassword());
+            potentialPasswordRepository.save(existing);
+        } else {
+            // Save as a new record
+            potentialPasswordRepository.save(potentialPassword);
+        }
+    }
+
+
 
     private void sendEmail(String toEmail, String tempPassword) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();

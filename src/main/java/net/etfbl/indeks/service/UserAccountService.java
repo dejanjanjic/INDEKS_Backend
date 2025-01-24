@@ -3,6 +3,7 @@ package net.etfbl.indeks.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.dto.AddUserAccountDTO;
+import net.etfbl.indeks.dto.UserAccountDTO;
 import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.security.roles.Roles;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserAccountService {
@@ -35,10 +37,11 @@ public class UserAccountService {
         this.emailService = emailService;
     }
 
-    public List<UserAccount> getUserAccounts(){
-        return userAccountRepository.findAll();
+    public List<UserAccountDTO> getUserAccounts() {
+        return userAccountRepository.findAll().stream()
+                .map(user -> new UserAccountDTO(user.getId(), user.getFirstName(), user.getLastName()))
+                .collect(Collectors.toList());
     }
-
     public Optional<UserAccount> getUserAccountById(Long id){
         return userAccountRepository.findById(id);
     }
