@@ -107,7 +107,7 @@ public class MessageService {
 
                 for (PrivateGroupChatMember member : privateGroupMembers) {
                     UserAccount memberAccount = member.getUserAccount();
-                    if (!memberAccount.equals(sender)) {
+                    if (!memberAccount.equals(sender)) { // Skip sending notification to the sender
                         SingleChatSummaryDTO summary = new SingleChatSummaryDTO(
                                 privateGroupChat.getId().toString(),
                                 privateGroupChat.getGroupChat().getName(),
@@ -120,7 +120,7 @@ public class MessageService {
                         sendNotificationToUser(
                                 memberAccount.getPushNotificationToken(),
                                 summary.getName(),
-                                summary.getLastMessage(),summary
+                                summary.getLastMessage(), summary
                         );
                     }
                 }
@@ -135,7 +135,7 @@ public class MessageService {
 
                     for (ElementaryGroupChatMember member : elementaryGroupMembers) {
                         UserAccount studentAccount = member.getStudentAccount().getUserAccount();
-                        if (!studentAccount.equals(sender)) {
+                        if (!studentAccount.equals(sender)) { // Skip sending notification to the sender
                             SingleChatSummaryDTO summary = new SingleChatSummaryDTO(
                                     elementaryGroupChat.getId().toString(),
                                     elementaryGroupChat.getGroupChat().getName(),
@@ -148,7 +148,7 @@ public class MessageService {
                             sendNotificationToUser(
                                     studentAccount.getPushNotificationToken(),
                                     summary.getName(),
-                                    summary.getLastMessage(),summary
+                                    summary.getLastMessage(), summary
                             );
                         }
                     }
