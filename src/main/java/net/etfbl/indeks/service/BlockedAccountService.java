@@ -43,6 +43,12 @@ public class BlockedAccountService {
         return blockedAccountRepository.save(blockedAccount);
     }
 
+    public boolean isBlocked(Long userId, Long otherUserId) {
+        boolean userBlockedOther = blockedAccountRepository.existsByUserAccountIdAndBlockedUserId(userId, otherUserId);
+        boolean otherBlockedUser = blockedAccountRepository.existsByUserAccountIdAndBlockedUserId(otherUserId, userId);
+        return userBlockedOther || otherBlockedUser;
+    }
+
     @Transactional
     public void unblockUser(Long userId, Long blockedUserId) {
         blockedAccountRepository.deleteByUserAccountIdAndBlockedUserId(userId, blockedUserId);

@@ -8,4 +8,6 @@ import java.util.List;
 public interface BlockedAccountRepository extends JpaRepository<BlockedAccount, Long> {
     List<BlockedAccount> findByUserAccountId(Long userId);
     void deleteByUserAccountIdAndBlockedUserId(Long userId, Long blockedUserId);
+
+    boolean existsByUserAccountIdAndBlockedUserId(Long userId, Long otherUserId);
 }

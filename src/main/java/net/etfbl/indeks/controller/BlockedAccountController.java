@@ -70,4 +70,25 @@ public class BlockedAccountController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/is-blocked/{currentUserId}/{singleChatId}")
+    public ResponseEntity<Boolean> isUserBlockedInChat(
+            @PathVariable Long currentUserId,
+            @PathVariable Long singleChatId) {
+
+        // Fetch the SingleChat by its ID
+        SingleChat singleChat = singleChatRepository.findById(singleChatId)
+                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+
+        // Fetch the current user
+        UserAccount currentUser = userAccountRepository.findById(currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Determine the other user in the chat
+        UserAccount otherUser = singleChat.getOtherUser(currentUser);
+
+        // Check if either user has blocked the other
+        boolean isBlocked = blockedAccountService.isBlocked(currentUserId, otherUser.getId());
+        return ResponseEntity.ok(isBlocked);
+    }
+
 }
