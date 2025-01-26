@@ -1,15 +1,10 @@
 package net.etfbl.indeks.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import net.etfbl.indeks.dto.ProblemReportDTO;
 import net.etfbl.indeks.dto.ProblemReportDetailsDTO;
-import net.etfbl.indeks.model.Material;
-import net.etfbl.indeks.model.ProblemReport;
-import net.etfbl.indeks.model.Review;
-import net.etfbl.indeks.model.UserAccount;
-import net.etfbl.indeks.repository.MaterialRepository;
-import net.etfbl.indeks.repository.ProblemReportRepository;
-import net.etfbl.indeks.repository.ReviewRepository;
-import net.etfbl.indeks.repository.UserAccountRepository;
+import net.etfbl.indeks.model.*;
+import net.etfbl.indeks.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +20,17 @@ public class ProblemReportService {
     private final MaterialRepository materialRepository;
     private final UserAccountRepository userAccountRepository;
 
+    private final SingleChatRepository singleChatRepository;
+
     public ProblemReportService(ProblemReportRepository problemReportRepository,
                                 ReviewRepository reviewRepository,
                                 MaterialRepository materialRepository,
-                                UserAccountRepository userAccountRepository) {
+                                UserAccountRepository userAccountRepository, SingleChatRepository singleChatRepository) {
         this.problemReportRepository = problemReportRepository;
         this.reviewRepository = reviewRepository;
         this.materialRepository = materialRepository;
         this.userAccountRepository = userAccountRepository;
+        this.singleChatRepository = singleChatRepository;
     }
 
     public ProblemReportDTO saveReport(ProblemReportDTO dto) {
@@ -125,10 +123,21 @@ public class ProblemReportService {
             dto.setMaterialId(report.getMaterial().getId()); // Add the ID of the Material
         }
 
-        if (report.getReported() != null) {
-            dto.setReportedName(report.getReported().getFirstName());
-            dto.setReportedSurname(report.getReported().getLastName());
-            dto.setReportedId(report.getReported().getId()); // Add the ID of the Reported User
+        if (report.getReported() != null)
+        {
+            SingleChat singleChat = singleChatRepository.findById(report.getReported().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+
+
+            UserAccount currentUser = userAccountRepository.findById(report.getReporter().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+            // Determine the other user in the chat
+            UserAccount otherUser = singleChat.getOtherUser(currentUser);
+
+            dto.setReportedName(otherUser.getFirstName());
+            dto.setReportedSurname(otherUser.getLastName());
+            dto.setReportedId(otherUser.getId()); // Add the ID of the Reported User
         }
 
         if (report.getReview() != null) {
