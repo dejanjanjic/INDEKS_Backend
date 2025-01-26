@@ -114,7 +114,14 @@ public class ProblemReportService {
         }
 
         if (report.getMaterial() != null) {
-            dto.setMaterialName(report.getMaterial().getName());
+            String replace = "";
+            replace = report.getMaterial().getName();
+            if(replace.length()>=25)
+            {
+                replace = replace.substring(0,21);
+                replace = replace + "...";
+            }
+            dto.setMaterialName(replace);
             dto.setMaterialId(report.getMaterial().getId()); // Add the ID of the Material
         }
 
@@ -125,7 +132,15 @@ public class ProblemReportService {
         }
 
         if (report.getReview() != null) {
-            dto.setReviewText(report.getReview().getComment());
+
+            String replace = "";
+            replace = report.getReview().getComment();
+            if(replace.length()>=25)
+            {
+                replace = replace.substring(0,21);
+                replace = replace + "...";
+            }
+            dto.setReviewText(replace);
             dto.setReviewId(report.getReview().getId()); // Add the ID of the Review
         }
 
