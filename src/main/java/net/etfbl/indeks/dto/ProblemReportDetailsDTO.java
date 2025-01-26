@@ -10,11 +10,40 @@ public class ProblemReportDetailsDTO {
     private String reporterName;
     private String reporterSurname;
     private String materialName;
+    private Long materialId; // Added
     private String reportedName;
     private String reportedSurname;
+    private Long reportedId; // Added
     private String reviewText;
+    private Long reviewId; // Added
 
     // Getters and setters
+
+
+    public Long getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public Long getReportedId() {
+        return reportedId;
+    }
+
+    public void setReportedId(Long reportedId) {
+        this.reportedId = reportedId;
+    }
+
+    public Long getMaterialId() {
+        return materialId;
+    }
+
+    public void setMaterialId(Long materialId) {
+        this.materialId = materialId;
+    }
+
     public Long getId() {
         return id;
     }

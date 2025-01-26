@@ -115,17 +115,21 @@ public class ProblemReportService {
 
         if (report.getMaterial() != null) {
             dto.setMaterialName(report.getMaterial().getName());
+            dto.setMaterialId(report.getMaterial().getId()); // Add the ID of the Material
         }
 
         if (report.getReported() != null) {
             dto.setReportedName(report.getReported().getFirstName());
             dto.setReportedSurname(report.getReported().getLastName());
+            dto.setReportedId(report.getReported().getId()); // Add the ID of the Reported User
         }
 
         if (report.getReview() != null) {
             dto.setReviewText(report.getReview().getComment());
+            dto.setReviewId(report.getReview().getId()); // Add the ID of the Review
         }
 
         return dto;
     }
+
 }

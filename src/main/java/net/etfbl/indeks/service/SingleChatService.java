@@ -163,9 +163,15 @@ public class SingleChatService {
             ));
         }
 
+        // Sorting chat summaries by the newest message first
+        chatSummaries.sort((c1, c2) -> {
+            LastMessageInfo lastMessageInfo1 = getLastMessageFromChat(Long.valueOf(c1.getId()));
+            LastMessageInfo lastMessageInfo2 = getLastMessageFromChat(Long.valueOf(c2.getId()));
+            return lastMessageInfo2.getMessageTime().compareTo(lastMessageInfo1.getMessageTime());
+        });
+
         return chatSummaries;
     }
-
 
 
     @Transactional
@@ -197,21 +203,22 @@ public class SingleChatService {
     }
     private LastMessageInfo getLastMessageFromChat(Long chatId) {
 
-        String messageQueryStr = "SELECT m FROM Message m WHERE m.singleChat.id = :chatId OR m.groupChat.id=:chatId ORDER BY m.time DESC";
+        String messageQueryStr = "SELECT m FROM Message m WHERE m.singleChat.id = :chatId OR m.groupChat.id = :chatId ORDER BY m.time DESC";
         TypedQuery<Message> messageQuery = entityManager.createQuery(messageQueryStr, Message.class);
         messageQuery.setParameter("chatId", chatId);
         messageQuery.setMaxResults(1);
         List<Message> messages = messageQuery.getResultList();
 
         if (messages.isEmpty()) {
-            return new LastMessageInfo("", "");
+            return new LastMessageInfo("", "", "");
         }
 
         Message lastMessage = messages.get(0);
         String messageText = lastMessage.getText();
         UserAccount sender = lastMessage.getUserAccount();
+        String messageTime = lastMessage.getTime().toString(); // Assuming `time` is a `Date` or `LocalDateTime`.
 
-        return new LastMessageInfo(messageText, sender.getFirstName() + " " + sender.getLastName());
+        return new LastMessageInfo(messageText, sender.getFirstName() + " " + sender.getLastName(), messageTime);
     }
 
 
