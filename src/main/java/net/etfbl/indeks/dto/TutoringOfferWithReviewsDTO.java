@@ -60,11 +60,14 @@ public class TutoringOfferWithReviewsDTO {
 
     // Nested ReviewDTO for reviews
     public static class ReviewDTO {
+
+        private Long id;
         private String reviewerName;
         private String description;
         private Double grade;
 
-        public ReviewDTO(String reviewerName, String description, Double grade) {
+        public ReviewDTO(Long id,String reviewerName, String description, Double grade) {
+            this.id=id;
             this.reviewerName = reviewerName;
             this.description = description;
             this.grade = grade;
@@ -94,6 +97,12 @@ public class TutoringOfferWithReviewsDTO {
             this.grade = grade;
         }
 
+        public Long getId() {
+            return id;
+        }
 
+        public void setId(Long id) {
+            this.id = id;
+        }
     }
 }

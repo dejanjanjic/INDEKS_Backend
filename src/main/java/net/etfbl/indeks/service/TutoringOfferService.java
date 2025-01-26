@@ -188,7 +188,7 @@ public class TutoringOfferService
             UserAccount reviewer = userAccountRepository.findById(review.getStudentAccount().getId()).orElse(null);
             if (reviewer != null) {
                 String reviewerName = reviewer.getFirstName() + " " + reviewer.getLastName();
-                reviewDTOs.add(new TutoringOfferWithReviewsDTO.ReviewDTO(reviewerName, review.getComment(), review.getRating()));
+                reviewDTOs.add(new TutoringOfferWithReviewsDTO.ReviewDTO(review.getId(),reviewerName, review.getComment(), review.getRating()));
             }
         }
         // If subject or instructor is not found, return null

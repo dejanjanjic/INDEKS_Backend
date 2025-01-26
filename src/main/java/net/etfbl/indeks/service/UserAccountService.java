@@ -6,7 +6,10 @@ import net.etfbl.indeks.dto.AddUserAccountDTO;
 import net.etfbl.indeks.dto.UserAccountDTO;
 import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.model.Account;
+import net.etfbl.indeks.security.blacklisting.service.BlacklistedTokenService;
 import net.etfbl.indeks.security.roles.Roles;
+import net.etfbl.indeks.security.service.AuthenticationService;
+import net.etfbl.indeks.security.service.JwtService;
 import net.etfbl.indeks.util.Encryption;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.AccountRepository;
@@ -27,14 +30,17 @@ public class UserAccountService {
     private final AccountRepository accountRepository;
     private final EmailService emailService;
 
+
+    private final BlacklistedTokenService blacklistedTokenService;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    public UserAccountService(UserAccountRepository userAccountRepository, AccountRepository accountRepository, EmailService emailService) {
+    public UserAccountService(UserAccountRepository userAccountRepository, AccountRepository accountRepository, EmailService emailService, BlacklistedTokenService blacklistedTokenService) {
         this.userAccountRepository = userAccountRepository;
         this.accountRepository = accountRepository;
         this.emailService = emailService;
+        this.blacklistedTokenService = blacklistedTokenService;
     }
 
     public List<UserAccountDTO> getUserAccounts() {
