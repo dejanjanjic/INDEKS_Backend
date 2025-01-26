@@ -2,6 +2,7 @@ package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
 import net.etfbl.indeks.dto.AddReviewDTO;
+import net.etfbl.indeks.dto.TutoringOfferWithReviewsDTO;
 import net.etfbl.indeks.dto.UpdateReviewDTO;
 import net.etfbl.indeks.model.PrivateGroupChat;
 import net.etfbl.indeks.model.Review;
@@ -42,14 +43,20 @@ public class ReviewContoller
     }
 
     @PostMapping
-    public ResponseEntity<Review> registerNewReview(@RequestBody AddReviewDTO addReviewDTO){
-        Review temp = reviewService.addNewReview(addReviewDTO);
-        if(temp != null){
-            return ResponseEntity.ok(temp);
-        }else{
+    public ResponseEntity<TutoringOfferWithReviewsDTO.ReviewDTO> registerNewReview(@RequestBody AddReviewDTO addReviewDTO) {
+        // Call the service method to add the new review and get a ReviewDTO
+        TutoringOfferWithReviewsDTO.ReviewDTO reviewDTO = reviewService.addNewReview(addReviewDTO);
+
+        // Check if the ReviewDTO is not null
+        if (reviewDTO != null) {
+            // Return a successful response with the ReviewDTO
+            return ResponseEntity.ok(reviewDTO);
+        } else {
+            // Return a conflict status if something goes wrong
             return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
         }
     }
+
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Void> deleteReview(@PathVariable("id")Long id){

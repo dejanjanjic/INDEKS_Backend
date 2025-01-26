@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.dto.AddPrivateGroupChatDTO;
 import net.etfbl.indeks.dto.AddReviewDTO;
+import net.etfbl.indeks.dto.TutoringOfferWithReviewsDTO;
 import net.etfbl.indeks.dto.UpdateReviewDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.ReviewRepository;
@@ -40,18 +41,21 @@ public class ReviewService
     private EntityManager entityManager;
 
     @Transactional
-    public Review addNewReview(AddReviewDTO addReviewDTO)
+    public TutoringOfferWithReviewsDTO.ReviewDTO addNewReview(AddReviewDTO addReviewDTO)
     {
+        // Find the TutoringOffer by its ID
         TutoringOffer tutoringOffer = entityManager.find(TutoringOffer.class, addReviewDTO.getTutoringOfferId());
         if (tutoringOffer == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutoring Offer not found");
         }
 
+        // Find the StudentAccount by its ID
         StudentAccount studentAccount = entityManager.find(StudentAccount.class, addReviewDTO.getStudentAccountId());
         if (studentAccount == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student Account not found");
         }
 
+        // Create a new Review entity
         Review newReview = new Review(
                 addReviewDTO.getComment(),
                 addReviewDTO.getDateTime(),
@@ -60,10 +64,20 @@ public class ReviewService
                 addReviewDTO.getRating()
         );
 
+        // Persist the new review entity to the database
         entityManager.persist(newReview);
 
-        return newReview;
+        // Map the Review entity to ReviewDTO and return it
+        TutoringOfferWithReviewsDTO.ReviewDTO reviewDTO = new TutoringOfferWithReviewsDTO.ReviewDTO(
+                newReview.getId(),
+                studentAccount.getUserAccount().getFirstName(), // Assuming `StudentAccount` has a `getName()` method
+                newReview.getComment(),
+                newReview.getRating()
+        );
+
+        return reviewDTO;
     }
+
 
     public boolean deleteReview(Long id) {
         boolean exists = reviewRepository.existsById(id);
