@@ -15,23 +15,19 @@ public class ProblemReport {
     private Integer type;
 
     @ManyToOne
-    @JoinColumn(name = "review_id", referencedColumnName = "id")
+    @JoinColumn(name = "reviewId", referencedColumnName = "id")
     private Review review;
 
     @ManyToOne
-    @JoinColumn(name = "material_id", referencedColumnName = "id")
+    @JoinColumn(name = "materialId", referencedColumnName = "id")
     private Material material;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id", referencedColumnName = "id")
-    private AdminAccount adminAccount;
-
-    @ManyToOne
-    @JoinColumn(name = "reporter_id", referencedColumnName = "id")
+    @JoinColumn(name = "reporterId", referencedColumnName = "id")
     private UserAccount reporter;
 
     @ManyToOne
-    @JoinColumn(name = "reported_id", referencedColumnName = "id")
+    @JoinColumn(name = "reportedId", referencedColumnName = "id")
     private UserAccount reported;
 
     public ProblemReport() {
@@ -44,7 +40,6 @@ public class ProblemReport {
         this.type = type;
         this.review = review;
         this.material = material;
-        this.adminAccount = adminAccount;
         this.reporter = reporter;
         this.reported = reported;
     }
@@ -95,14 +90,6 @@ public class ProblemReport {
 
     public void setMaterial(Material material) {
         this.material = material;
-    }
-
-    public AdminAccount getAdminAccount() {
-        return adminAccount;
-    }
-
-    public void setAdminAccount(AdminAccount adminAccount) {
-        this.adminAccount = adminAccount;
     }
 
     public UserAccount getReporter() {

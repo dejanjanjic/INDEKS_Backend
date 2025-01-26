@@ -1,5 +1,7 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.ProblemReportDTO;
+import net.etfbl.indeks.dto.ProblemReportDetailsDTO;
 import net.etfbl.indeks.model.ProblemReport;
 import net.etfbl.indeks.service.ProblemReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +48,17 @@ public class ProblemReportController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping(path="newReport")
+    public ResponseEntity<ProblemReportDTO> createReport(@RequestBody ProblemReportDTO dto) {
+        ProblemReportDTO savedReport = problemReportService.saveReport(dto);
+        return ResponseEntity.ok(savedReport);
+    }
+
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<ProblemReportDetailsDTO>> getReportsByType(@PathVariable Integer type) {
+        List<ProblemReportDetailsDTO> reports = problemReportService.getReportsByType(type);
+        return ResponseEntity.ok(reports);
     }
 }
