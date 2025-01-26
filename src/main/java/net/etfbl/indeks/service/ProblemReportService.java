@@ -48,7 +48,21 @@ public class ProblemReportService {
         Optional<UserAccount> reporter = userAccountRepository.findById(dto.getReporterId());
         reporter.ifPresent(report::setReporter);
 
-        Optional<UserAccount> reported = userAccountRepository.findById(dto.getReportedId());
+
+
+
+        SingleChat singleChat = singleChatRepository.findById(dto.getReportedId())
+                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+
+
+        UserAccount currentUser = userAccountRepository.findById(dto.getReporterId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Determine the other user in the chat
+        UserAccount otherUser = singleChat.getOtherUser(currentUser);
+
+
+        Optional<UserAccount> reported = userAccountRepository.findById(otherUser.getId());
         reported.ifPresent(report::setReported);
 
         ProblemReport saved = problemReportRepository.save(report);
@@ -65,8 +79,13 @@ public class ProblemReportService {
         dto.setType(report.getType());
         dto.setReviewId(report.getReview() != null ? report.getReview().getId() : null);
         dto.setMaterialId(report.getMaterial() != null ? report.getMaterial().getId() : null);
+
         dto.setReporterId(report.getReporter() != null ? report.getReporter().getId() : null);
+
+
         dto.setReportedId(report.getReported() != null ? report.getReported().getId() : null);
+
+
         return dto;
     }
 
@@ -123,21 +142,10 @@ public class ProblemReportService {
             dto.setMaterialId(report.getMaterial().getId()); // Add the ID of the Material
         }
 
-        if (report.getReported() != null)
-        {
-            SingleChat singleChat = singleChatRepository.findById(report.getReported().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
-
-
-            UserAccount currentUser = userAccountRepository.findById(report.getReporter().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-            // Determine the other user in the chat
-            UserAccount otherUser = singleChat.getOtherUser(currentUser);
-
-            dto.setReportedName(otherUser.getFirstName());
-            dto.setReportedSurname(otherUser.getLastName());
-            dto.setReportedId(otherUser.getId()); // Add the ID of the Reported User
+        if (report.getReported() != null) {
+            dto.setReportedName(report.getReported().getFirstName());
+            dto.setReportedSurname(report.getReported().getLastName());
+            dto.setReportedId(report.getReported().getId()); // Add the ID of the Reported User
         }
 
         if (report.getReview() != null) {
