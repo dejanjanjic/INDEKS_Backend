@@ -59,32 +59,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        if (request.getServletPath().equals("/api/v1/auth/register") || request.getServletPath().equals("/api/v1/auth/login")) {
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Authorization header is missing or does not start with 'Bearer '");
+            String authHeader = request.getHeader("Authorization");
+
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                System.out.println("Authorization header is missing or does not start with 'Bearer '");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if(!authHeader.substring(7).isEmpty()) {
+
+                String jwtToken = authHeader.substring(7);
+                String userEmail = jwtService.extractEmail(jwtToken);
+
+                Optional<UserAccount> userAccount = userAccountRepository.findByEmail(userEmail);
+                if(userAccount.isPresent()) {
+                    if(!userAccount.get().getActive()) {
+                        blacklistedTokenService.blacklistToken(jwtToken);
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Error, this account has been suspended!\"}");
+                    }
+                }
+            }
             filterChain.doFilter(request, response);
             return;
         }
 
-        if(!authHeader.substring(7).isEmpty()) {
+        final String authHeader = request.getHeader("Authorization");
 
-            String jwtToken = authHeader.substring(7);
-            String userEmail = jwtService.extractEmail(jwtToken);
-
-            Optional<UserAccount> userAccount = userAccountRepository.findByEmail(userEmail);
-            if(userAccount.isPresent()) {
-                if(!userAccount.get().getActive()) {
-                    blacklistedTokenService.blacklistToken(jwtToken);
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"error\": \"Error, this account has been suspended!\"}");
-                    return;
-                }
-            }
-        }
-
-        if (request.getServletPath().equals("/api/v1/auth/register") || request.getServletPath().equals("/api/v1/auth/login")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("Authorization header is missing or does not start with 'Bearer '");
             filterChain.doFilter(request, response);
             return;
         }
