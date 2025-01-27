@@ -68,13 +68,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginAccountDTO loginUserDto) {
-        Account authenticatedUser = authenticationService.authenticate(loginUserDto);
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
+    public ResponseEntity<?> authenticate(@RequestBody LoginAccountDTO loginUserDto) {
 
-        return ResponseEntity.ok(loginResponse);
+        if (userAccountService.checkActiveStatus(loginUserDto.getEmail())) {
+            Account authenticatedUser = authenticationService.authenticate(loginUserDto);
+            String jwtToken = jwtService.generateToken(authenticatedUser);
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setToken(jwtToken);
+
+            return ResponseEntity.ok(loginResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Error, this account has been suspended!"));
+        }
     }
 
     @PostMapping("/logout")

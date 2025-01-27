@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final UserAccountService userAccountService;
     private final BlacklistedTokenService blacklistedTokenService;
+    private final UserAccountRepository userAccountRepository;
 
     private String jwtToken;
 
@@ -41,13 +42,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetailsService userDetailsService,
             HandlerExceptionResolver handlerExceptionResolver,
             UserAccountService userAccountService,
-            BlacklistedTokenService blacklistedTokenService
-    ) {
+            BlacklistedTokenService blacklistedTokenService,
+            UserAccountRepository userAccountRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
         this.userAccountService = userAccountService;
         this.blacklistedTokenService = blacklistedTokenService;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @Override
@@ -59,13 +61,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        if (request.getServletPath().equals("/api/v1/auth/register") || request.getServletPath().equals("/api/v1/auth/login")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("Authorization header is missing or does not start with 'Bearer '");
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Authorization header is missing or does not start with 'Bearer '");
+        if(!authHeader.substring(7).isEmpty()) {
+
+            String jwtToken = authHeader.substring(7);
+            String userEmail = jwtService.extractEmail(jwtToken);
+
+            Optional<UserAccount> userAccount = userAccountRepository.findByEmail(userEmail);
+            if(userAccount.isPresent()) {
+                if(!userAccount.get().getActive()) {
+                    blacklistedTokenService.blacklistToken(jwtToken);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"Error, this account has been suspended!\"}");
+                    return;
+                }
+            }
+        }
+
+        if (request.getServletPath().equals("/api/v1/auth/register") || request.getServletPath().equals("/api/v1/auth/login")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -90,6 +109,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
                 System.out.println("Loaded UserDetails: " + userDetails.getUsername());
 
+
+
                 if (jwtService.isTokenValid(jwtToken, userDetails)) {
                     System.out.println("Token is valid");
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -107,6 +128,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (ExpiredJwtException expiredJwtException) {
+            expiredJwtException.printStackTrace();
             String userEmail = jwtService.extractEmail(jwtToken);
             Optional<UserAccount> userAccount = userAccountService.getUserAccountByEmail(userEmail);
             userAccount.ifPresent(account -> account.setPushNotificationToken(null));

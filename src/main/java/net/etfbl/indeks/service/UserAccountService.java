@@ -48,7 +48,8 @@ public class UserAccountService {
                 .map(user -> new UserAccountDTO(user.getId(), user.getFirstName(), user.getLastName()))
                 .collect(Collectors.toList());
     }
-    public Optional<UserAccount> getUserAccountById(Long id){
+
+    public Optional<UserAccount> getUserAccountById(Long id) {
         return userAccountRepository.findById(id);
     }
 
@@ -57,9 +58,9 @@ public class UserAccountService {
     }
 
     @Transactional
-    public UserAccount addNewUserAccount(AddUserAccountDTO addUserAccountDTO, Roles role){
+    public UserAccount addNewUserAccount(AddUserAccountDTO addUserAccountDTO, Roles role) {
         Optional<Account> accountByEmail = accountRepository.findByEmail(addUserAccountDTO.getEmail());
-        if(accountByEmail.isEmpty()){
+        if (accountByEmail.isEmpty()) {
             Account account = new Account(addUserAccountDTO.getEmail(), addUserAccountDTO.getPassword(), role);
             Account savedAccount = accountRepository.save(account);
             UserAccount userAccount = new UserAccount(addUserAccountDTO.getFirstName(), addUserAccountDTO.getLastName(), true, false, savedAccount);
@@ -69,9 +70,9 @@ public class UserAccountService {
         return null;
     }
 
-    public boolean deleteUserAccount(Long id){
+    public boolean deleteUserAccount(Long id) {
         Optional<UserAccount> userAccount = userAccountRepository.findById(id);
-        if(userAccount.isEmpty()){
+        if (userAccount.isEmpty()) {
             return false;
         }
         userAccountRepository.deleteById(id);
@@ -81,20 +82,20 @@ public class UserAccountService {
     @Transactional
     public boolean updateUserAccount(UserAccount userAccount) {
         Optional<UserAccount> temp = userAccountRepository.findById(userAccount.getId());
-        if(temp.isEmpty()){
+        if (temp.isEmpty()) {
             return false;
         }
         UserAccount updatedUserAccount = temp.get();
-        if(userAccount.getFirstName() != null){
+        if (userAccount.getFirstName() != null) {
             updatedUserAccount.setFirstName(userAccount.getFirstName());
         }
-        if(userAccount.getLastName() != null){
+        if (userAccount.getLastName() != null) {
             updatedUserAccount.setLastName(userAccount.getLastName());
         }
-        if(userAccount.getActive() != null){
+        if (userAccount.getActive() != null) {
             updatedUserAccount.setActive(userAccount.getActive());
         }
-        if(userAccount.getSuspended() != null){
+        if (userAccount.getSuspended() != null) {
             updatedUserAccount.setSuspended(userAccount.getSuspended());
         }
 
@@ -149,8 +150,6 @@ public class UserAccountService {
     }
 
 
-
-
 //    @Transactional
 //    public boolean updatePassword(String email, String newPassword) {
 //        Optional<Account> accountOpt = accountRepository.findByEmail(email);
@@ -176,19 +175,26 @@ public class UserAccountService {
         userAccount.setPushNotificationToken(token);
         userAccountRepository.save(userAccount);
     }
+
     public UserAccount suspendAccount(Long id) {
         UserAccount userAccount = userAccountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
 
         if (Boolean.TRUE.equals(userAccount.getActive())) {
             userAccount.setActive(false);
-        }
-        else
-        {
+        } else {
             userAccount.setActive(true);
         }
 
         return userAccountRepository.save(userAccount);
+    }
+
+    public boolean checkActiveStatus(String email) {
+        Optional<UserAccount> userAccount = userAccountRepository.findByEmail(email);
+        if (userAccount.isPresent()) {
+            return userAccount.get().getActive();
+        }
+        return false;
     }
 
 //    public UserAccount unsuspendAccount(Long id) {
