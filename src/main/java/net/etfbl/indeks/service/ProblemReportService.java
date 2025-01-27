@@ -49,20 +49,23 @@ public class ProblemReportService {
         reporter.ifPresent(report::setReporter);
 
 
+        Optional<SingleChat> singleChat = singleChatRepository.findById(dto.getReportedId());
 
+        Optional<UserAccount> currentUser = userAccountRepository.findById(dto.getReporterId());
 
-        SingleChat singleChat = singleChatRepository.findById(dto.getReportedId())
-                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+        UserAccount otherUser = null;
+        if(singleChat.isPresent())
+        {
+             otherUser = singleChat.get().getOtherUser(currentUser.get());
+        }
 
+        if(otherUser!=null)
+        {
 
-        UserAccount currentUser = userAccountRepository.findById(dto.getReporterId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+            Optional<UserAccount> reported = userAccountRepository.findById(otherUser.getId());
+            reported.ifPresent(report::setReported);
 
-        UserAccount otherUser = singleChat.getOtherUser(currentUser);
-
-
-        Optional<UserAccount> reported = userAccountRepository.findById(otherUser.getId());
-        reported.ifPresent(report::setReported);
+        }
 
         ProblemReport saved = problemReportRepository.save(report);
         return mapToDTO(saved);
