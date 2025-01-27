@@ -191,10 +191,10 @@ public class UserAccountService {
 
     public boolean checkActiveStatus(String email) {
         Optional<UserAccount> userAccount = userAccountRepository.findByEmail(email);
+        Optional<Account> account = accountRepository.findByEmail(email);
         if (userAccount.isPresent()) {
             return userAccount.get().getActive();
-        }
-        return false;
+        } else return account.isPresent();
     }
 
 //    public UserAccount unsuspendAccount(Long id) {

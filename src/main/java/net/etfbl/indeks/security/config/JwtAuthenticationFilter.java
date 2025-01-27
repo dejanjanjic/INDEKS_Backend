@@ -128,13 +128,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (ExpiredJwtException expiredJwtException) {
-            expiredJwtException.printStackTrace();
             String userEmail = jwtService.extractEmail(jwtToken);
             Optional<UserAccount> userAccount = userAccountService.getUserAccountByEmail(userEmail);
             userAccount.ifPresent(account -> account.setPushNotificationToken(null));
         }
         catch (Exception exception) {
-            exception.printStackTrace();
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
