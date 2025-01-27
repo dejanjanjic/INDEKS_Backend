@@ -1,15 +1,10 @@
 package net.etfbl.indeks.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import net.etfbl.indeks.dto.ProblemReportDTO;
 import net.etfbl.indeks.dto.ProblemReportDetailsDTO;
-import net.etfbl.indeks.model.Material;
-import net.etfbl.indeks.model.ProblemReport;
-import net.etfbl.indeks.model.Review;
-import net.etfbl.indeks.model.UserAccount;
-import net.etfbl.indeks.repository.MaterialRepository;
-import net.etfbl.indeks.repository.ProblemReportRepository;
-import net.etfbl.indeks.repository.ReviewRepository;
-import net.etfbl.indeks.repository.UserAccountRepository;
+import net.etfbl.indeks.model.*;
+import net.etfbl.indeks.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +20,17 @@ public class ProblemReportService {
     private final MaterialRepository materialRepository;
     private final UserAccountRepository userAccountRepository;
 
+    private final SingleChatRepository singleChatRepository;
+
     public ProblemReportService(ProblemReportRepository problemReportRepository,
                                 ReviewRepository reviewRepository,
                                 MaterialRepository materialRepository,
-                                UserAccountRepository userAccountRepository) {
+                                UserAccountRepository userAccountRepository, SingleChatRepository singleChatRepository) {
         this.problemReportRepository = problemReportRepository;
         this.reviewRepository = reviewRepository;
         this.materialRepository = materialRepository;
         this.userAccountRepository = userAccountRepository;
+        this.singleChatRepository = singleChatRepository;
     }
 
     public ProblemReportDTO saveReport(ProblemReportDTO dto) {
@@ -50,7 +48,21 @@ public class ProblemReportService {
         Optional<UserAccount> reporter = userAccountRepository.findById(dto.getReporterId());
         reporter.ifPresent(report::setReporter);
 
-        Optional<UserAccount> reported = userAccountRepository.findById(dto.getReportedId());
+
+
+
+        SingleChat singleChat = singleChatRepository.findById(dto.getReportedId())
+                .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
+
+
+        UserAccount currentUser = userAccountRepository.findById(dto.getReporterId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        // Determine the other user in the chat
+        UserAccount otherUser = singleChat.getOtherUser(currentUser);
+
+
+        Optional<UserAccount> reported = userAccountRepository.findById(otherUser.getId());
         reported.ifPresent(report::setReported);
 
         ProblemReport saved = problemReportRepository.save(report);
@@ -67,8 +79,13 @@ public class ProblemReportService {
         dto.setType(report.getType());
         dto.setReviewId(report.getReview() != null ? report.getReview().getId() : null);
         dto.setMaterialId(report.getMaterial() != null ? report.getMaterial().getId() : null);
+
         dto.setReporterId(report.getReporter() != null ? report.getReporter().getId() : null);
+
+
         dto.setReportedId(report.getReported() != null ? report.getReported().getId() : null);
+
+
         return dto;
     }
 
