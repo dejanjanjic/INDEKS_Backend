@@ -58,7 +58,6 @@ public class ProblemReportService {
         UserAccount currentUser = userAccountRepository.findById(dto.getReporterId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Determine the other user in the chat
         UserAccount otherUser = singleChat.getOtherUser(currentUser);
 
 

@@ -5,12 +5,14 @@ package net.etfbl.indeks.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import net.etfbl.indeks.dto.AddElementaryGroupChatDTO;
+import net.etfbl.indeks.dto.AddElementaryGroupChatMemberDTO;
 import net.etfbl.indeks.dto.GetMessageDTO;
 import net.etfbl.indeks.dto.MessageWithSenderDTO;
 import net.etfbl.indeks.model.*;
 
 import net.etfbl.indeks.repository.ElementaryGroupChatRepository;
 import net.etfbl.indeks.repository.GroupRepository;
+import net.etfbl.indeks.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,10 @@ public class ElementaryGroupChatService {
     private final ElementaryGroupChatRepository elementaryGroupChatRepository;
     private final GroupRepository groupRepository;
 
+    @Autowired
+    private UserAccountRepository userAccountRepository; // Inject UserAccountRepository
+    @Autowired
+    private ElementaryGroupChatMemberService elementaryGroupChatMemberService;
 
 
     @Autowired
@@ -48,9 +54,21 @@ public class ElementaryGroupChatService {
 
     @Transactional
     public ElementaryGroupChat addNewElementaryGroupChat(AddElementaryGroupChatDTO group) {
-        return elementaryGroupChatRepository.save(new ElementaryGroupChat(groupRepository.save(new GroupChat(group.getName()))));
+        GroupChat savedGroupChat = groupRepository.save(new GroupChat(group.getName()));
+        ElementaryGroupChat newElementaryGroupChat = elementaryGroupChatRepository.save(new ElementaryGroupChat(savedGroupChat));
+        addAllUsersToGroup(newElementaryGroupChat); // Add all UserAccounts to the group
+        return newElementaryGroupChat;
     }
 
+    private void addAllUsersToGroup(ElementaryGroupChat elementaryGroupChat) {
+        List<UserAccount> allUsers = userAccountRepository.findAll();
+        for (UserAccount user : allUsers) {
+            AddElementaryGroupChatMemberDTO memberDTO = new AddElementaryGroupChatMemberDTO(
+                    elementaryGroupChat.getId(), user.getId()
+            );
+            elementaryGroupChatMemberService.addNewElementaryGroupChatMember(memberDTO);
+        }
+    }
     @Transactional
     public List<MessageWithSenderDTO> getMessagesFromChat(Long chatId, Long userId) {
 

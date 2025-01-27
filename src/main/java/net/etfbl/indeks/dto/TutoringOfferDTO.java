@@ -5,10 +5,13 @@ public class TutoringOfferDTO {
     private String description;
     private String subjectName;
 
-    public TutoringOfferDTO(Long tutoringOfferId, String description, String subjectName) {
+    private Double averageRating;
+
+    public TutoringOfferDTO(Long tutoringOfferId, String description, String subjectName, Double averageRating) {
         this.tutoringOfferId = tutoringOfferId;
         this.description = description;
         this.subjectName = subjectName;
+        this.averageRating = averageRating;
     }
 
     // Getters and setters
@@ -34,5 +37,13 @@ public class TutoringOfferDTO {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 }

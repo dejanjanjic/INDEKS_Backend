@@ -110,13 +110,21 @@ public class TutoringOfferService
     public List<TutoringOfferDTO> getTutoringOffersByStudentAccountId(Long studentAccountId) {
         return tutoringOfferRepository.findByStudentAccountId(studentAccountId)
                 .stream()
-                .map(offer -> new TutoringOfferDTO(
-                        offer.getId(),
-                        offer.getDescription(),
-                        offer.getSubject().getName() // Assuming Subject has a getName() method
-                ))
+                .map(offer -> {
+                    // Calculate the average rating for the tutoring offer
+                    Double averageRating = calculateAverageRating(offer.getId());
+
+                    // Create a new DTO including the average rating
+                    return new TutoringOfferDTO(
+                            offer.getId(),
+                            offer.getDescription(),
+                            offer.getSubject().getName(), // Assuming Subject has a getName() method
+                            averageRating // Include the average rating in the DTO
+                    );
+                })
                 .collect(Collectors.toList());
     }
+
 
     @Autowired
     private UserAccountRepository userAccountRepository;
