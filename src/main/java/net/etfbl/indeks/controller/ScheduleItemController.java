@@ -41,7 +41,7 @@ public class ScheduleItemController {
     @PostMapping
     public ResponseEntity<ScheduleItem> addScheduleItem(@RequestBody AddScheduleItemDTO addScheduleItemDTO) {
         scheduleItemService.addNewScheduleItemForStudent(addScheduleItemDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
