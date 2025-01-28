@@ -1,5 +1,6 @@
 package net.etfbl.indeks.service;
 
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.dto.AddUserAccountDTO;
@@ -15,6 +16,8 @@ import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.AccountRepository;
 import net.etfbl.indeks.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,16 +33,18 @@ public class UserAccountService {
     private final AccountRepository accountRepository;
     private final EmailService emailService;
 
+    private final JavaMailSender mailSender;
 
     private final BlacklistedTokenService blacklistedTokenService;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    public UserAccountService(UserAccountRepository userAccountRepository, AccountRepository accountRepository, EmailService emailService, BlacklistedTokenService blacklistedTokenService) {
+    public UserAccountService(UserAccountRepository userAccountRepository, AccountRepository accountRepository, EmailService emailService, JavaMailSender mailSender, BlacklistedTokenService blacklistedTokenService) {
         this.userAccountRepository = userAccountRepository;
         this.accountRepository = accountRepository;
         this.emailService = emailService;
+        this.mailSender = mailSender;
         this.blacklistedTokenService = blacklistedTokenService;
     }
 
@@ -180,14 +185,45 @@ public class UserAccountService {
         UserAccount userAccount = userAccountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("UserAccount with id " + id + " not found"));
 
-        if (Boolean.TRUE.equals(userAccount.getActive())) {
-            userAccount.setActive(false);
-        } else {
-            userAccount.setActive(true);
+        Account account = accountRepository.findById(userAccount.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Account associated with UserAccount not found"));
+
+        String email = account.getEmail();
+
+        boolean wasActive = Boolean.TRUE.equals(userAccount.getActive());
+        userAccount.setActive(!wasActive);
+
+        // Save the updated account
+        UserAccount updatedAccount = userAccountRepository.save(userAccount);
+
+        // Prepare email content
+        String emailSubject = wasActive ? "Obavještenje o suspenziji naloga" : "Obavještenje o aktivaciji naloga";
+        String emailContent = wasActive
+                ? "<p>Dragi korisniče,</p>" +
+                "<p>Vaš nalog je suspendovan, više se nećete moći prijaviti do daljneg.<p>"+
+                "<p>Ako imate bilo kakva pitanja, molimo kontaktirajte našu podršku.</p>" +
+                "<p>Srdačno,<br>Vaš INDEKS tim</p>"
+                : "<p>Dragi korisniče,</p>" +
+                "<p>Vaš nalog je ponovo aktiviran, te se možete prijavit!</p>" +
+                "<p>Srdačno,<br>Vaš INDEKS tim</p>";
+
+        try {
+            // Create and send email
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("indeks.aplikacija@gmail.com");
+            helper.setTo(email);
+            helper.setSubject(emailSubject);
+            helper.setText(emailContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email notification: " + e.getMessage(), e);
         }
 
-        return userAccountRepository.save(userAccount);
+        return updatedAccount;
     }
+
 
     public boolean checkActiveStatus(String email) {
         Optional<UserAccount> userAccount = userAccountRepository.findByEmail(email);

@@ -100,8 +100,8 @@ public class AccountService {
         helper.setText(
                 "<p>Dragi korisniče,</p>" +
                         "<p>Vaša nova lozinka je: <b>" + tempPassword + "</b></p>" +
-                        "<p>Iskoristite ju da se prijavte, te ju možete naknadno promijeniti u aplikaciji</p>" +
-                        "<p>Pozdrav,<br>INDEKS tim</p>", true);
+                        "<p>Iskoristite ju da se prijavite, te ju možete naknadno promijeniti u aplikaciji</p>" +
+                        "<p>Srdačno,<br>Vaš INDEKS tim</p>", true);
 
         mailSender.send(message);
     }
