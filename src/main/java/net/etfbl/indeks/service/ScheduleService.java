@@ -127,14 +127,16 @@ public class ScheduleService {
             JSONArray scheduleData = new JSONArray(response.toString());
 
             // Fetch `scheduleId` using `studentAccountId`
-            Long scheduleId = Long.valueOf(entityManager.createQuery(
-                            "SELECT sa.schedule.id FROM StudentAccount sa WHERE sa.id = :studentAccountId", Integer.class)
+            Long scheduleId = entityManager.createQuery(
+                            "SELECT sa.schedule.id FROM StudentAccount sa WHERE sa.id = :studentAccountId", Long.class)
                     .setParameter("studentAccountId", studentAccountId)
-                    .getSingleResult());
+                    .getSingleResult();
 
+            System.out.println(scheduleId);
             if (scheduleId == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No schedule associated with the given student account ID");
             }
+
 
             // Find the schedule and update its items
             Optional<Schedule> scheduleOptional = scheduleRepository.findById(scheduleId);
