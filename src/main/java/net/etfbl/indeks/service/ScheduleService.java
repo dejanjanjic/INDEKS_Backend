@@ -1,6 +1,7 @@
 package net.etfbl.indeks.service;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import net.etfbl.indeks.model.Schedule;
 import net.etfbl.indeks.model.ScheduleItem;
@@ -58,23 +59,34 @@ public class ScheduleService {
     }
 
     public List<ScheduleItem> getScheduleItemsByStudentAccountId(Long studentAccountId) {
-        // Retrieve the scheduleId associated with the studentAccountId
-        Integer scheduleId = entityManager.createQuery(
-                        "SELECT sa.schedule.id FROM StudentAccount sa WHERE sa.id = :studentAccountId", Integer.class)
-                .setParameter("studentAccountId", studentAccountId)
-                .getSingleResult();
+        try {
+            // Retrieve the scheduleId associated with the studentAccountId
+            Long scheduleId = entityManager.createQuery(
+                            "SELECT sa.schedule.id FROM StudentAccount sa WHERE sa.id = :studentAccountId", Long.class)
+                    .setParameter("studentAccountId", studentAccountId)
+                    .getSingleResult();
 
-        // If no scheduleId is found, return an empty list
-        if (scheduleId == null) {
+            // If no scheduleId is found, return an empty list
+            if (scheduleId == null) {
+                return new ArrayList<>();
+            }
+
+            // Fetch the schedule items using the retrieved scheduleId
+            List<ScheduleItem> scheduleItems = entityManager.createQuery(
+                            "SELECT si FROM ScheduleItem si WHERE si.schedule.id = :scheduleId", ScheduleItem.class)
+                    .setParameter("scheduleId", scheduleId)
+                    .getResultList();
+
+            return scheduleItems;
+        } catch (NoResultException e) {
+            System.err.println("No schedule or items found for studentAccountId: " + studentAccountId);
+            return new ArrayList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ArrayList<>();
         }
-
-        // Fetch the schedule items using the retrieved scheduleId
-        return entityManager.createQuery(
-                        "SELECT si FROM ScheduleItem si WHERE si.schedule = :scheduleId", ScheduleItem.class)
-                .setParameter("scheduleId", scheduleId)
-                .getResultList();
     }
+
 
 
     public void fetchAndUpdateScheduleByStudentAccountId(Long studentAccountId, Integer number) {
