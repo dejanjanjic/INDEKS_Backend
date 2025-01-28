@@ -56,14 +56,15 @@ public class ScheduleController {
     }
 
     @GetMapping("/{scheduleId}/items")
-    public ResponseEntity<List<ScheduleItem>> getScheduleItems(@PathVariable Long scheduleId) {
-        List<ScheduleItem> scheduleItems = scheduleService.getScheduleItems(scheduleId);
+    public ResponseEntity<List<ScheduleItem>> getScheduleItemsByStudentAccountId(@PathVariable Long scheduleId) {
+        List<ScheduleItem> scheduleItems = scheduleService.getScheduleItemsByStudentAccountId(scheduleId);
         return new ResponseEntity<>(scheduleItems, HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<String> updateSchedule(@RequestBody UpdateScheduleDTO scheduleDTO) {
-        scheduleService.fetchAndUpdateSchedule(scheduleDTO.getId(), scheduleDTO.getNum());
+        scheduleService.fetchAndUpdateScheduleByStudentAccountId(scheduleDTO.getId(), scheduleDTO.getNum());
         return ResponseEntity.ok("Schedule updated successfully");
     }
+
 }

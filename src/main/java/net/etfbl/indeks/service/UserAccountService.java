@@ -200,11 +200,11 @@ public class UserAccountService {
         String emailSubject = wasActive ? "Obavještenje o suspenziji naloga" : "Obavještenje o aktivaciji naloga";
         String emailContent = wasActive
                 ? "<p>Dragi korisniče,</p>" +
-                "<p>Vaš nalog je suspendovan, više se nećete moći prijaviti do daljneg.<p>"+
+                "<p>Vaš nalog je suspendovan, više se nećete moći prijaviti do daljnjeg.<p>"+
                 "<p>Ako imate bilo kakva pitanja, molimo kontaktirajte našu podršku.</p>" +
                 "<p>Srdačno,<br>Vaš INDEKS tim</p>"
                 : "<p>Dragi korisniče,</p>" +
-                "<p>Vaš nalog je ponovo aktiviran, te se možete prijavit!</p>" +
+                "<p>Vaš nalog je ponovo aktiviran, te se možete prijaviti!</p>" +
                 "<p>Srdačno,<br>Vaš INDEKS tim</p>";
 
         try {

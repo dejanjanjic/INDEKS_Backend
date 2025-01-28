@@ -4,21 +4,17 @@ public class AddScheduleItemDTO {
 
     private int day;
     private String time;
-    private Long scheduleId;
-
+    private Long studentId; // Student ID instead of Schedule ID
     private String content;
 
     public AddScheduleItemDTO() {}
 
-    public AddScheduleItemDTO(int day, String time, Long scheduleId,String content)
-    {
-
+    public AddScheduleItemDTO(int day, String time, Long studentId, String content) {
         this.day = day;
         this.time = time;
-        this.scheduleId = scheduleId;
+        this.studentId = studentId;
         this.content = content;
     }
-
 
     public int getDay() {
         return day;
@@ -36,12 +32,12 @@ public class AddScheduleItemDTO {
         this.time = time;
     }
 
-    public Long getScheduleId() {
-        return scheduleId;
+    public Long getStudentId() {
+        return studentId;
     }
 
-    public void setScheduleId(Long scheduleId) {
-        this.scheduleId = scheduleId;
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
     public String getContent() {

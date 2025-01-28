@@ -40,9 +40,10 @@ public class ScheduleItemController {
 
     @PostMapping
     public ResponseEntity<ScheduleItem> addScheduleItem(@RequestBody AddScheduleItemDTO addScheduleItemDTO) {
-        scheduleItemService.addNewScheduleItem(addScheduleItemDTO);
+        scheduleItemService.addNewScheduleItemForStudent(addScheduleItemDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 
 
     @DeleteMapping(path = "{scheduleItemId}")

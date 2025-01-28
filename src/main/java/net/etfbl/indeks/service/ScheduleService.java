@@ -57,20 +57,32 @@ public class ScheduleService {
         return true;
     }
 
-    public List<ScheduleItem> getScheduleItems(Long scheduleId) {
+    public List<ScheduleItem> getScheduleItemsByStudentAccountId(Long studentAccountId) {
+        // Retrieve the scheduleId associated with the studentAccountId
+        Integer scheduleId = entityManager.createQuery(
+                        "SELECT sa.schedule.id FROM StudentAccount sa WHERE sa.id = :studentAccountId", Integer.class)
+                .setParameter("studentAccountId", studentAccountId)
+                .getSingleResult();
 
+        // If no scheduleId is found, return an empty list
+        if (scheduleId == null) {
+            return new ArrayList<>();
+        }
+
+        // Fetch the schedule items using the retrieved scheduleId
         return entityManager.createQuery(
-                "SELECT si FROM ScheduleItem si WHERE si.schedule.id = :scheduleId", ScheduleItem.class)
+                        "SELECT si FROM ScheduleItem si WHERE si.schedule = :scheduleId", ScheduleItem.class)
                 .setParameter("scheduleId", scheduleId)
                 .getResultList();
     }
 
-    public void fetchAndUpdateSchedule(Long scheduleId, Integer number) {
 
+    public void fetchAndUpdateScheduleByStudentAccountId(Long studentAccountId, Integer number) {
         try {
             String year = "";
             String group = "";
 
+            // Map the `number` to the year and group
             if (number >= 1 && number <= 7) {
                 year = "1";
                 group = Integer.toString(number); // Number 1-7 corresponds directly to the group
@@ -84,12 +96,14 @@ public class ScheduleService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number input. It should be between 1 and 17.");
             }
 
+            // Construct the API URL
             String urlString = "https://efee.etf.unibl.org:8443/api/public/raspored/studijski-program/" + year + "/godina/" + group;
             HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
 
+            // Read the API response
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;
@@ -100,14 +114,28 @@ public class ScheduleService {
 
             JSONArray scheduleData = new JSONArray(response.toString());
 
+            // Fetch `scheduleId` using `studentAccountId`
+            Long scheduleId = Long.valueOf(entityManager.createQuery(
+                            "SELECT sa.schedule.id FROM StudentAccount sa WHERE sa.id = :studentAccountId", Integer.class)
+                    .setParameter("studentAccountId", studentAccountId)
+                    .getSingleResult());
+
+            if (scheduleId == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No schedule associated with the given student account ID");
+            }
+
+            // Find the schedule and update its items
             Optional<Schedule> scheduleOptional = scheduleRepository.findById(scheduleId);
             if (scheduleOptional.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule with ID " + scheduleId + " not found");
             }
 
             Schedule schedule = scheduleOptional.get();
+
+            // Delete existing schedule items for the given schedule
             scheduleItemRepository.deleteByScheduleId(scheduleId);
 
+            // Parse and save new schedule items
             for (int i = 0; i < scheduleData.length(); i++) {
                 JSONArray timeSlot = scheduleData.getJSONArray(i);
 
@@ -134,14 +162,13 @@ public class ScheduleService {
                     ScheduleItem scheduleItem = new ScheduleItem();
                     scheduleItem.setTime(time);
                     scheduleItem.setDay(day);
-                    scheduleItem.setContent(content.substring(0, Math.min(200, content.length()))); // Truncate na 200 karaktera
+                    scheduleItem.setContent(content.substring(0, Math.min(200, content.length()))); // Truncate to 200 characters
                     scheduleItem.setSchedule(schedule);
 
                     scheduleItemRepository.save(scheduleItem);
                     day++;
                 }
             }
-
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error fetching and parsing the schedule", e);
         }
