@@ -166,7 +166,7 @@ public class ScheduleService {
                         continue;
                     }
 
-                    String content = timeSlot.getString(j).trim();
+                    String content = timeSlot.getString(j).trim().replace("<br />", "\n");
 
                     if (content.isEmpty()) {
                         day++;

@@ -86,14 +86,13 @@ public class MaterialController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadMaterial(@RequestBody MaterialDTO materialDTO) {
         try {
-            // Decode the Base64 file
             byte[] fileBytes = Base64.getDecoder().decode(materialDTO.getBase64());
 
             // Define the storage directory
             String storagePath = "C:\\MATERIJALI";
             File directory = new File(storagePath);
             if (!directory.exists()) {
-                directory.mkdirs(); // Create the directory if it doesn't exist
+                directory.mkdirs();
             }
 
             // Extract the file extension and generate the file path
