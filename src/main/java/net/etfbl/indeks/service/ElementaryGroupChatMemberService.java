@@ -34,15 +34,6 @@ public class ElementaryGroupChatMemberService {
         return elementaryGroupChatMemberRepository.findById(id);
     }
 
-    public boolean deleteElementaryGroupChatMember(Long id) {
-        boolean exists = elementaryGroupChatMemberRepository.existsById(id);
-        if (!exists) {
-            return false;
-        }
-        elementaryGroupChatMemberRepository.deleteById(id);
-        return true;
-    }
-
     public boolean addNewElementaryGroupChatMember(AddElementaryGroupChatMemberDTO addDTO) {
         Optional<ElementaryGroupChat> groupChatOptional = elementaryGroupChatRepository.findById(addDTO.getElementaryGroupChatId());
         Optional<StudentAccount> studentAccountOptional = studentAccountRepository.findById(addDTO.getStudentAccountId());

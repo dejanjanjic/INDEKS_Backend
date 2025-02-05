@@ -42,15 +42,4 @@ public class ElementaryGroupChatMemberController {
         elementaryGroupChatMemberService.addNewElementaryGroupChatMember(elementaryGroupChatMemberDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-    @DeleteMapping(path = "{elementaryGroupChatMemberId}")
-    public ResponseEntity<Void> deleteElementaryGroupChatMember(@PathVariable("elementaryGroupChatMemberId") Long elementaryGroupChatMemberId) {
-        boolean deleted = elementaryGroupChatMemberService.deleteElementaryGroupChatMember(elementaryGroupChatMemberId);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
 }

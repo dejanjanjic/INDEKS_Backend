@@ -1,5 +1,6 @@
 package net.etfbl.indeks.controller;
 
+import net.etfbl.indeks.dto.DeleteGroupChatMemberDTO;
 import net.etfbl.indeks.model.ElementaryGroupChat;
 import net.etfbl.indeks.model.GroupChat;
 import net.etfbl.indeks.service.GroupService;
@@ -64,6 +65,17 @@ public class GroupController {
             return new ResponseEntity( HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity( HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> removeUserFromGroup(@RequestBody DeleteGroupChatMemberDTO memberDTO) {
+
+        boolean removed = groupService.removeUserFromGroup(memberDTO.getGroupChatId(), memberDTO.getAccountId());
+        if (removed) {
+            return new ResponseEntity<>("User removed successfully.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found in any group.", HttpStatus.NOT_FOUND);
         }
     }
 }

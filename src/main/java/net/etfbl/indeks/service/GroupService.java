@@ -1,23 +1,30 @@
 package net.etfbl.indeks.service;
 
 import net.etfbl.indeks.model.GroupChat;
+import net.etfbl.indeks.repository.ElementaryGroupChatMemberRepository;
 import net.etfbl.indeks.repository.GroupRepository;
+import net.etfbl.indeks.repository.PrivateGroupChatMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class GroupService
 {
+    private final PrivateGroupChatMemberRepository privateGroupChatMemberRepository;
+    private final ElementaryGroupChatMemberRepository elementaryGroupChatMemberRepository;
     private final GroupRepository groupRepository;
 
     @Autowired
-    public GroupService(GroupRepository groupRepository) {
+    public GroupService(GroupRepository groupRepository,
+                        PrivateGroupChatMemberRepository privateGroupChatMemberRepository,
+                        ElementaryGroupChatMemberRepository elementaryGroupChatMemberRepository) {
         this.groupRepository = groupRepository;
+        this.privateGroupChatMemberRepository = privateGroupChatMemberRepository;
+        this.elementaryGroupChatMemberRepository = elementaryGroupChatMemberRepository;
     }
 
     public List<GroupChat> getGroups() {
@@ -49,4 +56,21 @@ public class GroupService
         return true;
     }
 
+
+    @Transactional
+    public boolean removeUserFromGroup(Long groupId, Long userId) {
+        boolean isInPrivateGroup = privateGroupChatMemberRepository.existsByPrivateGroupChat_IdAndUserAccount_Id(groupId, userId);
+        if (isInPrivateGroup) {
+            privateGroupChatMemberRepository.deleteByPrivateGroupChat_IdAndUserAccount_Id(groupId, userId);
+            return true;
+        }
+
+        boolean isInElementaryGroup = elementaryGroupChatMemberRepository.existsByElementaryGroupChat_IdAndStudentAccount_Id(groupId, userId);
+        if (isInElementaryGroup) {
+            elementaryGroupChatMemberRepository.deleteByElementaryGroupChat_IdAndStudentAccount_Id(groupId, userId);
+            return true;
+        }
+
+        return false;
+    }
 }
