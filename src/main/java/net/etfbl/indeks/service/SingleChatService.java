@@ -2,10 +2,7 @@ package net.etfbl.indeks.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import net.etfbl.indeks.dto.AddSingleChatDTO;
-import net.etfbl.indeks.dto.GetMessageDTO;
-import net.etfbl.indeks.dto.LastMessageInfo;
-import net.etfbl.indeks.dto.SingleChatSummaryDTO;
+import net.etfbl.indeks.dto.*;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.SingleChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,22 +39,37 @@ public class SingleChatService {
     }
 
     @Transactional
-    public SingleChat addNewSingleChat(AddSingleChatDTO singleChatDTO) {
-
+    public SingleChatDTO addNewSingleChat(AddSingleChatDTO singleChatDTO) {
 
         UserAccount firstParticipant = Optional.ofNullable(entityManager.find(UserAccount.class, singleChatDTO.getFirstParticipantId()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "First participant not found"));
 
-
         UserAccount secondParticipant = Optional.ofNullable(entityManager.find(UserAccount.class, singleChatDTO.getSecondParticipantId()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Second participant not found"));
 
+        // Check if a chat already exists between these users
+        TypedQuery<SingleChat> query = entityManager.createQuery(
+                "SELECT sc FROM SingleChat sc WHERE (sc.firstParticipant = :user1 AND sc.secondParticipant = :user2) " +
+                        "OR (sc.firstParticipant = :user2 AND sc.secondParticipant = :user1)", SingleChat.class);
+        query.setParameter("user1", firstParticipant);
+        query.setParameter("user2", secondParticipant);
 
+        List<SingleChat> existingChats = query.getResultList();
+        if (!existingChats.isEmpty()) {
+            SingleChat existingChat = existingChats.get(0);
+            UserAccount otherUser = firstParticipant.getId().equals(singleChatDTO.getFirstParticipantId()) ? secondParticipant : firstParticipant;
+            return new SingleChatDTO(existingChat.getId(), otherUser.getId(), otherUser.getFirstName()+" "+otherUser.getLastName());
+        }
+
+        // Create new chat if it doesn't exist
         SingleChat newSingleChat = new SingleChat(firstParticipant, secondParticipant);
         entityManager.persist(newSingleChat);
 
-        return newSingleChat;
+        UserAccount otherUser = firstParticipant.getId().equals(singleChatDTO.getFirstParticipantId()) ? secondParticipant : firstParticipant;
+
+        return new SingleChatDTO(newSingleChat.getId(), otherUser.getId(), otherUser.getFirstName()+" "+otherUser.getLastName());
     }
+
 
 
     @Transactional

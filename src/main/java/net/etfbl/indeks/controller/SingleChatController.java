@@ -2,6 +2,7 @@ package net.etfbl.indeks.controller;
 
 import net.etfbl.indeks.dto.AddSingleChatDTO;
 import net.etfbl.indeks.dto.GetMessageDTO;
+import net.etfbl.indeks.dto.SingleChatDTO;
 import net.etfbl.indeks.dto.SingleChatSummaryDTO;
 import net.etfbl.indeks.model.SingleChat;
 import net.etfbl.indeks.model.TutoringOffer;
@@ -38,15 +39,11 @@ public class SingleChatController {
     }
 
     @PostMapping
-    public ResponseEntity<SingleChat> addNewSingleChat(@RequestBody AddSingleChatDTO singleChatDTO) {
-
-        SingleChat temp = singleChatService.addNewSingleChat(singleChatDTO);
-        if(temp != null){
-            return ResponseEntity.ok(temp);
-        }else{
-            return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
-        }
+    public ResponseEntity<SingleChatDTO> addNewSingleChat(@RequestBody AddSingleChatDTO singleChatDTO) {
+        SingleChatDTO chatDTO = singleChatService.addNewSingleChat(singleChatDTO);
+        return ResponseEntity.ok(chatDTO);
     }
+
 
     @GetMapping("/{chatId}/messages")
     public ResponseEntity<List<GetMessageDTO>> getMessagesFromChat(@PathVariable Long chatId, @RequestParam Long userId) {
