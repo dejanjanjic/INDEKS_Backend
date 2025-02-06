@@ -48,27 +48,27 @@ public class GroupController {
     }
 
     @DeleteMapping(path = "{groupId}")
-    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId) {
+    public ResponseEntity<?> deleteGroup(@PathVariable("groupId") Long groupId) {
         boolean isDeleted = groupService.deleteGroup(groupId);
         if (isDeleted) {
-            return new ResponseEntity( HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>( HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity( HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         }
     }
     @PutMapping(path = "{groupId}")
-    public ResponseEntity updateGroup(
+    public ResponseEntity<?> updateGroup(
             @PathVariable("groupId") Long groupId,
             @RequestParam(required = false) String groupName) {
         boolean isUpdated = groupService.updateGroup(groupId, groupName);
         if (isUpdated) {
-            return new ResponseEntity( HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>( HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity( HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping
+    @PostMapping(path = "/removeMember")
     public ResponseEntity<String> removeUserFromGroup(@RequestBody DeleteGroupChatMemberDTO memberDTO) {
 
         boolean removed = groupService.removeUserFromGroup(memberDTO.getGroupChatId(), memberDTO.getAccountId());
