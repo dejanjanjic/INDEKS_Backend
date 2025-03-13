@@ -8,10 +8,7 @@ import net.etfbl.indeks.dto.UserAccountDTO;
 import net.etfbl.indeks.dto.UserAccountSummaryDTO;
 import net.etfbl.indeks.model.Account;
 import net.etfbl.indeks.security.blacklisting.service.BlacklistedTokenService;
-import net.etfbl.indeks.security.roles.Roles;
-import net.etfbl.indeks.security.service.AuthenticationService;
-import net.etfbl.indeks.security.service.JwtService;
-import net.etfbl.indeks.util.Encryption;
+import net.etfbl.indeks.security.enumeration.Roles;
 import net.etfbl.indeks.model.UserAccount;
 import net.etfbl.indeks.repository.AccountRepository;
 import net.etfbl.indeks.repository.UserAccountRepository;
@@ -24,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service

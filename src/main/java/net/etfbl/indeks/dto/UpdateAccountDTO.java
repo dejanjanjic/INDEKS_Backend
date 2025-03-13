@@ -1,6 +1,5 @@
 package net.etfbl.indeks.dto;
 
-import net.etfbl.indeks.security.roles.Roles;
 public class UpdateAccountDTO {
 
     private Long userId;

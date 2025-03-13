@@ -1,7 +1,7 @@
 package net.etfbl.indeks.model;
 
 import jakarta.persistence.*;
-import net.etfbl.indeks.security.roles.Roles;
+import net.etfbl.indeks.security.enumeration.Roles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

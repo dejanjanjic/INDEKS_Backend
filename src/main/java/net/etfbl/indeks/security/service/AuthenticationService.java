@@ -5,12 +5,13 @@ import net.etfbl.indeks.repository.*;
 import net.etfbl.indeks.security.dto.LoginAccountDTO;
 import net.etfbl.indeks.security.dto.RegisterAccountDTO;
 import net.etfbl.indeks.security.enumeration.RegistrationStatus;
-import net.etfbl.indeks.security.roles.Roles;
+import net.etfbl.indeks.security.enumeration.Roles;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -114,18 +115,19 @@ public class AuthenticationService {
 
 
             }
-//            case "TUTOR" -> {
-//                Optional<TutorAccount> tutorCheck = tutorAccountRepository.findByEmail(input.getEmail());
-//                if (tutorCheck.isPresent())
-//                    return RegistrationStatus.ACCOUNT_ALREADY_EXISTS;
-//
-//                TutorAccount tutorAccount = new TutorAccount();
-//                tutorAccount.setUserAccount(userAccount);
-//                tutorAccount.setTutoringOffers(new ArrayList<>());
-//
-//                tutorAccountRepository.save(tutorAccount);
-//                System.out.println("New tutor registered!");
-//            }
+            case "TUTOR" -> {
+                Optional<TutorAccount> tutorCheck = tutorAccountRepository.findByEmail(input.getEmail());
+                if (tutorCheck.isPresent())
+                    return RegistrationStatus.ACCOUNT_ALREADY_EXISTS;
+
+                TutorAccount tutorAccount = new TutorAccount();
+                tutorAccount.setUserAccount(userAccount);
+                tutorAccount.setTutoringOffers(new ArrayList<>());
+                userAccount.getAccount().setRole(Roles.TUTOR);
+
+                tutorAccountRepository.save(tutorAccount);
+                System.out.println("New tutor registered!");
+            }
             default -> {
                 System.out.println("WRONG USER TYPE FLAG!");
                 return RegistrationStatus.INVALID_FLAG;

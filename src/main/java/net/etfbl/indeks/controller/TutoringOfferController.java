@@ -54,10 +54,16 @@ public class TutoringOfferController
 
     @PostMapping
     public ResponseEntity<TutoringOffer> registerNewTutoringOffer(@RequestBody AddTutoringOfferDTO addTutoringOfferDTO){
+
+        System.out.println("usli u controller");
+
         TutoringOffer temp = tutoringOfferService.addNewTutoringOffer(addTutoringOfferDTO);
+        System.out.println("ovdje smo dosli");
         if(temp != null){
+            System.out.println("sve ok");
             return ResponseEntity.ok(temp);
         }else{
+            System.out.println("nesto ne valja");
             return ResponseEntity.status(HttpStatusCode.valueOf(409)).build();
         }
     }

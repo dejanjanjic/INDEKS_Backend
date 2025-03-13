@@ -4,7 +4,7 @@ import net.etfbl.indeks.dto.AddUserAccountDTO;
 import net.etfbl.indeks.model.*;
 import net.etfbl.indeks.repository.TutorAccountRepository;
 import net.etfbl.indeks.repository.TutoringOfferRepository;
-import net.etfbl.indeks.security.roles.Roles;
+import net.etfbl.indeks.security.enumeration.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ public class TutorAccountService {
     }
     @Transactional
     public TutorAccount addNewTutorAccount(AddUserAccountDTO tutorAccount) {
-        UserAccount acc = userAccountService.addNewUserAccount(tutorAccount, Roles.STUDENT);
+        UserAccount acc = userAccountService.addNewUserAccount(tutorAccount, Roles.TUTOR);
         return tutorAccountRepository.save(new TutorAccount(acc));
     }
 }

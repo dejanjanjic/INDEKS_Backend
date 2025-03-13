@@ -16,9 +16,9 @@ public class TutorAccount {
     @JoinColumn(name="id")
     private UserAccount userAccount;
 
-//    @OneToMany(mappedBy = "tutorAccount")
-//    @JsonManagedReference
-//    private List<TutoringOffer> tutoringOffers;
+    @OneToMany(mappedBy = "tutorAccount")
+    @JsonManagedReference
+    private List<TutoringOffer> tutoringOffers;
 
     public TutorAccount(){
 
@@ -36,15 +36,15 @@ public class TutorAccount {
 
     public Long getId(){ return id;}
 
-//    public List<TutoringOffer> getTutoringOffers() {
-//        return tutoringOffers;
-//    }
-//
-//    public void setTutoringOffers(List<TutoringOffer> tutoringOffers) {
-//        this.tutoringOffers = tutoringOffers;
-//    }
-//
-//    public void addTutoringOffer(TutoringOffer tutoringOffer) {
-//        tutoringOffers.add(tutoringOffer);
-//    }
+    public List<TutoringOffer> getTutoringOffers() {
+        return tutoringOffers;
+    }
+
+    public void setTutoringOffers(List<TutoringOffer> tutoringOffers) {
+        this.tutoringOffers = tutoringOffers;
+    }
+
+    public void addTutoringOffer(TutoringOffer tutoringOffer) {
+        tutoringOffers.add(tutoringOffer);
+    }
 }

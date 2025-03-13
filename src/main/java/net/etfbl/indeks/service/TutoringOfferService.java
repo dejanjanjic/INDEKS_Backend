@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,21 +41,25 @@ public class TutoringOfferService
     @Transactional
     public TutoringOffer addNewTutoringOffer(AddTutoringOfferDTO addTutoringOfferDTO) {
         Subject subject = entityManager.find(Subject.class, addTutoringOfferDTO.getSubjectId());
+        System.out.println("prije uslova");
         if (subject == null) {
+            System.out.println("nema subjecta");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found");
         }
 
-        StudentAccount studentAccount = entityManager.find(StudentAccount.class, addTutoringOfferDTO.getStudentAccountId());
-        if (studentAccount == null) {
+        TutorAccount tutorAccount = entityManager.find(TutorAccount.class, addTutoringOfferDTO.getTutorAccountId());
+        if (tutorAccount == null) {
+            System.out.println("nema tutora");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor Account not found");
         }
 
         TutoringOffer newTutoringOffer = new TutoringOffer(
                 addTutoringOfferDTO.getDescription(),
                 subject,
-                studentAccount
+                tutorAccount
         );
 
+        System.out.println("ne nzamo sta je");
         entityManager.persist(newTutoringOffer);
 
         return newTutoringOffer;
@@ -107,8 +109,8 @@ public class TutoringOfferService
         return averageRating;
     }
 
-    public List<TutoringOfferDTO> getTutoringOffersByStudentAccountId(Long studentAccountId) {
-        return tutoringOfferRepository.findByStudentAccountId(studentAccountId)
+    public List<TutoringOfferDTO> getTutoringOffersByStudentAccountId(Long tutorAccountId) {
+        return tutoringOfferRepository.findByTutorAccountId(tutorAccountId)
                 .stream()
                 .map(offer -> {
                     // Calculate the average rating for the tutoring offer

@@ -4,14 +4,14 @@ public class AddTutoringOfferDTO {
 
     private String description;
     private Long subjectId;
-    private Long studentAccountId;
+    private Long tutorAccountId;
 
     public AddTutoringOfferDTO() {}
 
-    public AddTutoringOfferDTO(String description, Long subjectId, Long studentAccountId) {
+    public AddTutoringOfferDTO(String description, Long subjectId, Long tutorAccountId) {
         this.description = description;
         this.subjectId = subjectId;
-        this.studentAccountId = studentAccountId;
+        this.tutorAccountId = tutorAccountId;
     }
 
     public String getDescription() {
@@ -30,12 +30,12 @@ public class AddTutoringOfferDTO {
         this.subjectId = subjectId;
     }
 
-    public Long getStudentAccountId() {
-        return studentAccountId;
+    public Long getTutorAccountId() {
+        return tutorAccountId;
     }
 
-    public void setStudentAccountId(Long studentAccountId) {
-        this.studentAccountId = studentAccountId;
+    public void setTutorAccountId(Long tutorAccountId) {
+        this.tutorAccountId = tutorAccountId;
     }
 
 
@@ -44,7 +44,7 @@ public class AddTutoringOfferDTO {
         return "TutoringOfferDTO{" +
                 ", description='" + description + '\'' +
                 ", subjectId=" + subjectId +
-                ", studentAccountId=" + studentAccountId +
+                ", tutorAccountId=" + tutorAccountId +
                 '}';
     }
 }

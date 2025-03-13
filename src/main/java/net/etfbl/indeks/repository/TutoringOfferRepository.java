@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TutoringOfferRepository  extends JpaRepository<TutoringOffer, Long> {
-    List<TutoringOffer> findByStudentAccountId(Long studentAccountId);
+    List<TutoringOffer> findByTutorAccountId(Long studentAccountId);
 }
