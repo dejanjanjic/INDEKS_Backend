@@ -36,6 +36,13 @@ public class MaterialService {
         return materialRepository.findById(materialId);
     }
 
+    public List<MaterialSummaryDTO>  getMaterialByOwner(Long materialId) {
+        List<Material> materials = materialRepository.findByownerAccountId(materialId);
+        return materials.stream()
+                .map(material -> new MaterialSummaryDTO(material.getId(), material.getName()))
+                .collect(Collectors.toList());
+    }
+
     public Material addNewMaterial(Material material) {
         return materialRepository.save(material);
     }

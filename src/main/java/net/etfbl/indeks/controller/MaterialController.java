@@ -50,6 +50,8 @@ public class MaterialController {
         }
     }
 
+
+
     @PostMapping
     public ResponseEntity<Material> postMaterial(@RequestBody Material material){
         Material temp = materialService.addNewMaterial(material);
@@ -149,5 +151,12 @@ public class MaterialController {
     public List<MaterialSummaryDTO> getMaterialsBySubject(@PathVariable Long subjectId) {
         return materialService.getMaterialsBySubject(subjectId);
     }
+
+    @GetMapping(path = "owner/{ownerId}")
+    public ResponseEntity<List<MaterialSummaryDTO>> getMaterialByOwnerId(@PathVariable(name = "ownerId") Long ownerId){
+        List<MaterialSummaryDTO> materials = materialService.getMaterialByOwner(ownerId);
+        return ResponseEntity.ok(materials);
+    }
+
 
 }
